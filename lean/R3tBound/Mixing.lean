@@ -525,4 +525,171 @@ theorem three_quarters_energy_core (A : Finset (ZMod q × ZMod q))
       omega
     simpa [E, U, μ] using this
 
+/-- Maximal energy forces every multiplicity to be `0` or `#T`. -/
+lemma multiplicity_eq_zero_or_card
+    (A : Finset (ZMod q × ZMod q)) (T : Finset (ZMod q)) (x y : ZMod q)
+    (hE : familyEnergy A T x = #T * coverageMass A T x) :
+    multiplicity (shiftedFibre A x) T y = 0 ∨
+      multiplicity (shiftedFibre A x) T y = #T := by
+  classical
+  set μ := multiplicity (shiftedFibre A x) T
+  set W := coverageMass A T x
+  set E := familyEnergy A T x
+  have hμ : ∀ z, μ z ≤ #T := fun z => card_filter_le _ _
+  have hpt : ∀ z, μ z ^ 2 + μ z * (#T - μ z) = #T * μ z := fun z => by
+    have := hμ z
+    have : μ z * μ z + μ z * (#T - μ z) = μ z * #T := by
+      rw [← mul_add, Nat.add_sub_of_le this]
+    simpa [pow_two, mul_comm] using this
+  have hsum :
+      E + ∑ z : ZMod q, μ z * (#T - μ z) = #T * W := by
+    calc
+      E + ∑ z : ZMod q, μ z * (#T - μ z)
+          = ∑ z : ZMod q, (μ z ^ 2 + μ z * (#T - μ z)) := by
+            simp [E, familyEnergy, μ, sum_add_distrib]
+      _ = ∑ z : ZMod q, #T * μ z := sum_congr rfl fun z _ => hpt z
+      _ = #T * W := by simp [W, coverageMass, μ, mul_sum]
+  have hvan : ∑ z : ZMod q, μ z * (#T - μ z) = 0 := by
+    have : E + ∑ z : ZMod q, μ z * (#T - μ z) = E := by
+      simpa [hE] using hsum
+    omega
+  have hy : μ y * (#T - μ y) = 0 := by
+    have hle :=
+      single_le_sum (s := (univ : Finset (ZMod q)))
+        (f := fun z => μ z * (#T - μ z))
+        (fun _ _ => Nat.zero_le _) (mem_univ y)
+    exact Nat.eq_zero_of_le_zero (hle.trans_eq hvan)
+  rcases Nat.mul_eq_zero.1 hy with h0 | hT
+  · exact Or.inl h0
+  · exact Or.inr (Nat.le_antisymm (hμ y) (Nat.le_of_sub_eq_zero hT))
+
+/-- Maximal energy makes every nonempty shifted fibre equal. -/
+lemma maximal_energy_exact_cylinder
+    (A : Finset (ZMod q × ZMod q)) (T : Finset (ZMod q)) (x : ZMod q)
+    (hE : familyEnergy A T x = #T * coverageMass A T x)
+    {s t : ZMod q} (hs : s ∈ T) (ht : t ∈ T) :
+    shiftedFibre A x s = shiftedFibre A x t := by
+  classical
+  set F := shiftedFibre A x
+  set μ := multiplicity F T
+  ext y
+  constructor
+  · intro hy
+    have hpos : 0 < μ y :=
+      card_pos.mpr ⟨s, mem_filter.2 ⟨hs, hy⟩⟩
+    have hμ : μ y = #T := by
+      rcases multiplicity_eq_zero_or_card A T x y hE with h0 | hT
+      · exact (Nat.not_lt.2 (h0.symm ▸ Nat.le_refl 0) hpos).elim
+      · exact hT
+    have hfilter : T.filter (fun i => y ∈ F i) = T :=
+      eq_of_subset_of_card_le (filter_subset _ _) (by
+        simpa [μ, multiplicity] using hμ.symm.le)
+    have ht' : t ∈ T.filter (fun i => y ∈ F i) := by
+      rw [hfilter]; exact ht
+    exact (mem_filter.1 ht').2
+  · intro hy
+    have hpos : 0 < μ y :=
+      card_pos.mpr ⟨t, mem_filter.2 ⟨ht, hy⟩⟩
+    have hμ : μ y = #T := by
+      rcases multiplicity_eq_zero_or_card A T x y hE with h0 | hT
+      · exact (Nat.not_lt.2 (h0.symm ▸ Nat.le_refl 0) hpos).elim
+      · exact hT
+    have hfilter : T.filter (fun i => y ∈ F i) = T :=
+      eq_of_subset_of_card_le (filter_subset _ _) (by
+        simpa [μ, multiplicity] using hμ.symm.le)
+    have hs' : s ∈ T.filter (fun i => y ∈ F i) := by
+      rw [hfilter]; exact hs
+    exact (mem_filter.1 hs').2
+
+/-- If the neighbouring mass is at least `#T · q / 2`, twice-random energy
+is at least maximal energy. -/
+lemma twice_random_ge_max (A : Finset (ZMod q × ZMod q))
+    (T : Finset (ZMod q)) (x : ZMod q)
+    (h : #T * q ≤ 2 * coverageMass A T x) :
+    #T * coverageMass A T x * q ≤ 2 * (coverageMass A T x) ^ 2 := by
+  have := Nat.mul_le_mul_right (coverageMass A T x) h
+  convert this using 1 <;> ring
+
+/-- Fibres of mean size at least `q/2` cannot be strictly aligned. -/
+lemma no_aligned_of_large_mass (A : Finset (ZMod q × ZMod q))
+    (T : Finset (ZMod q)) (x : ZMod q)
+    (h : #T * q ≤ 2 * coverageMass A T x) :
+    familyEnergy A T x * q ≤ 2 * (coverageMass A T x) ^ 2 := by
+  have hmax := energy_le_card_mul_mass A T x
+  have : familyEnergy A T x * q ≤ #T * coverageMass A T x * q :=
+    Nat.mul_le_mul_right q hmax
+  exact this.trans (twice_random_ge_max A T x h)
+
+/-- Every fibre of size at least `q/2` implies the same: no strict alignment. -/
+lemma no_aligned_of_half_fibres (A : Finset (ZMod q × ZMod q))
+    (T : Finset (ZMod q)) (x : ZMod q)
+    (h : ∀ t ∈ T, q ≤ 2 * #(shiftedFibre A x t)) :
+    familyEnergy A T x * q ≤ 2 * (coverageMass A T x) ^ 2 := by
+  have hW : #T * q ≤ 2 * coverageMass A T x := by
+    calc
+      #T * q = ∑ t ∈ T, q := by simp [sum_const, smul_eq_mul, mul_comm]
+      _ ≤ ∑ t ∈ T, 2 * #(shiftedFibre A x t) := sum_le_sum h
+      _ = 2 * ∑ t ∈ T, #(shiftedFibre A x t) := by simp [mul_sum]
+      _ = 2 * coverageMass A T x := by rw [coverageMass_eq_sum]
+  exact no_aligned_of_large_mass A T x hW
+
+/-- Mean fibre size at least `3q/8` makes three-quarters of maximal energy
+no larger than twice-random energy. -/
+lemma three_quarters_le_twice_random (A : Finset (ZMod q × ZMod q))
+    (T : Finset (ZMod q)) (x : ZMod q)
+    (h : 3 * #T * q ≤ 8 * coverageMass A T x) :
+    3 * #T * coverageMass A T x * q ≤ 8 * (coverageMass A T x) ^ 2 := by
+  have := Nat.mul_le_mul_right (coverageMass A T x) h
+  convert this using 1 <;> ring
+
+/-- On fibres of mean size at least `3q/8`, alignment forces three-quarters
+of maximal energy. The intermediate window is empty. -/
+lemma aligned_implies_three_quarters (A : Finset (ZMod q × ZMod q))
+    (T : Finset (ZMod q)) (x : ZMod q)
+    (h : 3 * #T * q ≤ 8 * coverageMass A T x)
+    (hE : 2 * (coverageMass A T x) ^ 2 < familyEnergy A T x * q) :
+    3 * #T * coverageMass A T x ≤ 4 * familyEnergy A T x := by
+  set W := coverageMass A T x
+  set E := familyEnergy A T x
+  have h34 : 3 * #T * W * q ≤ 8 * W ^ 2 :=
+    three_quarters_le_twice_random A T x h
+  have h8 : 8 * W ^ 2 < 4 * E * q := by
+    have := Nat.mul_lt_mul_of_pos_right hE (by decide : 0 < 4)
+    convert this using 1 <;> ring
+  have hlt : 3 * #T * W * q < 4 * E * q := h34.trans_lt h8
+  have hq : 0 < q := (Fact.out : Nat.Prime q).pos
+  exact Nat.le_of_lt (Nat.lt_of_mul_lt_mul_right (a := q) hlt)
+
+/-- Equality of twice-random with the energy upper bound, on half-size
+fibres, forces maximal energy and therefore an exact cylinder. -/
+lemma half_fibre_energy_exact_cylinder
+    (A : Finset (ZMod q × ZMod q)) (T : Finset (ZMod q)) (x : ZMod q)
+    (h : ∀ t ∈ T, q ≤ 2 * #(shiftedFibre A x t))
+    (hE : 2 * (coverageMass A T x) ^ 2 ≤ familyEnergy A T x * q)
+    {s t : ZMod q} (hs : s ∈ T) (ht : t ∈ T) :
+    shiftedFibre A x s = shiftedFibre A x t := by
+  set W := coverageMass A T x
+  set E := familyEnergy A T x
+  have hmix : E * q ≤ 2 * W ^ 2 := no_aligned_of_half_fibres A T x h
+  have heq : E * q = 2 * W ^ 2 := le_antisymm hmix hE
+  have hW : #T * q ≤ 2 * W := by
+    calc
+      #T * q = ∑ u ∈ T, q := by simp [sum_const, smul_eq_mul, mul_comm]
+      _ ≤ ∑ u ∈ T, 2 * #(shiftedFibre A x u) := sum_le_sum h
+      _ = 2 * ∑ u ∈ T, #(shiftedFibre A x u) := by simp [mul_sum]
+      _ = 2 * W := by
+        dsimp [W]
+        rw [coverageMass_eq_sum]
+  have hmax : E ≤ #T * W := energy_le_card_mul_mass A T x
+  have hq : 0 < q := (Fact.out : Nat.Prime q).pos
+  have hEW : E = #T * W := by
+    have h1 : E * q ≤ #T * W * q := Nat.mul_le_mul_right q hmax
+    have h2 : #T * W * q ≤ 2 * W ^ 2 := twice_random_ge_max A T x hW
+    have : E * q = #T * W * q :=
+      le_antisymm h1 (by
+        have : 2 * W ^ 2 = E * q := heq.symm
+        exact this ▸ h2)
+    exact Nat.eq_of_mul_eq_mul_right hq this
+  exact maximal_energy_exact_cylinder A T x hEW hs ht
+
 end R3tBound

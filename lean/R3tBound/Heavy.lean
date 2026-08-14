@@ -35,6 +35,74 @@ end Prime
 
 variable {q : ℕ}
 
+/-- The Family A connection set `{1,…,d}` inside `ℤ/qℤ`. -/
+def intervalT (d : ℕ) : Finset (ZMod q) :=
+  (range d).image fun i : ℕ => (i + 1 : ZMod q)
+
+lemma mem_intervalT {d : ℕ} {t : ZMod q} :
+    t ∈ intervalT d ↔ ∃ i < d, t = (i + 1 : ZMod q) := by
+  simp [intervalT, mem_image, mem_range, eq_comm]
+
+lemma intervalT_lt_of_double {d : ℕ} (_hdq : 2 * d ≤ q) (_hq : 0 < q) : d < q := by
+  omega
+
+lemma zero_notMem_intervalT {d : ℕ} (hdq : 2 * d ≤ q) (hq : 0 < q) :
+    (0 : ZMod q) ∉ intervalT d := by
+  intro h
+  rcases mem_intervalT.1 h with ⟨i, hi, h0⟩
+  have hcast : ((i + 1 : ℕ) : ZMod q) = 0 := by
+    simpa using h0.symm
+  have hdiv : (q : ℕ) ∣ i + 1 := (ZMod.natCast_eq_zero_iff (i + 1) q).1 hcast
+  have hlt : i + 1 < q :=
+    (Nat.succ_le_of_lt hi).trans_lt (intervalT_lt_of_double hdq hq)
+  have hpos : 0 < i + 1 := Nat.succ_pos i
+  have : i + 1 = 0 := Nat.eq_zero_of_dvd_of_lt hdiv hlt
+  exact Nat.not_lt.2 (this.symm ▸ Nat.le_refl 0) hpos
+
+/-- Distinct points of `{1,…,d}` differ by an element of `±T` as soon as
+`2d ≤ q`, so every pair of `T_x`-fibres is `T`-adjacent. -/
+lemma intervalT_pair_diff {d : ℕ} {s t : ZMod q}
+    (hdq : 2 * d ≤ q) (hq : 0 < q)
+    (hs : s ∈ intervalT d) (ht : t ∈ intervalT d) (hne : s ≠ t) :
+    s - t ∈ intervalT d ∨ t - s ∈ intervalT d := by
+  have := intervalT_lt_of_double hdq hq
+  rcases mem_intervalT.1 hs with ⟨i, hi, rfl⟩
+  rcases mem_intervalT.1 ht with ⟨j, hj, rfl⟩
+  rcases lt_trichotomy i j with hij | rfl | hji
+  · refine Or.inr ?_
+    have hsub : ((j - i : ℕ) : ZMod q) =
+        (j + 1 : ZMod q) - (i + 1 : ZMod q) := by
+      have hji' : i ≤ j := Nat.le_of_lt hij
+      have : ((j - i : ℕ) : ZMod q) = (j : ZMod q) - (i : ZMod q) :=
+        Nat.cast_sub hji'
+      simp [this, add_sub_add_right_eq_sub]
+    have hpos : 0 < j - i := Nat.sub_pos_of_lt hij
+    have hlt : j - i - 1 < d := by
+      have : j - i ≤ j := Nat.sub_le j i
+      have : j - i ≤ d := this.trans (Nat.le_of_lt hj)
+      omega
+    refine mem_intervalT.2 ⟨j - i - 1, hlt, ?_⟩
+    have hsucc : ((j - i - 1 + 1 : ℕ) : ZMod q) = ((j - i : ℕ) : ZMod q) := by
+      rw [Nat.sub_add_cancel hpos]
+    simpa [hsub] using hsucc.symm
+  · exact (hne rfl).elim
+  · refine Or.inl ?_
+    have hsub : ((i - j : ℕ) : ZMod q) =
+        (i + 1 : ZMod q) - (j + 1 : ZMod q) := by
+      have hij' : j ≤ i := Nat.le_of_lt hji
+      have : ((i - j : ℕ) : ZMod q) = (i : ZMod q) - (j : ZMod q) :=
+        Nat.cast_sub hij'
+      simp [this, add_sub_add_right_eq_sub]
+    have hpos : 0 < i - j := Nat.sub_pos_of_lt hji
+    have hlt : i - j - 1 < d := by
+      have : i - j ≤ i := Nat.sub_le i j
+      have : i - j ≤ d := this.trans (Nat.le_of_lt hi)
+      omega
+    refine mem_intervalT.2 ⟨i - j - 1, hlt, ?_⟩
+    have hsucc : ((i - j - 1 + 1 : ℕ) : ZMod q) = ((i - j : ℕ) : ZMod q) := by
+      rw [Nat.sub_add_cancel hpos]
+    simpa [hsub] using hsucc.symm
+
 /-- Consecutive block of length `d+1` starting at `x`. -/
 def block (d : ℕ) (x : ZMod q) : Finset (ZMod q) :=
   (range (d + 1)).image (fun i : ℕ => x + (i : ZMod q))

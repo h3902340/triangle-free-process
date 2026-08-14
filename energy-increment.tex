@@ -34,7 +34,7 @@ The inverse step converting ``energy above random'' into ``fibres are almost tra
 That argument, exact-cylinder packing by the interval lemma, three-quarters
 energy at any fibre size, and the leftover intermediate-energy window, are in
 \texttt{inverse-energy.tex}.
-Together with the structured-case list in \texttt{structured-cases.tex}, this disposes of every independent set we can describe except intermediate-energy fibres of size in $(q^{1/3}(\log q)^{-O(1)},q/3)$ and thin three-quarters-energy stars that are not exact.
+Together with the structured-case list in \texttt{structured-cases.tex}, this disposes of every independent set we can describe except intermediate-energy fibres of size in $(q^{1/3}(\log q)^{-O(1)},3q/8)$ and thin three-quarters-energy stars that are not exact.
 \end{abstract}
 
 \section{Setup}
@@ -267,9 +267,9 @@ A clique of pairwise heavily overlapping APs therefore shares a common differenc
 \end{proof}
 
 \begin{conjecture}[Inverse energy, intermediate window]\label{lem:inverse}
-If $2W_x^{2}/q<E_x<\tfrac34|T_x|W_x$ and every fibre at $x$ has size in $\bigl(q^{1/3}(\log q)^{-O(1)},q/3\bigr)$
+If $2W_x^{2}/q<E_x<\tfrac34|T_x|W_x$ and every fibre at $x$ has size in $\bigl(q^{1/3}(\log q)^{-O(1)},3q/8\bigr)$
 (or the fibre has three-quarters energy but is only $\tfrac12$-close to a thin core,
-or is a medium $\tfrac12$-close star whose energy is only barely above twice-random,
+or is a medium $\tfrac12$-close star of mean size in $[q/3,3q/8)$ whose energy is only barely above twice-random,
 or whose support in $T$ is AP-poor),
 then the piece still contributes $O(q\log q)$ points after the cylinder constraint.
 \end{conjecture}
@@ -305,10 +305,11 @@ Then $A$ is a union of
   \item medium twice-random fibres have a $\tfrac12$-close star
         (\texttt{inverse-energy.tex}); this is structure, not a size bound;
   \item a leftover of intermediate-energy fibres of size in
-        $\bigl(q^{1/3}(\log q)^{-O(1)},q/3\bigr)$,
+        $\bigl(q^{1/3}(\log q)^{-O(1)},3q/8\bigr)$,
         including thin three-quarters-energy stars that are not exact,
         two-cluster and medium stars with AP-poor supports,
-        and medium stars whose energy is only barely above twice-random.
+        and medium stars of mean size in $[q/3,3q/8)$ whose energy is
+        only barely above twice-random.
 \end{enumerate}
 Items (1)--(4) are theorems (no Weyl).
 Item (5) is a structure theorem, not a size bound: half-intersection does not

@@ -21,9 +21,10 @@ half-intersection does not beat the random overlap on non-heavy cores.
 The Weyl estimate for approximate cylinders remains paper-only.
 Popular-core energy, three-quarters energy, half-intersection, almost-mixing,
 affine interval packing, exact-cylinder packing (including AP supports),
-the pairwise energy identity, and one heavy off-diagonal pair are verified.
-One independent pair has an almost-disjoint self-translate; that is not a
-packing of the star.
+the pairwise energy identity, one heavy off-diagonal pair, maximal-energy
+exact cylinders, and the empty intermediate window at mean size `3q/8`
+are verified. One independent pair has an almost-disjoint self-translate;
+that is not a packing of the star.
 -/
 
 namespace R3tBound
@@ -121,5 +122,29 @@ alias close_fibres_almost_disjoint := close_sets_almost_disjoint_translates
 /-- **Shifted close overlap.** Independence of neighbouring fibres bounds
 the self-translate by the fringe. One pair, not a packing. -/
 alias shifted_close_pair := shifted_close_overlap
+
+/-- **Maximal energy.** Energy `#T · W` makes every nonempty shifted fibre
+equal. -/
+alias maximal_energy_is_exact := maximal_energy_exact_cylinder
+
+/-- **No half-size alignment.** Fibres of size at least `q/2` cannot be
+strictly aligned. -/
+alias no_half_size_alignment := no_aligned_of_half_fibres
+
+/-- **Empty intermediate window.** Mean size `≥ 3q/8` and alignment force
+three-quarters energy. -/
+alias aligned_is_three_quarters := aligned_implies_three_quarters
+
+/-- **Half-size exact.** Twice-random equality on half-size fibres is an
+exact cylinder. -/
+alias half_fibre_is_exact := half_fibre_energy_exact_cylinder
+
+/-- **Interval differences.** Distinct points of `{1,…,d}` differ by an
+element of `±T` when `2d ≤ q`. -/
+alias interval_T_pair_diff := intervalT_pair_diff
+
+/-- **Heavy pair on an interval.** A heavy pair in Family A is
+`T`-adjacent and supplies one almost-disjoint translate. -/
+alias heavy_pair_on_interval := heavy_pair_interval_overlap
 
 end R3tBound

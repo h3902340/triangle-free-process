@@ -36,12 +36,19 @@ Pinned toolchain: Lean 4.33.0 + mathlib `v4.33.0`. There are no `sorry`s.
 | Energy above `W+B·#T·(#T-1)` forces one heavy pair | `exists_heavy_pair` |
 | `A` misses `B+σ` \(\Rightarrow\) `|A∩(A+σ)|≤|A\B|` | `close_fibres_almost_disjoint` |
 | Neighbouring independence bounds one self-translate | `shifted_close_pair` |
+| Maximal energy makes every nonempty fibre equal | `maximal_energy_is_exact` |
+| Fibres of size `≥ q/2` are not strictly aligned | `no_half_size_alignment` |
+| Mean size `≥ 3q/8` and alignment ⇒ three-quarters energy | `aligned_is_three_quarters` |
+| Twice-random equality on half-size fibres is exact | `half_fibre_is_exact` |
+| Distinct points of `{1,…,d}` differ by `±T` | `interval_T_pair_diff` |
+| A heavy pair on `{1,…,d}` is one almost-disjoint translate | `heavy_pair_on_interval` |
 
 Not formalized (still paper-only / conjectural): the Weyl estimate for
-horizontal packings, the \(\Omega(|T|^2)\) star-degree count, the
-intermediate-energy window, medium-star incidences, and the SOTA
+horizontal packings, the \(\Omega(|T|^2)\) star-degree count, packing of
+medium \(\tfrac12\)-close stars, medium-star incidences, and the SOTA
 independence-number bound for \(A_q\).
-Medium-fibre clustering is a structure theorem, not a size bound.
+The intermediate window is empty at mean fibre size `≥ 3q/8`; it remains
+open on `(q^{1/3}(\log q)^{-O(1)}, 3q/8)`.
 One heavy pair plus one almost-disjoint translate is not a packing.
 See [`inverse-energy.tex`](../inverse-energy.tex).
 

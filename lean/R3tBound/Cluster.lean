@@ -187,6 +187,32 @@ lemma shifted_close_overlap {T : Finset (ZMod q)}
   close_sets_almost_disjoint_translates
     (shifted_independent (A := A) (x := x) (s := s) (t := t) hA hT0 hdiff)
 
+/-- On Family A's interval connection set, a heavy pair is automatically
+`T`-adjacent, so it supplies one almost-disjoint self-translate. -/
+lemma heavy_pair_interval_overlap {d B : ℕ}
+    {A : Finset (ZMod q × ZMod q)} {x : ZMod q}
+    (hdq : 2 * d ≤ q)
+    (hA : IsSeedIndependent (intervalT (q := q) d)
+      (A : Set (ZMod q × ZMod q)))
+    (hE : coverageMass A (intervalT (q := q) d) x +
+        B * #(intervalT (q := q) d) * (#(intervalT (q := q) d) - 1) <
+          familyEnergy A (intervalT (q := q) d) x) :
+    ∃ s ∈ intervalT d, ∃ t ∈ intervalT d, s ≠ t ∧
+      B < #(shiftedFibre A x s ∩ shiftedFibre A x t) ∧
+      #(shiftedFibre A x s ∩
+          (shiftedFibre A x s).image (fun y => y + 2 * t * (t - s))) ≤
+        #(shiftedFibre A x s \ shiftedFibre A x t) := by
+  have hq : 0 < q := (Fact.out : Nat.Prime q).pos
+  have hT0 : 0 ∉ intervalT d := zero_notMem_intervalT hdq hq
+  obtain ⟨s, hs, t, ht, hne, hB⟩ :=
+    exists_heavy_off_diag_pair (A := A) (T := intervalT d) (x := x) (B := B) hE
+  rcases intervalT_pair_diff hdq hq hs ht hne with hst | hts
+  · exact ⟨s, hs, t, ht, hne, hB,
+      shifted_close_overlap (A := A) (x := x) (s := s) (t := t) hA hT0 hst⟩
+  · refine ⟨t, ht, s, hs, hne.symm, ?_,
+      shifted_close_overlap (A := A) (x := x) (s := t) (t := s) hA hT0 hts⟩
+    simpa [inter_comm] using hB
+
 /-- An affine image of a short interval of forbidden differences packs like
 the unscaled interval packing. -/
 theorem affine_diffFree_card_le {U : Finset (ZMod q)} {c : ZMod q} {d : ℕ}

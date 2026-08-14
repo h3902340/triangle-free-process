@@ -34,9 +34,12 @@ coordinates (Lean: \texttt{exact\_cylinder\_pack\_ap}), so they do not need Weyl
 Three-quarters of maximal energy produces a $\tfrac12$-close star at any fibre
 size (Lean: \texttt{three\_quarters\_energy\_core}); a thin such star still does
 not pack elementarily.
-The leftover is intermediate energy on fibres smaller than $q/3$, thin
+The leftover is intermediate energy on fibres smaller than $3q/8$, thin
 three-quarters-energy stars that are not exact, AP-poor two-clusters, and
-medium $\tfrac12$-close stars (half-intersection does not pack them).
+medium $\tfrac12$-close stars of mean size in $[q/3,3q/8)$
+(half-intersection does not pack them).
+The window $[3q/8,q/2]$ is empty: alignment there is three-quarters energy,
+and size $q/2$ cannot be strictly aligned.
 \end{abstract}
 
 \section{Setup}
@@ -84,6 +87,12 @@ whenever $E_x>W_x+B\,|T_x|(|T_x|-1)$ are Lean
 \texttt{exists\_heavy\_off\_diag\_pair}.
 The $\Omega(|T_x|^{2})$ edge count, and therefore the star of degree
 $|T_x|/9$, remain paper-only.
+On Family~A the connection set is the interval $T=\{1,\dots,d\}$ with
+$2d\le q$, so any two distinct labels in $T_x\subseteq T$ differ by an
+element of $\pm T$ (Lean: \texttt{intervalT\_pair\_diff}).
+A heavy pair is therefore $T$-adjacent and supplies one almost-disjoint
+self-translate (Lean: \texttt{heavy\_pair\_interval\_overlap}).
+That is still one pair, not a packing.
 
 \begin{proof}
 The average intersection is $>2\overline m^{2}/q\ge 2\overline m/3$ because $\overline m\ge q/3$.
@@ -346,14 +355,28 @@ Each core of \emph{constant} density produces a close star
 Theorem~\ref{thm:medium}, which is not a size bound.
 A core of vanishing density $\delta=o(1)$ is constrained by the interval lemma only when the fibres are exactly equal to it (Theorem~\ref{thm:exactpack}).
 Three-quarters energy still produces a $\tfrac12$-close star at any size (Theorem~\ref{thm:nearmax}), but a thin $\tfrac12$-close star does not pack elementarily.
+Three-quarters of maximal energy is at most twice-random as soon as
+$\overline m\ge 3q/8$, because
+$\tfrac34|T_x|W_x\le 2W_x^{2}/q$ rearranges to $W_x\ge 3|T_x|q/8$
+(Lean: \texttt{three\_quarters\_le\_twice\_random}).
+Thus the intermediate window is empty on mean size $\ge 3q/8$:
+alignment forces three-quarters energy
+(Lean: \texttt{aligned\_implies\_three\_quarters}).
+At size $q/2$, twice-random energy equals the maximum, so there is no
+strict alignment at all
+(Lean: \texttt{no\_aligned\_of\_half\_fibres});
+equality is an exact cylinder
+(Lean: \texttt{half\_fibre\_energy\_exact\_cylinder},
+\texttt{maximal\_energy\_exact\_cylinder}).
+
 The remaining window is intermediate energy
 \[
   2W_x^{2}/q\;<\;E_x\;<\;\tfrac34|T_x|W_x
 \]
-on fibres of size in $\bigl(q^{1/3}(\log q)^{-O(1)},\,q/3\bigr)$,
+on fibres of size in $\bigl(q^{1/3}(\log q)^{-O(1)},\,3q/8\bigr)$,
 together with three-quarters-energy stars whose core is still that thin,
-medium $\tfrac12$-close stars that do not beat the random overlap,
-and AP-poor stars.
+medium $\tfrac12$-close stars of mean size in $[q/3,3q/8)$ that do not
+beat the random overlap, and AP-poor stars.
 
 Fibres of size $\le q^{1/3}/(\log q)^{10/3}$ contribute at most $q^{4/3}/(\log q)^{10/3}$ points.
 After the lift this is $O\bigl(q^{4/3}(\log q)^{-4/3}\bigr)=o(n^{2/3})$, so those fibres cannot prevent an Alon-beating bound.
@@ -375,11 +398,12 @@ Then $A$ is a union of
         star (Lemma~\ref{lem:star}); a $(2/3+)$ star with overlap below
         $|U|^{2}/q$ exists when $K$ is bounded away from $2$
         (Lemma~\ref{lem:Kstar});
-  \item a leftover consisting of intermediate-energy fibres of size in
-        $\bigl(q^{1/3}(\log q)^{-O(1)},\,q/3\bigr)$,
+  \item         a leftover consisting of intermediate-energy fibres of size in
+        $\bigl(q^{1/3}(\log q)^{-O(1)},\,3q/8\bigr)$,
         thin three-quarters-energy stars that are not exact cylinders,
         two-cluster and medium stars whose supports in $T$ are AP-poor,
-        and medium stars whose energy is only barely above twice-random.
+        and medium stars of mean size in $[q/3,3q/8)$ whose energy is
+        only barely above twice-random.
 \end{enumerate}
 Items (1)--(4) are theorems (no Weyl).
 Item (5) is a structure theorem, not a size bound.
@@ -410,11 +434,22 @@ star at any fibre size, and that half-intersection does not pack medium cores.
 \texttt{familyEnergy\_eq\_pairwise},
 \texttt{familyEnergy\_off\_diag},
 \texttt{exists\_heavy\_off\_diag\_pair},
+\texttt{maximal\_energy\_exact\_cylinder},
+\texttt{no\_aligned\_of\_half\_fibres},
+\texttt{aligned\_implies\_three\_quarters},
+\texttt{half\_fibre\_energy\_exact\_cylinder},
+\texttt{intervalT\_pair\_diff},
+\texttt{heavy\_pair\_interval\_overlap},
 \texttt{affine\_diffFree\_card\_le}, and \texttt{parabola\_codegree}
 compile with no \texttt{sorry}.
-One heavy pair and one almost-disjoint translate are Lean; the
-$\Omega(|T|^{2})$ star-degree count and the Weyl estimate remain
+One heavy pair and one almost-disjoint translate are Lean; on
+$T=\{1,\dots,d\}$ they compose.
+The $\Omega(|T|^{2})$ star-degree count and the Weyl estimate remain
 paper-only.
 Medium packing via half-intersection plus Weyl is not a theorem.
+The SOTA leftover is a genuine wall, not a bookkeeping gap:
+the intermediate window is now empty above $3q/8$, but packing a
+$\tfrac12$-close star still needs a discrepancy, an interval-dense
+neighbourhood, and Weyl.
 
 \end{document}
