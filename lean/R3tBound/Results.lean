@@ -2,6 +2,7 @@
 Copyright (c) 2026 The triangle-free-process contributors.
 Released under Apache 2.0 license as described in the file LICENSE.
 -/
+import R3tBound.Autocorr
 import R3tBound.Cleanup
 import R3tBound.Cluster
 import R3tBound.Heavy
@@ -26,8 +27,10 @@ exact cylinders, the two-thirds energy core, and the empty intermediate
 window at mean size `q/3`, and `|intervalT q d| = d` are verified.
 On a `T`-dense fibre the heavy-pair graph orients as `(max, min)`, so
 some out-neighbourhood is interval-dense (item (2) of the packing path;
-paper, using `card_intervalT`). Weyl on that affine image (item (3))
-remains paper-only.
+paper, using `card_intervalT`). A complete interval of uniformly
+below-random lags packs by the second-moment identity
+(`pack_of_second_moment`). Spread-out neighbourhoods (Weyl) and
+average-only / `K = 2` discrepancy remain paper-only.
 -/
 
 namespace R3tBound
@@ -192,5 +195,17 @@ alias interval_T_out_card := card_intervalT_out
 /-- **Oriented star bound.** Any out-neighbourhood of `s = i+1` has
 size at most `i`. -/
 alias interval_T_out_card_le := card_le_intervalT_out
+
+/-- **Weighted lag sum.** `2 ∑_{t<L} (L-t) = L(L+1)`. -/
+alias weighted_lag_sum := sum_range_weighted
+
+/-- **Second-moment packing.** Uniformly below-random lags on a complete
+interval give `|U| · (L + c + 1) ≤ (c + 1) q`. Not a packing of
+average-only or spread-out neighbourhoods. -/
+alias second_moment_pack := pack_of_second_moment
+
+/-- **Two-thirds second-moment packing.** The case `c = 2`:
+`r ≤ (2/3) |U|²/q` on every lag yields `|U|(L+3) ≤ 3q`. -/
+alias second_moment_pack_two_thirds := pack_of_second_moment_two_thirds
 
 end R3tBound

@@ -36,9 +36,10 @@ size (Lean: \texttt{two\_thirds\_energy\_core}); a thin such star still does
 not pack elementarily.
 The leftover is intermediate energy on fibres smaller than $q/3$, thin
 two-thirds-energy stars that are not exact, thin AP-poor two-clusters
-($|T_i|=o(d)$), and medium $\tfrac12$-close stars whose remaining gap
-is Weyl (items (1) and (2) of the packing path are theorems on every
-$T$-dense $x$; AP-poor support is not a separate obstruction there).
+($|T_i|=o(d)$), and medium $\tfrac12$-close stars that are either
+average-only ($K=2$) or have a spread-out neighbourhood (Weyl).
+A complete interval of uniformly below-random lags packs by the
+second-moment identity (Lemma~\ref{lem:2ndmoment}).
 The window $[q/3,q/2]$ contains no intermediate energy: alignment there
 is two-thirds of maximal energy and produces a high-multiplicity core,
 and size $q/2$ cannot be strictly aligned.
@@ -236,33 +237,86 @@ where this interval-density holds.
 
 Item (2) of the packing path is therefore a theorem on every medium
 piece that is large enough to matter.
-The remaining gap is Weyl for below-random autocorrelations along that
-affine image (item (3)).
-AP-poor support is not a separate obstruction here: Weyl needs density
-in an interval, not a long AP inside $N^+$.
+If the neighbourhood \emph{is} a complete interval and the lag bound is
+uniform and bounded away from the random overlap, the size bound is
+elementary (Lemma~\ref{lem:2ndmoment} below).
+The remaining gaps for medium stars are therefore average-only
+discrepancy ($K=2$) and spread-out neighbourhoods (Weyl).
+AP-poor support is not a separate obstruction here: both the
+second-moment pack and Weyl need density in an interval, not a long AP
+inside $N^+$.
 A leftover exact two-cluster can still be AP-poor and thin
 ($|T_i|=o(d)$), which is a different, smaller piece.
+
+\begin{lemma}[Second-moment interval packing]\label{lem:2ndmoment}
+Let $U\subset\F_q$, $a\in\F_q$, and write
+$\nu(x)=\#\{j\in\{0,\dots,L\}:x+aj\in U\}$ and
+$r(\sigma)=|U\cap(U+\sigma)|$.
+Then $\sum_x\nu=(L+1)|U|$ and
+\[
+  \sum_x\nu^{2}\;=\;(L+1)|U|+2\sum_{\delta=1}^{L}(L+1-\delta)\,r(a\delta).
+\]
+Cauchy--Schwarz gives $(\sum\nu)^{2}\le q\sum\nu^{2}$.
+If $r(a\delta)\le\frac{c}{c+1}|U|^{2}/q$ for every $\delta=1,\dots,L$,
+then
+\[
+  |U|\cdot(L+c+1)\;\le\;(c+1)q
+\]
+(Lean: \texttt{pack\_of\_second\_moment}; the window expansion is the
+standard pairing by $\delta=j-k$ and is not Lean).
+The case $c=0$ is complete miss and recovers the interval packing
+$|U|(L+1)\le q$.
+The case $c=2$ is a definite $\eta=1/3$ below-random bound
+$r\le\tfrac23|U|^{2}/q$ and gives $|U|(L+3)\le 3q$
+(Lean: \texttt{pack\_of\_second\_moment\_two\_thirds}).
+If $L=\Theta(d)=\Theta(q/\sqrt{\log q})$, then $|U|=O(\sqrt{\log q})$
+and the cylinder piece is $O(q)$.
+An unweighted average $\sum r\le(1-\eta)L|U|^{2}/q$ is not enough:
+the weight $L+1-\delta\le L$ makes the quadratic coefficient negative.
+The lag bound must be uniform (or correctly weighted) on a complete
+interval.
+\end{lemma}
+
+This packs a $K$-star with $K$ bounded away from $2$ (so $\theta>2/3$,
+uniform below-random on star edges) whose $N^+$ contains or is a
+consecutive block of length $\Theta(d)$.
+That includes the worst case for \emph{density} in
+Lemma~\ref{lem:stardense} ($N^+$ \emph{is} an interval of length
+$d/18$), provided the discrepancy is uniform.
+For $K\ge 3$ one has $\theta=5/6$ and even $\eta=1/2$.
+It does \emph{not} pack $K=2$ alignment (only average fringe;
+half-intersection is above random at density $1/3$), $K=2+o(1)$
+($\eta\to 0$; the constant $1/\eta$ blows up), or a spread-out $N^+$
+that is only $\Omega(1)$-dense in a long interval (holes can have
+large $r$). That last case is the remaining Weyl gap.
 
 \begin{theorem}[Medium aligned fibres, corrected]\label{thm:medium}
 If every fibre at $x$ has size in $[q/3,q/2]$ and $E_x>2W_x^{2}/q$, then
 Lemma~\ref{lem:star} produces a $\tfrac12$-close star.
-That star is a theorem; its size is not.
-A size bound $O(q\log q)$ would need all three of:
+That star is a theorem; its size is not, except in the complete-interval
+uniform case of Lemma~\ref{lem:2ndmoment}.
+A size bound $O(q)$ for a general medium star would need all three of:
 \begin{enumerate}
   \item a discrepancy $|U\cap(U+\sigma)|<|U|^{2}/q$: Lemma~\ref{lem:fringe}
         supplies this on average from any strict alignment at density
-        $\ge 1/3$, and Lemma~\ref{lem:Kstar} supplies it on a star when
-        $K\ge 2+\eta$;
+        $\ge 1/3$, and Lemma~\ref{lem:Kstar} supplies it uniformly on a
+        star when $K\ge 2+\eta$;
   \item a star neighbourhood that is dense in an affine interval of length
         $\Theta(d)$: Lemma~\ref{lem:stardense} supplies this on every
         $T$-dense $x$ (Lean: out-neighbours of $s=i+1$ are exactly
         $\{1,\dots,i\}$, \texttt{intervalT\_out\_mem},
         \texttt{card\_intervalT\_out});
-  \item the Weyl estimate of Proposition~4 in \texttt{structured-cases.tex},
-        now applied to a set that is actually below the random overlap.
+  \item either a complete interval of uniformly below-random lags
+        (Lemma~\ref{lem:2ndmoment}; Lean
+        \texttt{pack\_of\_second\_moment}), or the Weyl estimate of
+        Proposition~4 in \texttt{structured-cases.tex} on a spread-out
+        $\Omega(1)$-dense subset.
 \end{enumerate}
 Items (1) and (2) are theorems on $T$-dense medium fibres.
-Item (3) remains paper-only and is the remaining gap for those fibres.
+Item (3) is a theorem when $N^+$ contains a consecutive block and the
+lag bound is uniform and bounded away from random; it remains
+paper-only for spread-out neighbourhoods, and it does not apply to
+average-only / $K=2$ discrepancy.
 We do \emph{not} claim that every medium aligned piece has size $O(q\log q)$.
 \end{theorem}
 
@@ -461,10 +515,12 @@ The remaining window is intermediate energy
 \]
 on fibres of size in $\bigl(q^{1/3}(\log q)^{-O(1)},\,q/3\bigr)$,
 together with two-thirds-energy stars whose core is still that thin,
-medium $\tfrac12$-close stars whose remaining gap is Weyl on a
-$T$-dense interval-dense neighbourhood
-(Lemma~\ref{lem:stardense}),
+medium $\tfrac12$-close stars that are either average-only ($K=2$)
+or have a spread-out neighbourhood (Weyl on a $T$-dense
+interval-dense $N^+$; Lemma~\ref{lem:stardense}),
 and thin AP-poor two-clusters ($|T_i|=o(d)$).
+A complete interval of uniformly below-random lags is packed
+(Lemma~\ref{lem:2ndmoment}).
 
 Fibres of size $\le q^{1/3}/(\log q)^{10/3}$ contribute at most $q^{4/3}/(\log q)^{10/3}$ points.
 After the lift this is $O\bigl(q^{4/3}(\log q)^{-4/3}\bigr)=o(n^{2/3})$, so those fibres cannot prevent an Alon-beating bound.
@@ -492,13 +548,15 @@ Then $A$ is a union of
         $\bigl(q^{1/3}(\log q)^{-O(1)},\,q/3\bigr)$,
         thin two-thirds-energy stars that are not exact cylinders,
         thin AP-poor two-clusters ($|T_i|=o(d)$),
-        and medium $\tfrac12$-close stars whose remaining gap on
-        $T$-dense $x$ is Weyl (items (1)--(2) of
-        Theorem~\ref{thm:medium}; AP-poor support is not a separate
-        obstruction for those stars).
+        and medium $\tfrac12$-close stars that are either average-only
+        ($K=2$) or have a spread-out neighbourhood (Weyl).
+        A complete interval of uniformly below-random lags packs
+        (Lemma~\ref{lem:2ndmoment}; Lean
+        \texttt{pack\_of\_second\_moment}).
 \end{enumerate}
 Items (1)--(4) are theorems (no Weyl).
-Item (5) is a structure theorem, not a size bound.
+Item (5) is a structure theorem, not a size bound, except for the
+complete-interval uniform case of Lemma~\ref{lem:2ndmoment}.
 Item (6) is the unwritten inverse step, and now also includes the medium
 pieces previously recorded as packed.
 \end{theorem}
@@ -507,7 +565,9 @@ We still do \emph{not} claim $\alpha(G_R)=O(q\log q)$ as a finished theorem.
 We do claim that the inverse-energy gap is no longer a Freiman loss $q^{\delta}$,
 that exact cylinders pack elementarily, that two-thirds energy produces a
 star at any fibre size, that the intermediate window is empty on medium
-fibres, and that half-intersection does not pack medium cores.
+fibres, that half-intersection does not pack medium cores, and that a
+complete interval of uniformly below-random lags packs by the
+second-moment identity.
 
 \section{Lean}
 
@@ -542,6 +602,8 @@ fibres, and that half-intersection does not pack medium cores.
 \texttt{card\_intervalT},
 \texttt{intervalT\_out\_mem},
 \texttt{card\_intervalT\_out},
+\texttt{pack\_of\_second\_moment},
+\texttt{pack\_of\_second\_moment\_two\_thirds},
 \texttt{affine\_diffFree\_card\_le}, and \texttt{parabola\_codegree}
 compile with no \texttt{sorry}.
 One heavy pair and one almost-disjoint translate are Lean; on
@@ -549,13 +611,19 @@ $T=\{1,\dots,d\}$ they compose.
 The out-neighbourhood of $s=i+1$ in $T$ is exactly $\{1,\dots,i\}$
 (Lean: \texttt{intervalT\_out\_mem}), so item (2) of the packing path
 is a theorem on every $T$-dense fibre.
-The $\Omega(|T|^{2})$ star-degree count and the Weyl estimate remain
+A complete interval of uniformly below-random lags packs
+(Lean: \texttt{pack\_of\_second\_moment}); the window expansion is
 paper-only.
-Medium packing via half-intersection plus Weyl is not a theorem.
+The $\Omega(|T|^{2})$ star-degree count and Weyl on a spread-out
+neighbourhood remain paper-only.
+Medium packing via half-intersection plus Weyl is not a theorem,
+and $K=2$ / average-only discrepancy does not feed
+Lemma~\ref{lem:2ndmoment}.
 The SOTA leftover is a genuine wall, not a bookkeeping gap:
 the intermediate window is empty on every medium fibre, and a star with
 large intersections has below-random self-translates (the discrepancy).
-On $T$-dense $x$ the neighbourhood is interval-dense; packing still
-needs Weyl.
+On $T$-dense $x$ the neighbourhood is interval-dense; a complete
+interval with a uniform lag bound packs, a spread-out neighbourhood
+still needs Weyl.
 
 \end{document}

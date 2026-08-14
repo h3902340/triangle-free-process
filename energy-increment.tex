@@ -270,7 +270,7 @@ A clique of pairwise heavily overlapping APs therefore shares a common differenc
 \begin{conjecture}[Inverse energy, intermediate window]\label{lem:inverse}
 If $2W_x^{2}/q<E_x<\tfrac23|T_x|W_x$ and every fibre at $x$ has size in $\bigl(q^{1/3}(\log q)^{-O(1)},q/3\bigr)$
 (or the fibre has two-thirds energy but is only $\tfrac12$-close to a thin core,
-or is a medium $\tfrac12$-close star whose remaining gap is Weyl,
+or is a medium $\tfrac12$-close star that is average-only or spread-out,
 or is a thin AP-poor two-cluster),
 then the piece still contributes $O(q\log q)$ points after the cylinder constraint.
 \end{conjecture}
@@ -279,6 +279,9 @@ A single common core is not forced (two clusters of size $q/8$ already exceed tw
 Medium fibres of size at least $q/3$ \emph{do} produce a $\tfrac12$-close star:
 see Lemma~5 of \texttt{inverse-energy.tex}.
 That star is not packed by half-intersection plus Weyl.
+A complete interval of uniformly below-random lags does pack
+(\texttt{inverse-energy.tex}, Lemma~2ndmoment; Lean
+\texttt{pack\_of\_second\_moment}).
 Exact cylinders, including those whose support is an arithmetic progression
 of any common difference, pack by the interval lemma, without Weyl
 (Lean: \texttt{exact\_cylinder\_pack\_ap}).
@@ -312,16 +315,19 @@ Then $A$ is a union of
         $\bigl(q^{1/3}(\log q)^{-O(1)},q/3\bigr)$,
         including thin two-thirds-energy stars that are not exact,
         thin AP-poor two-clusters ($|T_i|=o(d)$),
-        and medium $\tfrac12$-close stars whose remaining gap on
-        $T$-dense $x$ is Weyl (items (1)--(2) of the packing path are
-        theorems there). Medium aligned fibres have two-thirds energy
+        and medium $\tfrac12$-close stars that are either average-only
+        ($K=2$) or have a spread-out neighbourhood (Weyl).
+        A complete interval of uniformly below-random lags packs
+        (\texttt{inverse-energy.tex}, Lemma~2ndmoment).
+        Medium aligned fibres have two-thirds energy
         and a high-multiplicity core; that is structure, not a size
-        bound.
+        bound, except in that complete-interval uniform case.
 \end{enumerate}
 Items (1)--(4) are theorems (no Weyl).
-Item (5) is a structure theorem, not a size bound: half-intersection does not
+Item (5) is a structure theorem, not a size bound, except for a complete
+interval of uniformly below-random lags: half-intersection does not
 beat the random overlap on non-heavy cores, so the horizontal-packing Weyl
-estimate does not apply.
+estimate does not apply to $K=2$ stars.
 Item (6) is Conjecture~\ref{lem:inverse}, now also including medium pieces
 previously recorded as packed.
 \end{theorem}
