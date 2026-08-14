@@ -141,6 +141,32 @@ lemma mem_highMultiplicityCore {A : Finset (ZMod q × ZMod q)}
       #T ≤ 2 * multiplicity (shiftedFibre A x) T y := by
   simp [highMultiplicityCore]
 
+/-- The high-multiplicity core has size at most `4E / #T²`. -/
+lemma high_multiplicity_core_card (A : Finset (ZMod q × ZMod q))
+    (T : Finset (ZMod q)) (x : ZMod q) :
+    #(highMultiplicityCore A T x) * #T ^ 2 ≤ 4 * familyEnergy A T x := by
+  classical
+  set μ := multiplicity (shiftedFibre A x) T
+  set U := highMultiplicityCore A T x
+  have hpt : ∀ y ∈ U, #T ^ 2 ≤ 4 * μ y ^ 2 := by
+    intro y hy
+    have hμ : #T ≤ 2 * μ y := (mem_highMultiplicityCore (A := A) (T := T)
+      (x := x) (y := y)).1 hy
+    have := Nat.mul_le_mul hμ hμ
+    convert this using 1 <;> ring
+  have hsum : #U * #T ^ 2 ≤ 4 * ∑ y ∈ U, μ y ^ 2 := by
+    calc
+      #U * #T ^ 2 = ∑ y ∈ U, #T ^ 2 := by simp [sum_const, smul_eq_mul]
+      _ ≤ ∑ y ∈ U, 4 * μ y ^ 2 := sum_le_sum hpt
+      _ = 4 * ∑ y ∈ U, μ y ^ 2 := by simp [mul_sum]
+  have hU : ∑ y ∈ U, μ y ^ 2 ≤ familyEnergy A T x := by
+    have hsplit :=
+      sum_add_sum_compl (s := U) (f := fun y => μ y ^ 2)
+    have : familyEnergy A T x = ∑ y ∈ U, μ y ^ 2 + ∑ y ∈ Uᶜ, μ y ^ 2 := by
+      simpa [familyEnergy, μ] using hsplit.symm
+    omega
+  exact hsum.trans (Nat.mul_le_mul_left 4 hU)
+
 lemma energy_cs (A : Finset (ZMod q × ZMod q)) (T : Finset (ZMod q)) (x : ZMod q) :
     (coverageMass A T x) ^ 2 ≤
       #(T.biUnion (shiftedFibre A x)) * familyEnergy A T x := by

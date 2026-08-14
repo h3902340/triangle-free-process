@@ -26,9 +26,12 @@ Pinned toolchain: Lean 4.33.0 + mathlib `v4.33.0`. There are no `sorry`s.
 | Affine image of `{1,…,d}` packs like the interval | `affine_interval_pack` |
 | Three-quarters energy sits on multiplicity `#T/2` | `three_quarters_energy` |
 | Exact cylinder over a `T`-interval packs | `exact_cylinder_interval_pack` |
+| Exact cylinder over an AP of `T`-steps packs | `exact_cylinder_ap_pack` |
+| Half-intersection for `3/4`-dense subsets | `half_intersection_bound` |
+| High-multiplicity core has size `≤ 4E/#T²` | `high_multiplicity_core_size` |
 
 Not formalized (still paper-only / conjectural): medium-fibre star
-clustering, half-intersection, the Weyl estimate for approximate cylinders,
+clustering, the Weyl estimate for approximate cylinders,
 the intermediate-energy window, medium-star incidences, and the SOTA
 independence-number bound for \(A_q\). See [`inverse-energy.tex`](../inverse-energy.tex).
 

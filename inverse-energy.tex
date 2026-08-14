@@ -26,8 +26,9 @@ The remaining inverse step in \texttt{energy-increment.tex} is a clustering prob
 A single common core is not always forced (two equal clusters of size $q/8$ already exceed twice-random energy).
 What \emph{is} forced, when every fibre has size at least $q/3$, is a star of $\Omega(|T_x|)$ fibres that are pairwise $1/2$-close to a common $U$.
 Independence then makes $U$ miss a positive fraction of $\Omega(d)$ of its own translates, and the existing Weyl estimate bounds $|U|$ by $O(\log q)$.
-Exact cylinders pack by the existing interval lemma after an affine change of
-coordinates (Lean: \texttt{exact\_cylinder\_pack}), so they do not need Weyl.
+Exact cylinders, including AP-support cylinders of any common difference,
+pack by the existing interval lemma after an affine change of
+coordinates (Lean: \texttt{exact\_cylinder\_pack\_ap}), so they do not need Weyl.
 Three-quarters of maximal energy produces a $\tfrac12$-close star at any fibre
 size (Lean: \texttt{three\_quarters\_energy\_core}); a thin such star still does
 not pack elementarily.
@@ -130,15 +131,25 @@ The star occupies $O(d)$ $x$-coordinates, so the piece has size $O(d\log q)=O(q\
 \end{proof}
 
 The $3/4$-density in Lemma~\ref{lem:half} is arranged by passing from the $1/2$-close star of Lemma~\ref{lem:star} to the popular subset $U'=\{y\in U:\mu_{\mathrm{star}}(y)\ge|T_{\mathrm{star}}|/2\}$, which is $3/4$-dense in a positive-density subset of $U$ after deleting an $o(|U|)$ fringe (the same popular-core split as below).
+Lemma~\ref{lem:half} is Lean \texttt{half\_intersection}.
 
 \section{Exact cylinders pack without Weyl}
 
 If $A_t=U$ for every $t\in T_x$, independence is complete disjointness
 $U\cap(U+2t(t-s))=\emptyset$ (Lean: \texttt{exact\_cylinder\_shift}).
 Theorem~\ref{thm:exactpack} (Lean: \texttt{exact\_cylinder\_pack}) then gives
-$|U|\le q/(d'+1)=O(\sqrt{\log q})$.
+$|U|\le q/(d'+1)=O(\sqrt{\log q})$ when the support contains $\{t,t+1,\dots,t+d'\}$.
+The same packing holds for any common difference (Theorem~\ref{thm:exactpackap}).
 The cylinder occupies $O(d)$ $x$-coordinates, so the piece has size $O(q)$.
 Weyl is not used.
+
+The two-cluster example of Lemma~\ref{lem:twoclust} therefore packs as soon as
+each colour class contains a long arithmetic progression:
+each block is an exact AP-cylinder of size $O(q)$.
+A leftover two-cluster must have AP-poor supports in $T$
+(Behrend-type subsets of $\{1,\dots,d\}$ are large enough to keep
+$E_x$ above twice-random).
+We do not claim those AP-poor clusters are packed.
 
 \section{Three-quarters energy, any fibre size}
 
@@ -232,6 +243,24 @@ with $-2t\ne 0$.
 Lean \texttt{exact\_cylinder\_pack} applies \texttt{affine\_diffFree\_card\_le}.
 \end{proof}
 
+\begin{theorem}[AP-support exact cylinders]\label{thm:exactpackap}
+If $A_{t+ak}=U$ for every $k\in\{0,\dots,d'\}$, $t\ne 0$, $a\ne 0$,
+$\{a,2a,\dots,d'a\}\subset T$, and $q$ is an odd prime, then
+$|U|\cdot(d'+1)\le q$.
+\end{theorem}
+
+\begin{proof}
+The forbidden differences are $(-2ta)\cdot\{1,\dots,d'\}$ with $-2ta\ne 0$.
+Lean \texttt{exact\_cylinder\_pack\_ap}.
+The piece over the progression has size at most $q$.
+\end{proof}
+
+The high-multiplicity core of a three-quarters-energy fibre has size
+$O(\overline m)$:
+$|U|\cdot|T_x|^{2}\le 4E_x\le 4|T_x|W_x$, hence $|U|\le 4\overline m$
+(Lean: \texttt{high\_multiplicity\_core\_card}).
+A thin fibre cannot hide a large core.
+
 \section{Why thin cores are a different problem}
 
 Lemma~\ref{lem:half} concludes $|U\cap(U+\sigma)|\le|U|/2$.
@@ -275,14 +304,16 @@ Then $A$ is a union of
   \item a heavy-fibre piece of size $O(q\sqrt{\log q})$;
   \item a $T$-sparse piece of size $O(q\sqrt{\log q})$;
   \item a strictly-mixing $T$-dense piece of size $O(q\sqrt{\log q})$;
-  \item exact cylinders, each of size $O(q)$
-        (interval packing; Lean \texttt{exact\_cylinder\_pack}; no Weyl);
+  \item exact cylinders, including those whose support is an arithmetic
+        progression of any common difference, each of size $O(q)$
+        (interval packing; Lean \texttt{exact\_cylinder\_pack\_ap}; no Weyl);
   \item medium ($|B_x|\ge q/3$) approximate cylinders, each of size $O(q\log q)$
         (half-intersection plus the same Weyl input as horizontal packings),
         including every three-quarters-energy star whose core has size $\ge q/3$;
   \item a leftover of intermediate-energy fibres of size in
         $\bigl(q^{1/3}(\log q)^{-O(1)},\,q/3\bigr)$,
-        including thin three-quarters-energy stars that are not exact cylinders.
+        including thin three-quarters-energy stars that are not exact cylinders
+        and two-cluster configurations whose supports in $T$ are AP-poor.
 \end{enumerate}
 Items (1)--(5) are theorems.
 Item (6) is the only unwritten inverse step.
@@ -299,11 +330,14 @@ star at any fibre size, and that every medium aligned piece is under control.
 \texttt{energy\_le\_card\_mul\_mass},
 \texttt{popular\_core\_energy},
 \texttt{three\_quarters\_energy\_core},
+\texttt{high\_multiplicity\_core\_card},
 \texttt{shifted\_independent}, \texttt{exact\_cylinder\_shift},
 \texttt{exact\_cylinder\_pack},
+\texttt{exact\_cylinder\_pack\_ap},
+\texttt{half\_intersection},
 \texttt{close\_sets\_almost\_disjoint\_translates},
 \texttt{affine\_diffFree\_card\_le}, and \texttt{parabola\_codegree}
 compile with no \texttt{sorry}.
-The star-degree count, half-intersection, and the Weyl estimate remain paper-only.
+The star-degree count and the Weyl estimate remain paper-only.
 
 \end{document}

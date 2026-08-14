@@ -16,10 +16,10 @@ import R3tBound.TightInterval
 
 These are the lemmas from the paper that have complete Lean proofs.
 The SOTA independence-number bound for `A_q` is *not* claimed here.
-Medium-fibre clustering, half-intersection, and the Weyl estimate for
-approximate cylinders remain paper-only (`inverse-energy.tex`). Popular-core
-energy, three-quarters energy, affine interval packing, and exact-cylinder
-packing are verified.
+Medium-fibre clustering and the Weyl estimate for approximate cylinders
+remain paper-only (`inverse-energy.tex`). Popular-core energy, three-quarters
+energy, half-intersection, affine interval packing, and exact-cylinder
+packing (including AP supports) are verified.
 -/
 
 namespace R3tBound
@@ -80,5 +80,16 @@ alias three_quarters_energy := three_quarters_energy_core
 /-- **Exact cylinder packing.** Equal fibres along an interval of `T`-steps
 have size at most `q/(d'+1)`. -/
 alias exact_cylinder_interval_pack := exact_cylinder_pack
+
+/-- **AP-support exact cylinders.** Equal fibres along an arithmetic
+progression of `T`-steps pack the same way. -/
+alias exact_cylinder_ap_pack := exact_cylinder_pack_ap
+
+/-- **Half-intersection.** Two `3/4`-dense subsets that miss a shift force
+`|U ∩ (U+σ)| ≤ |U|/2`. -/
+alias half_intersection_bound := half_intersection
+
+/-- **High-multiplicity core size.** The core has size at most `4E / #T²`. -/
+alias high_multiplicity_core_size := high_multiplicity_core_card
 
 end R3tBound
