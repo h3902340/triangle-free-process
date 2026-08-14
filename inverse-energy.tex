@@ -34,8 +34,9 @@ coordinates (Lean: \texttt{exact\_cylinder\_pack\_ap}), so they do not need Weyl
 Three-quarters of maximal energy produces a $\tfrac12$-close star at any fibre
 size (Lean: \texttt{three\_quarters\_energy\_core}); a thin such star still does
 not pack elementarily.
-The leftover is intermediate energy on fibres smaller than $q/3$, together with
-those thin three-quarters-energy stars that are not exact cylinders.
+The leftover is intermediate energy on fibres smaller than $q/3$, thin
+three-quarters-energy stars that are not exact, AP-poor two-clusters, and
+medium $\tfrac12$-close stars (half-intersection does not pack them).
 \end{abstract}
 
 \section{Setup}
@@ -75,6 +76,14 @@ Suppose $\min_t m_t\ge q/3$ and $E_x>2W_x^{2}/q$.
 Let $G$ be the graph on $T_x$ with an edge $t\sim t'$ whenever $|A_t\cap A_{t'}|\ge \overline m/2$.
 Then $G$ has at least $|T_x|^{2}/9$ edges, hence a vertex of degree at least $|T_x|/9$.
 \end{lemma}
+
+The identity $E_x=\sum_{t,t'}|A_t\cap A_{t'}|$ and the existence of
+\emph{one} off-diagonal pair with intersection larger than a threshold $B$
+whenever $E_x>W_x+B\,|T_x|(|T_x|-1)$ are Lean
+\texttt{familyEnergy\_eq\_pairwise} and
+\texttt{exists\_heavy\_off\_diag\_pair}.
+The $\Omega(|T_x|^{2})$ edge count, and therefore the star of degree
+$|T_x|/9$, remain paper-only.
 
 \begin{proof}
 The average intersection is $>2\overline m^{2}/q\ge 2\overline m/3$ because $\overline m\ge q/3$.
@@ -249,6 +258,8 @@ $\Omega(|T_x|)$-star of pairwise $\tfrac12$-close sets.
 \begin{lemma}[Close fibres almost miss their translate]\label{lem:close}
 If $A\cap(B+\sigma)=\emptyset$, then $|A\cap(A+\sigma)|\le|A\setminus B|$
 (Lean: \texttt{close\_sets\_almost\_disjoint\_translates}).
+Independence of neighbouring fibres specialises this to one self-translate
+(Lean: \texttt{shifted\_close\_overlap}); that is one pair, not a packing.
 In particular, if $A$ and $B$ are $\varepsilon$-close of equal size, $|A\cap(A+\sigma)|\le\varepsilon|A|$.
 \end{lemma}
 
@@ -395,9 +406,15 @@ star at any fibre size, and that half-intersection does not pack medium cores.
 \texttt{random\_overlap\_le\_half},
 \texttt{almost\_mixing\_fibre\_card},
 \texttt{close\_sets\_almost\_disjoint\_translates},
+\texttt{shifted\_close\_overlap},
+\texttt{familyEnergy\_eq\_pairwise},
+\texttt{familyEnergy\_off\_diag},
+\texttt{exists\_heavy\_off\_diag\_pair},
 \texttt{affine\_diffFree\_card\_le}, and \texttt{parabola\_codegree}
 compile with no \texttt{sorry}.
-The star-degree count and the Weyl estimate remain paper-only.
+One heavy pair and one almost-disjoint translate are Lean; the
+$\Omega(|T|^{2})$ star-degree count and the Weyl estimate remain
+paper-only.
 Medium packing via half-intersection plus Weyl is not a theorem.
 
 \end{document}

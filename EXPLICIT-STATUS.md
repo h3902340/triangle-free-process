@@ -26,6 +26,9 @@ These statements compile in Lean 4.33 + mathlib with no `sorry`:
 - An exact cylinder over an interval of `T`-steps has size at most `q/(d'+1)`.
 - An exact cylinder over an arithmetic progression of `T`-steps packs the same way.
 - A nonzero difference has at most one unsigned-parabola representation.
+- Energy equals the sum of pairwise shifted-fibre intersections; off-diagonal energy is the remainder after neighbouring mass.
+- Energy above \(W + B\cdot|T|\cdot(|T|-1)\) forces one off-diagonal intersection larger than \(B\). This is not an \(\Omega(|T|^2)\) star.
+- If \(A\) misses \(B+\sigma\), then \(|A\cap(A+\sigma)|\le|A\setminus B|\). Neighbouring independence therefore bounds one self-translate by the fringe.
 
 The SOTA independence-number bound for $A_q$ is **not** Lean-verified.
 

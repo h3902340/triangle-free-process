@@ -9,8 +9,10 @@ import R3tBound.TightInterval
 /-!
 # Coverage, energy, and mixing
 
-Energy is defined as the second moment of fibre multiplicity. A strictly
-mixing fibre is empty once the neighbouring mass is at least `q`.
+Energy is defined as the second moment of fibre multiplicity, equivalently
+the sum of pairwise shifted-fibre intersections. A strictly mixing fibre
+is empty once the neighbouring mass is at least `q`. High energy forces
+a heavy pair; an `Ω(|T|²)` star of such pairs remains paper-only.
 -/
 
 namespace R3tBound
@@ -129,6 +131,140 @@ lemma energy_le_card_mul_mass (A : Finset (ZMod q × ZMod q)) (T : Finset (ZMod 
         simpa [pow_two, mul_comm] using Nat.mul_le_mul_left (μ y) (hμ y)
     _ = #T * ∑ y : ZMod q, μ y := by simp [mul_sum]
     _ = #T * coverageMass A T x := by simp [coverageMass, μ]
+
+/-- `1` if `y` lies in `s`, else `0`. Written as a `ℕ`-valued function so
+the `if` cannot be parsed as a `Prop`-valued term. -/
+def memOne (s : Finset (ZMod q)) (y : ZMod q) : ℕ :=
+  if y ∈ s then 1 else 0
+
+lemma memOne_mul (s t : Finset (ZMod q)) (y : ZMod q) :
+    memOne s y * memOne t y = memOne (s ∩ t) y := by
+  unfold memOne
+  by_cases hs : y ∈ s <;> by_cases ht : y ∈ t <;> simp [hs, ht]
+
+lemma sum_memOne_card (S : Finset (ZMod q)) :
+    ∑ y ∈ univ, memOne S y = #S := by
+  unfold memOne
+  have hfilter : univ.filter (fun y => y ∈ S) = S := by
+    ext y
+    simp
+  rw [sum_ite, hfilter, sum_const, smul_eq_mul, mul_one, sum_const_zero, add_zero]
+
+/-- Energy is the sum of pairwise shifted-fibre intersections. -/
+lemma familyEnergy_eq_pairwise (A : Finset (ZMod q × ZMod q))
+    (T : Finset (ZMod q)) (x : ZMod q) :
+    familyEnergy A T x =
+      ∑ t ∈ T, ∑ t' ∈ T,
+        #(shiftedFibre A x t ∩ shiftedFibre A x t') := by
+  classical
+  set F := shiftedFibre A x
+  set μ := multiplicity F T
+  have hμ : ∀ y, μ y = ∑ t ∈ T, memOne (F t) y := fun y => by
+    simp [μ, multiplicity, memOne, sum_boole]
+  have hsq : ∀ y, μ y ^ 2 =
+      ∑ t ∈ T, ∑ t' ∈ T, memOne (F t ∩ F t') y := fun y => by
+    have hmul :=
+      sum_mul_sum (s := T) (t := T)
+        (f := fun t => memOne (F t) y)
+        (g := fun t' => memOne (F t') y)
+    have : μ y * μ y =
+        ∑ t ∈ T, ∑ t' ∈ T, memOne (F t) y * memOne (F t') y := by
+      simpa [hμ] using hmul
+    rw [pow_two]
+    convert this using 1
+    refine sum_congr rfl fun t _ => sum_congr rfl fun t' _ =>
+      (memOne_mul (F t) (F t') y).symm
+  calc
+    familyEnergy A T x = ∑ y : ZMod q, μ y ^ 2 := rfl
+    _ = ∑ y : ZMod q, ∑ t ∈ T, ∑ t' ∈ T, memOne (F t ∩ F t') y :=
+        sum_congr rfl fun y _ => hsq y
+    _ = ∑ t ∈ T, ∑ t' ∈ T, ∑ y : ZMod q, memOne (F t ∩ F t') y := by
+        rw [sum_comm]
+        refine sum_congr rfl fun t _ => sum_comm
+    _ = ∑ t ∈ T, ∑ t' ∈ T, #(F t ∩ F t') := by
+        refine sum_congr rfl fun t _ => sum_congr rfl fun t' _ => ?_
+        simpa using sum_memOne_card (F t ∩ F t')
+
+/-- Off-diagonal energy is total energy minus neighbouring mass. -/
+lemma familyEnergy_off_diag (A : Finset (ZMod q × ZMod q))
+    (T : Finset (ZMod q)) (x : ZMod q) :
+    familyEnergy A T x =
+      coverageMass A T x +
+        ∑ t ∈ T, ∑ t' ∈ T.filter (· ≠ t),
+          #(shiftedFibre A x t ∩ shiftedFibre A x t') := by
+  classical
+  set F := shiftedFibre A x
+  have hsplit : ∀ t ∈ T,
+      ∑ t' ∈ T, #(F t ∩ F t') =
+        #(F t) + ∑ t' ∈ T.filter (· ≠ t), #(F t ∩ F t') := fun t ht => by
+    have hpart :=
+      (sum_filter_add_sum_filter_not T (· = t) (fun t' => #(F t ∩ F t'))).symm
+    have hsing : T.filter (· = t) = {t} := by
+      ext t'
+      constructor
+      · intro ht'
+        exact mem_singleton.2 (mem_filter.1 ht').2
+      · intro ht'
+        exact mem_filter.2 ⟨(mem_singleton.1 ht') ▸ ht, mem_singleton.1 ht'⟩
+    have hinter : F t ∩ F t = F t := inter_eq_left.mpr fun _ hy => hy
+    calc
+      ∑ t' ∈ T, #(F t ∩ F t')
+          = ∑ t' ∈ T.filter (· = t), #(F t ∩ F t') +
+              ∑ t' ∈ T.filter (· ≠ t), #(F t ∩ F t') := hpart
+      _ = #(F t) + ∑ t' ∈ T.filter (· ≠ t), #(F t ∩ F t') := by
+            simp [hsing, hinter]
+  calc
+    familyEnergy A T x
+        = ∑ t ∈ T, ∑ t' ∈ T, #(F t ∩ F t') := familyEnergy_eq_pairwise A T x
+    _ = ∑ t ∈ T, (#(F t) + ∑ t' ∈ T.filter (· ≠ t), #(F t ∩ F t')) :=
+          sum_congr rfl hsplit
+    _ = (∑ t ∈ T, #(F t)) +
+          ∑ t ∈ T, ∑ t' ∈ T.filter (· ≠ t), #(F t ∩ F t') := by
+        simp [sum_add_distrib]
+    _ = coverageMass A T x +
+          ∑ t ∈ T, ∑ t' ∈ T.filter (· ≠ t), #(F t ∩ F t') := by
+        rw [coverageMass_eq_sum]
+
+/-- If every off-diagonal intersection is at most `B`, energy is at most
+`W + B · #T · (#T-1)`. Contrapositively, larger energy forces a heavy pair. -/
+lemma exists_heavy_off_diag_pair {B : ℕ}
+    (A : Finset (ZMod q × ZMod q)) (T : Finset (ZMod q)) (x : ZMod q)
+    (hE : coverageMass A T x + B * #T * (#T - 1) < familyEnergy A T x) :
+    ∃ t ∈ T, ∃ t' ∈ T, t ≠ t' ∧
+      B < #(shiftedFibre A x t ∩ shiftedFibre A x t') := by
+  classical
+  set F := shiftedFibre A x
+  by_contra h
+  simp only [not_exists, not_and, not_lt] at h
+  have hle : ∀ t ∈ T, ∀ t' ∈ T, t ≠ t' →
+      #(F t ∩ F t') ≤ B := fun t ht t' ht' hne => h t ht t' ht' hne
+  have hsum :
+      ∑ t ∈ T, ∑ t' ∈ T.filter (· ≠ t), #(F t ∩ F t') ≤
+        B * #T * (#T - 1) := by
+    have hterm : ∀ t ∈ T,
+        ∑ t' ∈ T.filter (· ≠ t), #(F t ∩ F t') ≤ B * (#T - 1) := fun t ht => by
+      have hcard : #(T.filter (· ≠ t)) ≤ #T - 1 := by
+        have : T.filter (· ≠ t) ⊆ T.erase t := by
+          intro t' ht'
+          exact mem_erase.2 ⟨(mem_filter.1 ht').2, (mem_filter.1 ht').1⟩
+        have : #(T.filter (· ≠ t)) ≤ #(T.erase t) := card_le_card this
+        simpa [card_erase_of_mem ht] using this
+      have hpt : ∀ t' ∈ T.filter (· ≠ t), #(F t ∩ F t') ≤ B := fun t' ht' =>
+        hle t ht t' (mem_filter.1 ht').1 (mem_filter.1 ht').2.symm
+      calc
+        ∑ t' ∈ T.filter (· ≠ t), #(F t ∩ F t')
+            ≤ ∑ t' ∈ T.filter (· ≠ t), B := sum_le_sum hpt
+        _ = B * #(T.filter (· ≠ t)) := by simp [sum_const, smul_eq_mul, mul_comm]
+        _ ≤ B * (#T - 1) := Nat.mul_le_mul_left B hcard
+    calc
+      ∑ t ∈ T, ∑ t' ∈ T.filter (· ≠ t), #(F t ∩ F t')
+          ≤ ∑ t ∈ T, B * (#T - 1) := sum_le_sum hterm
+      _ = B * (#T - 1) * #T := by simp [sum_const, smul_eq_mul, mul_comm, mul_left_comm]
+      _ = B * #T * (#T - 1) := by ring
+  have : familyEnergy A T x ≤ coverageMass A T x + B * #T * (#T - 1) := by
+    rw [familyEnergy_off_diag]
+    exact Nat.add_le_add_left hsum _
+  exact Nat.not_lt.2 this hE
 
 /-- Points covered by at least half the neighbouring fibres. -/
 def highMultiplicityCore (A : Finset (ZMod q × ZMod q)) (T : Finset (ZMod q))

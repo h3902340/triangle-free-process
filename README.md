@@ -59,7 +59,9 @@ The lemmas that already have complete elementary proofs are formalized in
 [`lean/`](lean/README.md) (Lean 4.33 + mathlib, no `sorry`). This includes the
 fibre constraint, the corrected tight 4-interval (\(B=B+6\), hence empty or
 the whole field for \(q>3\)), heavy-fibre exclusion, cycle packing, the
-parabola Sidon property, the lift lemma, and open-edge cleanup monotonicity.
+parabola Sidon property, the lift lemma, open-edge cleanup monotonicity,
+the pairwise energy identity, and one heavy off-diagonal pair (not an
+\(\Omega(|T|^2)\) star).
 
 It does **not** verify the conjectural SOTA bound for Family A.
 

@@ -31,11 +31,18 @@ Pinned toolchain: Lean 4.33.0 + mathlib `v4.33.0`. There are no `sorry`s.
 | High-multiplicity core has size `≤ 4E/#T²` | `high_multiplicity_core_size` |
 | Almost-mixing fibre bound `q(1-1/K)` | `almost_mixing_fibre` |
 | Random overlap `≤ |U|/2` when `|U|≤q/2` | `random_overlap_at_most_half` |
+| Energy is the sum of pairwise intersections | `family_energy_pairwise` |
+| Energy is mass plus off-diagonal intersections | `family_energy_off_diag` |
+| Energy above `W+B·#T·(#T-1)` forces one heavy pair | `exists_heavy_pair` |
+| `A` misses `B+σ` \(\Rightarrow\) `|A∩(A+σ)|≤|A\B|` | `close_fibres_almost_disjoint` |
+| Neighbouring independence bounds one self-translate | `shifted_close_pair` |
 
 Not formalized (still paper-only / conjectural): the Weyl estimate for
-horizontal packings, the intermediate-energy window, medium-star incidences,
-and the SOTA independence-number bound for \(A_q\).
+horizontal packings, the \(\Omega(|T|^2)\) star-degree count, the
+intermediate-energy window, medium-star incidences, and the SOTA
+independence-number bound for \(A_q\).
 Medium-fibre clustering is a structure theorem, not a size bound.
+One heavy pair plus one almost-disjoint translate is not a packing.
 See [`inverse-energy.tex`](../inverse-energy.tex).
 
 ## Build

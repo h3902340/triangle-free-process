@@ -175,6 +175,18 @@ lemma close_sets_almost_disjoint_translates
     rw [himage, card_image_add]
   exact (card_le_card hsub).trans_eq hcard
 
+/-- Independence of neighbouring fibres bounds the self-translate overlap
+by the fringe. This is one pair, not a packing of the star. -/
+lemma shifted_close_overlap {T : Finset (ZMod q)}
+    {A : Finset (ZMod q × ZMod q)} {x s t : ZMod q}
+    (hA : IsSeedIndependent T (A : Set (ZMod q × ZMod q)))
+    (hT0 : 0 ∉ T) (hdiff : s - t ∈ T) :
+    #(shiftedFibre A x s ∩
+        (shiftedFibre A x s).image (fun y => y + 2 * t * (t - s))) ≤
+      #(shiftedFibre A x s \ shiftedFibre A x t) :=
+  close_sets_almost_disjoint_translates
+    (shifted_independent (A := A) (x := x) (s := s) (t := t) hA hT0 hdiff)
+
 /-- An affine image of a short interval of forbidden differences packs like
 the unscaled interval packing. -/
 theorem affine_diffFree_card_le {U : Finset (ZMod q)} {c : ZMod q} {d : ℕ}

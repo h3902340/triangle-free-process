@@ -20,8 +20,10 @@ Medium-fibre clustering is a structure theorem, not a size bound:
 half-intersection does not beat the random overlap on non-heavy cores.
 The Weyl estimate for approximate cylinders remains paper-only.
 Popular-core energy, three-quarters energy, half-intersection, almost-mixing,
-affine interval packing, and exact-cylinder packing (including AP supports)
-are verified.
+affine interval packing, exact-cylinder packing (including AP supports),
+the pairwise energy identity, and one heavy off-diagonal pair are verified.
+One independent pair has an almost-disjoint self-translate; that is not a
+packing of the star.
 -/
 
 namespace R3tBound
@@ -100,5 +102,24 @@ alias almost_mixing_fibre := almost_mixing_fibre_card
 
 /-- **Random overlap.** If `|U| ≤ q/2` then `|U|²/q ≤ |U|/2`. -/
 alias random_overlap_at_most_half := random_overlap_le_half
+
+/-- **Pairwise energy.** Energy equals the sum of pairwise shifted-fibre
+intersections. -/
+alias family_energy_pairwise := familyEnergy_eq_pairwise
+
+/-- **Off-diagonal energy.** Energy is neighbouring mass plus off-diagonal
+intersections. -/
+alias family_energy_off_diag := familyEnergy_off_diag
+
+/-- **One heavy pair.** Energy above `W + B·#T·(#T-1)` forces an
+off-diagonal intersection larger than `B`. Not an `Ω(|T|²)` star count. -/
+alias exists_heavy_pair := exists_heavy_off_diag_pair
+
+/-- **Close fibres.** If `A` misses `B+σ` then `|A ∩ (A+σ)| ≤ |A \ B|`. -/
+alias close_fibres_almost_disjoint := close_sets_almost_disjoint_translates
+
+/-- **Shifted close overlap.** Independence of neighbouring fibres bounds
+the self-translate by the fringe. One pair, not a packing. -/
+alias shifted_close_pair := shifted_close_overlap
 
 end R3tBound
