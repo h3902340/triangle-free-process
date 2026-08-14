@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 -/
 import Mathlib.Tactic.Abel
 import Mathlib.Tactic.Ring
+import R3tBound.Heavy
 import R3tBound.Mixing
 
 /-!
@@ -52,5 +53,92 @@ lemma shifted_independent {T : Finset (ZMod q)}
     (mem_signedParabola (T := T) (p := (s - t, (s - t) ^ 2))).2
       (Or.inl ⟨s - t, hdiff, rfl⟩)
   exact hA hs ht hne (by simpa [hdiff'] using hmem)
+
+lemma card_inter_add_card_inter_le {α : Type*} [DecidableEq α]
+    {A B V : Finset α} (h : Disjoint A B) :
+    #(A ∩ V) + #(B ∩ V) ≤ #V := by
+  have hdisj : Disjoint (A ∩ V) (B ∩ V) :=
+    h.mono inf_le_left inf_le_left
+  have hsub : A ∩ V ∪ B ∩ V ⊆ V := by
+    intro x hx
+    rcases mem_union.1 hx with hx | hx
+    · exact (mem_inter.1 hx).2
+    · exact (mem_inter.1 hx).2
+  calc
+    #(A ∩ V) + #(B ∩ V) = #(A ∩ V ∪ B ∩ V) := (card_union_of_disjoint hdisj).symm
+    _ ≤ #V := card_le_card hsub
+
+/-- Exact equal fibres forbid the quadratic translate. -/
+lemma exact_cylinder_shift {T : Finset (ZMod q)}
+    {A : Finset (ZMod q × ZMod q)} {x s t : ZMod q} {U : Finset (ZMod q)}
+    (hA : IsSeedIndependent T (A : Set (ZMod q × ZMod q)))
+    (hT0 : 0 ∉ T) (hdiff : s - t ∈ T)
+    (hs : shiftedFibre A x s = U) (ht : shiftedFibre A x t = U) :
+    Disjoint U (U.image (fun y => y + 2 * t * (t - s))) := by
+  simpa [hs, ht] using shifted_independent (A := A) (x := x) (s := s) (t := t) hA hT0 hdiff
+
+/-- Close fibres that miss a shift have almost-disjoint self-translates. -/
+lemma close_sets_almost_disjoint_translates
+    {A B : Finset (ZMod q)} {σ : ZMod q}
+    (hdisj : Disjoint A (B.image (fun y => y + σ))) :
+    #(A ∩ A.image (fun y => y + σ)) ≤ #(A \ B) := by
+  classical
+  have hsub : A ∩ A.image (fun y => y + σ) ⊆
+      (A.image (fun y => y + σ) \ B.image (fun y => y + σ)) := by
+    intro y hy
+    refine mem_sdiff.2 ⟨(mem_inter.1 hy).2, ?_⟩
+    intro hyB
+    exact disjoint_left.1 hdisj (mem_inter.1 hy).1 hyB
+  have himage :
+      A.image (fun y => y + σ) \ B.image (fun y => y + σ) =
+        (A \ B).image (fun y => y + σ) := by
+    ext y
+    simp only [mem_sdiff, mem_image]
+    constructor
+    · intro ⟨⟨z, hzA, hz⟩, hnot⟩
+      refine ⟨z, ⟨hzA, ?_⟩, hz⟩
+      intro hzB
+      exact hnot ⟨z, hzB, hz⟩
+    · intro ⟨z, ⟨hzA, hzB⟩, hz⟩
+      refine ⟨⟨z, hzA, hz⟩, ?_⟩
+      intro ⟨w, hwB, hw⟩
+      have : z = w := add_left_injective σ (hz.trans hw.symm)
+      exact hzB (this ▸ hwB)
+  have hcard : #(A.image (fun y => y + σ) \ B.image (fun y => y + σ)) = #(A \ B) := by
+    rw [himage, card_image_add]
+  exact (card_le_card hsub).trans_eq hcard
+
+/-- An affine image of a short interval of forbidden differences packs like
+the unscaled interval packing. -/
+theorem affine_diffFree_card_le {U : Finset (ZMod q)} {c : ZMod q} {d : ℕ}
+    (hc : c ≠ 0) (hd : 0 < d) (hdq : d + 1 ≤ q)
+    (hU : ∀ t : ℕ, 1 ≤ t → t ≤ d →
+      ∀ x ∈ U, ∀ y ∈ U, y ≠ x + c * (t : ZMod q)) :
+    #U * (d + 1) ≤ q := by
+  classical
+  let S := U.image fun y => c⁻¹ * y
+  have hcard : #S = #U :=
+    card_image_of_injective _ (mul_right_injective₀ (inv_ne_zero hc))
+  have hS : ∀ ⦃x y : ZMod q⦄, x ∈ S → y ∈ S → x ≠ y →
+      ∀ t : ℕ, 1 ≤ t → t ≤ d → y ≠ x + (t : ZMod q) := by
+    intro x y hx hy hxy t ht1 htd hdiff
+    obtain ⟨x0, hx0, rfl⟩ := mem_image.1 hx
+    obtain ⟨y0, hy0, rfl⟩ := mem_image.1 hy
+    have hne : y0 ≠ x0 + c * (t : ZMod q) :=
+      hU t ht1 htd x0 hx0 y0 hy0
+    have : y0 = x0 + c * (t : ZMod q) := by
+      have hmul := congrArg (fun z => c * z) hdiff
+      have hcinv : c * (c⁻¹ * y0) = y0 := by
+        rw [← mul_assoc, mul_inv_cancel₀ hc, one_mul]
+      have hcinvx : c * (c⁻¹ * x0) = x0 := by
+        rw [← mul_assoc, mul_inv_cancel₀ hc, one_mul]
+      calc
+        y0 = c * (c⁻¹ * y0) := hcinv.symm
+        _ = c * (c⁻¹ * x0 + (t : ZMod q)) := by rw [hmul]
+        _ = c * (c⁻¹ * x0) + c * (t : ZMod q) := by ring
+        _ = x0 + c * (t : ZMod q) := by rw [hcinvx]
+    exact hne this
+  have := diffFree_card_le (S := S) hd hdq hS
+  simpa [hcard] using this
 
 end R3tBound

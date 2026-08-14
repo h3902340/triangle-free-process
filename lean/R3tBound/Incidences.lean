@@ -48,4 +48,8 @@ theorem parabola_codegree {T : Finset (ZMod q)} (hq : Odd q)
   have hst := parabola_sidon hq hne hne' (hδt.trans hδt'.symm)
   simp [hst.1]
 
+lemma card_parabola (T : Finset (ZMod q)) : #(parabola T) = #T :=
+  card_image_of_injective _ fun a b h => by
+    simpa using congrArg Prod.fst h
+
 end R3tBound

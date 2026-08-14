@@ -18,6 +18,8 @@ These statements compile in Lean 4.33 + mathlib with no `sorry`:
 - Lift: a red-independent product set projects to a seed-independent set and \(\lvert I\rvert\le \ell\cdot\lvert\pi_R(I)\rvert\).
 - Every-open-edge graphs are triangle-free; $\alpha$ is antitone in the edge set.
 - Strict mixing empties a fibre; neighbouring shifted fibres are disjoint after $2t(t-s)$.
+- The popular core carries at least half the fibre energy.
+- An affine image of a short interval of forbidden differences packs like `{1,…,d}`.
 - A nonzero difference has at most one unsigned-parabola representation.
 
 The SOTA independence-number bound for $A_q$ is **not** Lean-verified.
@@ -39,8 +41,8 @@ The SOTA independence-number bound for $A_q$ is **not** Lean-verified.
 
 ## Not proved
 
-1. **Vanishing-density popular cores.** Medium fibres ($|B_x|\ge q/3$) now cluster elementarily (`inverse-energy.tex`). A single common core is not forced. The leftover is a $o(1)$-dense popular core on a $T$-dense $x$-support.
-2. **Medium-star incidences / light-star second moment.** Needed to finish the open-edge lemma at the SOTA scale $C\sqrt{n\log n}$.
+1. **Intermediate-energy fibres** of size in $(q^{1/3}(\log q)^{-O(1)}, q/3)$. Medium fibres cluster; exact and near-maximal pieces pack by the interval lemma (no Weyl). Half-intersection is vacuous for thin cores. Fibres $\le q^{1/3}/(\log q)^{O(1)}$ cannot prevent an Alon-beating bound after the lift.
+2. **Medium-star incidences / light-star second moment.** Light stars are under control at the weaker target $|I|\ge C\sqrt{n}\,(\log n)^{5}$ with $t_3=(\log n)^{2}$. The SOTA scale still needs a second moment.
 
 Until both are written, Family A is not a new explicit Ramsey bound. The inverse-energy gap is no longer a Freiman loss $q^\delta$.
 

@@ -16,8 +16,9 @@ import R3tBound.TightInterval
 
 These are the lemmas from the paper that have complete Lean proofs.
 The SOTA independence-number bound for `A_q` is *not* claimed here.
-Medium-fibre clustering and the Weyl estimate for approximate cylinders
-remain paper-only (`inverse-energy.tex`).
+Medium-fibre clustering, half-intersection, and the Weyl estimate for
+approximate cylinders remain paper-only (`inverse-energy.tex`). Popular-core
+energy and affine interval packing are verified.
 -/
 
 namespace R3tBound
@@ -62,5 +63,13 @@ alias shifted_fibres_disjoint := shifted_independent
 /-- **Unsigned codegree.** A nonzero difference has at most one
 representation as a difference of unsigned parabola points. -/
 alias parabola_diff_unique := parabola_codegree
+
+/-- **Popular core.** The high-multiplicity set carries at least half
+the fibre energy. -/
+alias popular_core_half_energy := popular_core_energy
+
+/-- **Affine packing.** Forbidden differences along an affine image of
+`{1,…,d}` pack like the unscaled interval. -/
+alias affine_interval_pack := affine_diffFree_card_le
 
 end R3tBound

@@ -22,11 +22,13 @@ Pinned toolchain: Lean 4.33.0 + mathlib `v4.33.0`. There are no `sorry`s.
 | Strict mixing empties a fibre | `strictly_mixing_fibre` |
 | Shifted fibres are disjoint after \(2t(t-s)\) | `shifted_fibres_disjoint` |
 | Unsigned parabola codegree \(\le 1\) | `parabola_diff_unique` |
+| Popular core carries half the energy | `popular_core_half_energy` |
+| Affine image of `{1,…,d}` packs like the interval | `affine_interval_pack` |
 
 Not formalized (still paper-only / conjectural): medium-fibre star
-clustering, the Weyl estimate for approximate cylinders, vanishing-density
-popular cores, medium-star incidences, and the SOTA independence-number
-bound for \(A_q\). See [`inverse-energy.tex`](../inverse-energy.tex).
+clustering, half-intersection, the Weyl estimate for approximate cylinders,
+the intermediate-energy window, medium-star incidences, and the SOTA
+independence-number bound for \(A_q\). See [`inverse-energy.tex`](../inverse-energy.tex).
 
 ## Build
 

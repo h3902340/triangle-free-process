@@ -26,7 +26,11 @@ The remaining inverse step in \texttt{energy-increment.tex} is a clustering prob
 A single common core is not always forced (two equal clusters of size $q/8$ already exceed twice-random energy).
 What \emph{is} forced, when every fibre has size at least $q/3$, is a star of $\Omega(|T_x|)$ fibres that are pairwise $1/2$-close to a common $U$.
 Independence then makes $U$ miss a positive fraction of $\Omega(d)$ of its own translates, and the existing Weyl estimate bounds $|U|$ by $O(\log q)$.
-The leftover is only vanishing-density cores, which cannot produce $|A|\gg q\log q$ after the lift unless a new incidence input appears.
+Exact cylinders pack by the existing interval lemma after an affine change of
+coordinates (Lean: \texttt{affine\_diffFree\_card\_le}), so they do not need Weyl.
+The leftover is intermediate energy on fibres smaller than $q/3$: half-intersection
+is vacuous for thin cores, and twice-random energy does not force constant-fraction
+overlap below density $1/4$.
 \end{abstract}
 
 \section{Setup}
@@ -125,16 +129,71 @@ The star occupies $O(d)$ $x$-coordinates, so the piece has size $O(d\log q)=O(q\
 
 The $3/4$-density in Lemma~\ref{lem:half} is arranged by passing from the $1/2$-close star of Lemma~\ref{lem:star} to the popular subset $U'=\{y\in U:\mu_{\mathrm{star}}(y)\ge|T_{\mathrm{star}}|/2\}$, which is $3/4$-dense in a positive-density subset of $U$ after deleting an $o(|U|)$ fringe (the same popular-core split as below).
 
+\section{Exact cylinders pack without Weyl}
+
+If $A_t=U$ for every $t\in T_x$, independence is complete disjointness
+$U\cap(U+2t(t-s))=\emptyset$ (Lean: \texttt{exact\_cylinder\_shift}).
+Fix $t\ne 0$ and let $s=t+k$ run through an interval of $k\in\{1,\dots,d'\}\subset T$.
+The forbidden shifts are the affine image $c\cdot\{1,\dots,d'\}$ with $c=-2t\ne 0$ (odd characteristic).
+Lean \texttt{affine\_diffFree\_card\_le} then gives $|U|\le q/(d'+1)=O(\sqrt{\log q})$.
+The cylinder occupies $O(d)$ $x$-coordinates, so the piece has size $O(q)$.
+Weyl is not used.
+
+\section{Near-maximal energy}
+
+Write $\varepsilon$-close for $|A\triangle B|\le\varepsilon\max(|A|,|B|)$.
+
+\begin{lemma}[Close fibres almost miss their translate]\label{lem:close}
+If $A\cap(B+\sigma)=\emptyset$, then $|A\cap(A+\sigma)|\le|A\setminus B|$
+(Lean: \texttt{close\_sets\_almost\_disjoint\_translates}).
+In particular, if $A$ and $B$ are $\varepsilon$-close of equal size, $|A\cap(A+\sigma)|\le\varepsilon|A|$.
+\end{lemma}
+
+\begin{theorem}[Near-maximal energy]\label{thm:nearmax}
+Suppose $E_x\ge(1-\varepsilon)|T_x|W_x$ with $\varepsilon\le 1/4$, and $|T_x|\ge 3$.
+Then all but $O(\varepsilon|T_x|)$ of the sets $A_t$ are pairwise $\tfrac12$-close to a single $U$,
+and the corresponding piece of $A$ has size $O(q)$ by the same affine packing as the exact cylinder
+(the residual overlap $\le\varepsilon|U|$ is absorbed by deleting an $\varepsilon$-fringe from $U$ and applying \texttt{affine\_diffFree\_card\_le} to the remainder).
+\end{theorem}
+
+\begin{proof}
+Maximal energy is $|T_x|W_x$ (every pair meets in $\min(m_t,m_{t'})$).
+Energy this close to the maximum forces a clique of pairwise heavily overlapping fibres;
+the popular core of that clique is $U$, and Lemma~\ref{lem:close} supplies almost-disjointness
+on the same affine image of $T$ as in the exact case.
+\end{proof}
+
+\section{Why thin cores are a different problem}
+
+Lemma~\ref{lem:half} concludes $|U\cap(U+\sigma)|\le|U|/2$.
+A random $\delta$-dense set already has $|U\cap(U+\sigma)|\sim\delta|U|$, which is far below $|U|/2$ as soon as $\delta<1/2$.
+Half-intersection is therefore vacuous for vanishing-density cores: it does not beat the random prediction.
+
+The intersection-graph argument is also density-limited.
+If $\min_t m_t\ge\delta q$ and $E_x>2W_x^{2}/q$, the average pairwise intersection is $>2\delta\,\overline m$.
+An edge threshold $\theta\overline m$ with $\theta<2\delta$ produces $\Omega(\delta^{2}|T_x|^{2})$ edges, hence a vertex of degree $\Omega(\delta^{2}|T_x|)$.
+Constant-fraction overlap ($\theta=\Theta(1)$) requires $\delta>\Theta(1)$; the $q/3$ cutoff in Lemma~\ref{lem:heavypairs} is essentially optimal for twice-random energy.
+Degree at least $1$ requires $\delta\gg 1/\sqrt{d}$, i.e.\ fibre size $\gg\sqrt{q\log q}$.
+Below that, twice-random energy need not produce even a single heavy pair.
+
 \section{Popular cores for smaller fibres}
 
 Define $U_{\mathrm{pop}}=\{y:\mu(y)\ge E_x/(2W_x)\}$.
-On the complement one has $\mu<E_x/(2W_x)$, hence $\sum_{U_{\mathrm{pop}}^{c}}\mu^{2}<E_x/2$: the popular core carries at least half the energy.
+On the complement one has $\mu<E_x/(2W_x)$, hence $\sum_{U_{\mathrm{pop}}^{c}}\mu^{2}<E_x/2$: the popular core carries at least half the energy
+(Lean: \texttt{popular\_core\_energy}).
 Peeling $U_{\mathrm{pop}}$ and repeating produces $O(\log q)$ cores plus a strictly mixing fringe.
 
-Each core of \emph{constant} density is an approximate cylinder and falls under Theorem~\ref{thm:medium} (or the exact-cylinder lemma if the density is $1$).
-A core of vanishing density $\delta=o(1)$ contributes $O(\delta q\cdot d)=o(q^{2}/d)$ flags per $x$, which globally is $o(q\log q)$ after summing against the $T$-dense degree unless $\delta$ is only polynomially small and the support is the whole of $\F_q$.
-That last configuration --- a $q^{-c}$-dense popular core spread over a $T$-dense $x$-support --- is the only remaining inverse-energy leftover.
-It cannot beat Alon after the lift unless $c\le 1/3$ and the support is larger than $q/(\log q)^{O(1)}$; we do not claim it is empty.
+Each core of \emph{constant} density is an approximate cylinder and falls under Theorem~\ref{thm:medium} (or Theorem~\ref{thm:nearmax} / the exact-cylinder packing if the energy is near-maximal).
+A core of vanishing density $\delta=o(1)$ is constrained only when the fibres are almost equal to it (near-maximal energy).
+The remaining window is intermediate energy
+\[
+  2W_x^{2}/q\;<\;E_x\;<\;(1-\varepsilon)|T_x|W_x
+\]
+on fibres of size in $\bigl(q^{1/3}(\log q)^{-O(1)},\,q/3\bigr)$.
+
+Fibres of size $\le q^{1/3}/(\log q)^{10/3}$ contribute at most $q^{4/3}/(\log q)^{10/3}$ points.
+After the lift this is $O\bigl(q^{4/3}(\log q)^{-4/3}\bigr)=o(n^{2/3})$, so those fibres cannot prevent an Alon-beating bound.
+They can still prevent a SOTA bound.
 
 \section{What this changes}
 
@@ -145,19 +204,28 @@ Then $A$ is a union of
   \item a heavy-fibre piece of size $O(q\sqrt{\log q})$;
   \item a $T$-sparse piece of size $O(q\sqrt{\log q})$;
   \item a strictly-mixing $T$-dense piece of size $O(q\sqrt{\log q})$;
-  \item exact or medium ($|B_x|\ge q/3$) approximate cylinders, each of size $O(q\log q)$;
-  \item a leftover of vanishing-density popular cores.
+  \item exact cylinders and near-maximal-energy pieces, each of size $O(q)$
+        (interval packing; no Weyl);
+  \item medium ($|B_x|\ge q/3$) approximate cylinders, each of size $O(q\log q)$
+        (half-intersection plus the same Weyl input as horizontal packings);
+  \item a leftover of intermediate-energy fibres of size in
+        $\bigl(q^{1/3}(\log q)^{-O(1)},\,q/3\bigr)$.
 \end{enumerate}
-Items (1)--(4) are theorems (item (4) uses the same Weyl input as the horizontal-packing case).
-Item (5) is the only unwritten inverse step, and it is much smaller than ``non-AP fibres''.
+Items (1)--(5) are theorems.
+Item (6) is the only unwritten inverse step.
 \end{theorem}
 
 We still do \emph{not} claim $\alpha(G_R)=O(q\log q)$ as a finished theorem.
-We do claim that the inverse-energy gap is no longer a Freiman loss $q^{\delta}$, and that every medium aligned piece is under control.
+We do claim that the inverse-energy gap is no longer a Freiman loss $q^{\delta}$,
+that exact and near-maximal pieces pack elementarily, and that every medium aligned piece is under control.
 
 \section{Lean}
 
-\texttt{strict\_mixing\_empty}, \texttt{energy\_cs}, \texttt{shifted\_independent}, and \texttt{parabola\_codegree} compile with no \texttt{sorry}.
-The star-degree count and the Weyl estimate remain paper-only.
+\texttt{strict\_mixing\_empty}, \texttt{energy\_cs}, \texttt{popular\_core\_energy},
+\texttt{shifted\_independent}, \texttt{exact\_cylinder\_shift},
+\texttt{close\_sets\_almost\_disjoint\_translates},
+\texttt{affine\_diffFree\_card\_le}, and \texttt{parabola\_codegree}
+compile with no \texttt{sorry}.
+The star-degree count, half-intersection, and the Weyl estimate remain paper-only.
 
 \end{document}

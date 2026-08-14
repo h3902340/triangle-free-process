@@ -87,6 +87,33 @@ lemma coverage_le_of_independent {T : Finset (ZMod q)}
       card_le_univ (fibreF A x ∪ T.biUnion (shiftedFibre A x))
   simpa [card_union_of_disjoint hU] using huniv
 
+lemma coverageMass_eq_sum (A : Finset (ZMod q × ZMod q)) (T : Finset (ZMod q))
+    (x : ZMod q) :
+    coverageMass A T x = ∑ t ∈ T, #(shiftedFibre A x t) := by
+  classical
+  unfold coverageMass multiplicity
+  have h : ∀ y, #{i ∈ T | y ∈ shiftedFibre A x i} =
+      ∑ i ∈ T, if y ∈ shiftedFibre A x i then 1 else 0 := fun y => by
+    simp [sum_boole]
+  simp_rw [h]
+  rw [sum_comm]
+  refine sum_congr rfl fun t _ => ?_
+  simp
+
+/-- Points whose multiplicity is at least half the mean energy per unit mass. -/
+def popularCore (A : Finset (ZMod q × ZMod q)) (T : Finset (ZMod q)) (x : ZMod q) :
+    Finset (ZMod q) :=
+  univ.filter fun y =>
+    familyEnergy A T x ≤
+      2 * coverageMass A T x * multiplicity (shiftedFibre A x) T y
+
+lemma mem_popularCore {A : Finset (ZMod q × ZMod q)} {T : Finset (ZMod q)}
+    {x y : ZMod q} :
+    y ∈ popularCore A T x ↔
+      familyEnergy A T x ≤
+        2 * coverageMass A T x * multiplicity (shiftedFibre A x) T y := by
+  simp [popularCore]
+
 lemma energy_cs (A : Finset (ZMod q × ZMod q)) (T : Finset (ZMod q)) (x : ZMod q) :
     (coverageMass A T x) ^ 2 ≤
       #(T.biUnion (shiftedFibre A x)) * familyEnergy A T x := by
@@ -134,5 +161,62 @@ theorem strict_mixing_empty {T : Finset (ZMod q)}
       Nat.le_of_mul_le_mul_left (by simpa [mul_comm E] using this)
         (Nat.pos_of_ne_zero hE0)
     exact card_eq_zero.mp (by omega)
+
+/-- The popular core carries at least half the energy. -/
+theorem popular_core_energy (A : Finset (ZMod q × ZMod q)) (T : Finset (ZMod q))
+    (x : ZMod q) (hW : 0 < coverageMass A T x) :
+    familyEnergy A T x ≤
+      2 * ∑ y ∈ popularCore A T x,
+        (multiplicity (shiftedFibre A x) T y) ^ 2 := by
+  classical
+  set W := coverageMass A T x
+  set E := familyEnergy A T x
+  set μ := multiplicity (shiftedFibre A x) T
+  set U := popularCore A T x
+  have hEdef : E = ∑ y : ZMod q, μ y ^ 2 := rfl
+  have hsplit : E = ∑ y ∈ U, μ y ^ 2 + ∑ y ∈ Uᶜ, μ y ^ 2 := by
+    rw [hEdef, ← sum_add_sum_compl (s := U) (f := fun y => μ y ^ 2)]
+  have hμW : ∑ y : ZMod q, μ y = W := by
+    simp [W, coverageMass, μ]
+  have hμWsplit : ∑ y ∈ U, μ y + ∑ y ∈ Uᶜ, μ y = W := by
+    rw [← hμW, ← sum_add_sum_compl (s := U) (f := μ)]
+  have hcompμ : ∑ y ∈ Uᶜ, μ y ≤ W := by omega
+  by_cases hE0 : E = 0
+  · have hCS : W ^ 2 ≤ #(T.biUnion (shiftedFibre A x)) * E := energy_cs A T x
+    have hW0 : W = 0 := by
+      have : W ^ 2 ≤ 0 := by simpa [hE0] using hCS
+      exact (Nat.pow_eq_zero.mp (Nat.eq_zero_of_le_zero this)).1
+    exact (Nat.lt_irrefl _ (hW0 ▸ hW)).elim
+  · have hcomp : ∀ y ∈ Uᶜ, 2 * W * μ y < E := by
+      intro y hy
+      have : ¬ E ≤ 2 * W * μ y := by
+        simpa [U, popularCore, mem_compl, μ, W, E] using hy
+      exact Nat.not_le.1 this
+    have hterm : ∀ y ∈ Uᶜ, 2 * W * (μ y) ^ 2 ≤ (E - 1) * μ y := by
+      intro y hy
+      have hle : 2 * W * μ y ≤ E - 1 :=
+        Nat.le_sub_one_of_lt (hcomp y hy)
+      have := Nat.mul_le_mul_right (μ y) hle
+      simpa [pow_two, mul_assoc, mul_left_comm, mul_comm] using this
+    have hsum : 2 * W * ∑ y ∈ Uᶜ, μ y ^ 2 ≤ (E - 1) * ∑ y ∈ Uᶜ, μ y := by
+      calc
+        2 * W * ∑ y ∈ Uᶜ, μ y ^ 2
+            = ∑ y ∈ Uᶜ, 2 * W * (μ y) ^ 2 := by
+              simp [mul_sum]
+        _ ≤ ∑ y ∈ Uᶜ, (E - 1) * μ y := sum_le_sum hterm
+        _ = (E - 1) * ∑ y ∈ Uᶜ, μ y := by simp [mul_sum]
+    have hsum' : 2 * W * ∑ y ∈ Uᶜ, μ y ^ 2 ≤ (E - 1) * W :=
+      hsum.trans (Nat.mul_le_mul_left _ hcompμ)
+    have hhalf : 2 * ∑ y ∈ Uᶜ, μ y ^ 2 ≤ E - 1 := by
+      have hre : 2 * W * ∑ y ∈ Uᶜ, μ y ^ 2 = (2 * ∑ y ∈ Uᶜ, μ y ^ 2) * W := by
+        ac_rfl
+      exact Nat.le_of_mul_le_mul_right (hre ▸ hsum') hW
+    have : E ≤ 2 * ∑ y ∈ U, μ y ^ 2 := by
+      have h2 : 2 * E = 2 * ∑ y ∈ U, μ y ^ 2 + 2 * ∑ y ∈ Uᶜ, μ y ^ 2 := by
+        rw [hsplit, mul_add]
+      have : 2 * E ≤ 2 * ∑ y ∈ U, μ y ^ 2 + (E - 1) := by
+        rw [h2]; exact Nat.add_le_add_left hhalf _
+      omega
+    simpa [E, U, μ] using this
 
 end R3tBound
