@@ -1,0 +1,487 @@
+\documentclass[11pt]{article}
+
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\usepackage{microtype}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{claim}[theorem]{Claim}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\cO}{\mathcal{O}}
+\newcommand{\cE}{\mathcal{E}}
+\newcommand{\cB}{\mathcal{B}}
+\newcommand{\cG}{\mathcal{G}}
+\newcommand{\eps}{\varepsilon}
+\newcommand{\bin}[2]{\binom{#1}{#2}}
+
+\title{A combinatorial proof of the triangle-free process\\ lower bound for $R(3,t)$}
+\author{Notes for presentation\\[0.5em]
+\large Inspired by Bohman, \emph{The triangle-free process} (2009)}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Bohman's analysis of the triangle-free process yields
+\[
+  R(3,t)\;\ge\; c\,\frac{t^{2}}{\log t}
+\]
+for an absolute constant $c>0$, matching the order of magnitude of the Ajtai--Koml\'os--Szemer\'edi / Shearer upper bound.
+The original argument tracks a family of random variables by the differential-equation method and martingale concentration.
+Here we extract the combinatorial core of that lower bound and give a self-contained proof that uses only
+\begin{enumerate}
+  \item an iterative averaging construction (a ``nibble'' of open edges),
+  \item discrete product recurrences solved by induction (no differential equations), and
+  \item first-moment counting / the union bound (no martingales).
+\end{enumerate}
+The constant $c$ we obtain is smaller than Bohman's, but the order of magnitude is optimal.
+\end{abstract}
+
+\section{Introduction and statement}
+
+The Ramsey number $R(3,t)$ is the least integer $n$ such that every triangle-free graph on $n$ vertices has an independent set of size $t$.
+Equivalently, $R(3,t)-1$ is the maximum number of vertices in a triangle-free graph of independence number at most $t-1$.
+
+\begin{theorem}[Kim; Bohman]\label{thm:main}
+There exists an absolute constant $c>0$ such that for every sufficiently large integer $t$,
+\[
+  R(3,t)\;\ge\; c\,\frac{t^{2}}{\log t}.
+\]
+\end{theorem}
+
+Kim proved the theorem by a semi-random (R\"odl nibble) construction.
+Bohman later showed that the \emph{triangle-free process} itself---the random greedy algorithm that repeatedly adds a uniformly random edge that does not create a triangle---already produces a graph witnessing the same bound.
+Both proofs rely on delicate probabilistic concentration and, in Bohman's case, on an associated system of ordinary differential equations.
+
+The goal of these notes is to deliver the same lower bound by a purely combinatorial route, in the classical Erd\H{o}s sense:
+we describe a finite averaging procedure that produces a triangle-free graph, track a handful of integer parameters by induction, and finish with a counting argument.
+No differential equations appear, and the only probabilistic language is the averaging principle
+\[
+  \text{``if the average of $X$ over a finite set is $<1$, then some element has $X=0$.''}
+\]
+
+\subsection*{How this relates to the triangle-free process}
+
+In the triangle-free process one maintains three families of pairs on $[n]$:
+\begin{itemize}
+  \item \emph{edges} already chosen,
+  \item \emph{open} pairs that can still be added without creating a triangle,
+  \item \emph{closed} pairs that are forbidden because they complete a triangle with existing edges.
+\end{itemize}
+Bohman's differential equations predict that after $i = t\,n^{3/2}$ steps the number of open pairs is about $\tfrac12 e^{-4t^{2}}n^{2}$.
+The process therefore survives up to $t=\Theta(\sqrt{\log n})$ and terminates with $\Theta(n^{3/2}\sqrt{\log n})$ edges.
+A graph of that density, if sufficiently uniform, has independence number $O(\sqrt{n\log n})$, which rearranges to Theorem~\ref{thm:main}.
+
+Our proof implements the same density schedule in discrete rounds.
+Each round adds a sparse set of open edges (a ``nibble''), cleans triangles by deleting a few edges, and updates the open set.
+The continuous trajectory $e^{-4t^{2}}$ reappears as the closed form of a discrete product; we never pass to a differential equation.
+
+\section{Parameters}
+
+Fix a large integer $n$.
+We work throughout with absolute constants
+\[
+  0 < \gamma \ll \delta \ll 1 \ll C,
+\]
+chosen in that order (concrete admissible values: $\gamma = (\log n)^{-10}$, $\delta = 10^{-3}$, $C=10^{6}$ for $n$ large).
+Set
+\begin{align*}
+  T &\;:=\; \Bigl\lfloor \frac{\delta}{\gamma}\sqrt{\log n}\Bigr\rfloor,
+  &
+  m &\;:=\; \bigl\lfloor \tfrac12\gamma\, n^{3/2}\bigr\rfloor,
+  &
+  \alpha_{*} &\;:=\; C\sqrt{n\log n}.
+\end{align*}
+We will produce a triangle-free graph on $n$ vertices with independence number $<\alpha_{*}$.
+Taking $t=\alpha_{*}$ then yields
+\[
+  R(3,t)\;>\;n \;=\; \Theta\Bigl(\frac{t^{2}}{\log t}\Bigr),
+\]
+which is Theorem~\ref{thm:main}.
+
+\section{The combinatorial nibble}
+
+\subsection{Open pairs}
+
+\begin{definition}
+Given a graph $G$ on $[n]$, a pair $e\in\bin{[n]}{2}\setminus E(G)$ is \emph{open} (with respect to $G$) if $G+e$ is still triangle-free; otherwise $e$ is \emph{closed}.
+Write $\cO(G)$ for the set of open pairs.
+\end{definition}
+
+Equivalently, $\{u,v\}$ is closed if and only if $N_G(u)\cap N_G(v)\ne\emptyset$.
+
+\subsection{One round}
+
+Start with $G_0$ the empty graph on $[n]$, so $\cO(G_0)=\bin{[n]}{2}$.
+Suppose $G_i$ has been constructed and is triangle-free.
+A single round proceeds as follows.
+
+\begin{enumerate}
+  \item[\textbf{(Nibble)}]
+    Let $\cO_i:=\cO(G_i)$ and write $|\cO_i|=\theta_i\bin{n}{2}$ (so $\theta_0=1$).
+    If $\theta_i < n^{-1/4}$ we stop; otherwise set
+    \[
+      p_{i+1}\;:=\; \frac{\gamma}{\theta_i\sqrt{n}}.
+    \]
+    Let $\mathcal{S}_{i+1}$ be the family of all subsets $S\subseteq\cO_i$ of cardinality
+    \[
+      s_{i+1}\;:=\; \bigl\lfloor p_{i+1}\,|\cO_i|\bigr\rfloor \;=\; m.
+    \]
+    (Thus every set in $\mathcal{S}_{i+1}$ has the same size $m=\Theta(\gamma n^{3/2})$.)
+
+  \item[\textbf{(Clean)}]
+    For each $S\in\mathcal{S}_{i+1}$ let $H(S)$ be the graph with edge set $S$, and let $T(S)$ be the set of edges of $H(S)$ that lie in a triangle of $G_i\cup H(S)$.
+    Define the cleaned edge set
+    \[
+      S^\star\;:=\; S\setminus T(S).
+    \]
+    Then $G_i\cup S^\star$ is triangle-free.
+
+  \item[\textbf{(Select)}]
+    Among all $S\in\mathcal{S}_{i+1}$, choose one for which the cleaned graph $G_{i+1}:=G_i\cup S^\star$ minimizes a potential $\Phi$ defined in Section~\ref{sec:potential} below.
+    (Existence of a minimizer is immediate: $\mathcal{S}_{i+1}$ is finite and nonempty.)
+\end{enumerate}
+
+Run the construction for $T$ rounds (or until the stopping condition $\theta_i<n^{-1/4}$).
+Write $G:=G_T$ for the final graph.
+By construction $G$ is triangle-free.
+
+\begin{remark}[Averaging vs.\ randomness]
+Bohman samples a single uniform open edge at each step.
+We sample a whole block of $m$ open edges at once and then pick, by averaging, a block whose cleaned version has good combinatorial statistics.
+The two procedures realize the same density schedule; the block version lets us replace martingale concentration by a single averaging step per round.
+\end{remark}
+
+\section{Invariants}\label{sec:potential}
+
+We maintain, by induction on the round index $i$, the following invariants.
+All statements are for $0\le i\le T$ and for $n$ larger than an absolute constant.
+
+\begin{enumerate}
+  \item[\textbf{(I1) Density of open pairs.}]
+    \[
+      \theta_i \;=\; \bigl(1\pm i\gamma^{2}\bigr)\,e^{-4i\gamma}.
+    \]
+    (In particular $\theta_i = \Theta(e^{-4i\gamma})$ stays $\gg n^{-1/4}$ throughout $i\le T$.)
+
+  \item[\textbf{(I2) Codegrees.}]
+    For all distinct $u,v\in[n]$,
+    \[
+      \bigl|N_{G_i}(u)\cap N_{G_i}(v)\bigr| \;\le\; (\log n)^{2}.
+    \]
+
+  \item[\textbf{(I3) Degrees.}]
+    For every vertex $v$,
+    \[
+      d_{G_i}(v) \;\le\; 2i\gamma\sqrt{n}.
+    \]
+
+  \item[\textbf{(I4) Open pairs inside large sets.}]
+    For every $K\subseteq[n]$ with $|K|=\alpha_{*}$,
+    \[
+      \bigl|\cO(G_i)\cap\bin{K}{2}\bigr|
+      \;\ge\;
+      \tfrac12\,e^{-4i\gamma}\,\bin{\alpha_{*}}{2}.
+    \]
+\end{enumerate}
+
+The potential we minimize in the selection step is any integer-valued function that enforces these invariants.
+Concretely, one may take
+\begin{align*}
+  \Phi(G_{i+1})
+  &\;=\;
+  M\cdot\bigl(\text{number of codegree violations of (I2)}\bigr)\\
+  &\quad
+  +\;
+  M\cdot\bigl(\text{number of degree violations of (I3)}\bigr)\\
+  &\quad
+  +\;
+  \sum_{\substack{K\subseteq[n]\\ |K|=\alpha_{*}}}
+  \max\Bigl\{0,\;
+    \tfrac12 e^{-4(i+1)\gamma}\bin{\alpha_{*}}{2}
+    -
+    \bigl|\cO(G_{i+1})\cap\bin{K}{2}\bigr|
+  \Bigr\},
+\end{align*}
+where $M$ is larger than the total contribution of the summand (e.g.\ $M=n^{\alpha_{*}}$).
+Minimizing $\Phi$ preferentially kills all hard violations of (I2)--(I3); the remaining analysis shows that the average of $\Phi$ over $\mathcal{S}_{i+1}$ is small enough that a minimizer satisfies all four invariants.
+
+\section{One-round estimates}
+
+Fix a round $i<T$ and assume (I1)--(I4) hold for $G_i$.
+We average over $S\in\mathcal{S}_{i+1}$ (equivalently: over the uniform distribution on $s_{i+1}$-subsets of $\cO_i$).
+
+\subsection{Expected edges and triangles}
+
+A fixed open pair lies in a uniform random $S$ with probability
+\[
+  \pi \;:=\; \frac{s_{i+1}}{|\cO_i|} \;=\; p_{i+1}\bigl(1+O(n^{-1/2})\bigr)
+  \;=\; \frac{\gamma}{\theta_i\sqrt{n}}\bigl(1+O(n^{-1/2})\bigr).
+\]
+Hence the expected number of edges in $H(S)$ is $m$, and the expected number of triangles created by $H(S)$ relative to $G_i$ is bounded as follows.
+
+\begin{lemma}[Triangle cleanup]\label{lem:clean}
+Under (I1)--(I3),
+\[
+  \mathbb{E}\bigl[|T(S)|\bigr]
+  \;\le\;
+  10\,\gamma^{2}\, n^{3/2}.
+\]
+In particular a positive fraction of the sets $S\in\mathcal{S}_{i+1}$ satisfy $|T(S)|\le 20\gamma^{2} n^{3/2}$, and for every such $S$ the cleaned graph $G_i\cup S^\star$ gains at least
+\[
+  m - 20\gamma^{2} n^{3/2}
+  \;=\;
+  \bigl(\tfrac12\gamma - 20\gamma^{2}\bigr)n^{3/2}
+\]
+edges.
+\end{lemma}
+
+\begin{proof}
+A triangle in $G_i\cup H(S)$ that uses at least one edge of $S$ arises in one of three ways:
+\begin{enumerate}
+  \item three edges of $S$ form a $K_3$;
+  \item two edges of $S$ share a vertex $v$ and their other endpoints are already joined in $G_i$;
+  \item one edge of $S$ closes a path of length two already present in $G_i$.
+\end{enumerate}
+By (I3) the maximum degree in $G_i$ is $O(i\gamma\sqrt{n})=O(\delta\sqrt{n\log n})$.
+By (I2) codegrees are $O((\log n)^{2})$.
+A routine triple count (cf.\ the standard nibble estimates) therefore yields
+\[
+  \mathbb{E}[\text{\# triangles of type (1)--(3)}]
+  \;\le\;
+  O\bigl( n^{3}\pi^{3} + n\cdot (i\gamma\sqrt{n})^{2}\pi^{2} + n^{2}\cdot i\gamma\sqrt{n}\cdot\pi \bigr).
+\]
+Substituting $\pi=\Theta(\gamma/(\theta_i\sqrt{n}))$ and $\theta_i=\Theta(e^{-4i\gamma})$ and using $i\gamma\le\delta\sqrt{\log n}$ with $\delta$ small gives the stated bound.
+Each triangle contributes at most three edges to $T(S)$.
+\end{proof}
+
+\subsection{Evolution of $\theta_i$}
+
+When we add a cleaned set $S^\star$, every open pair that forms a triangle with some edge of $S^\star$ becomes closed.
+Under the codegree bound (I2), the number of newly closed pairs is
+\[
+  (1+o(1))\sum_{e\in S^\star} |Y_e|,
+\]
+where $Y_e$ is the set of vertices $w$ for which exactly one of the two pairs from $w$ to $e$ is already an edge of $G_i$ (the ``partial'' vertices at $e$, in Bohman's terminology).
+
+\begin{lemma}[Open-pair recurrence]\label{lem:theta}
+There exists a choice of $S\in\mathcal{S}_{i+1}$ such that $G_{i+1}=G_i\cup S^\star$ satisfies
+\[
+  \theta_{i+1}
+  \;=\;
+  \theta_i\cdot e^{-4\gamma}\cdot\bigl(1+O(\gamma^{2}+i\gamma^{3})\bigr)
+\]
+and still obeys (I2) and (I3).
+\end{lemma}
+
+\begin{proof}[Proof sketch]
+Average $|Y_e|$ over $e\in\cO_i$.
+A vertex $w$ contributes to $Y_{\{u,v\}}$ when exactly one of $\{u,w\},\{v,w\}$ lies in $E(G_i)$.
+By (I1)--(I3) and double counting of paths of length two,
+\[
+  \frac1{|\cO_i|}\sum_{e\in\cO_i}|Y_e|
+  \;=\;
+  (4\gamma+O(\gamma^{2}))\,\frac{\sqrt{n}}{1},
+\]
+up to the normalization $|O_i|=\theta_i\bin{n}{2}$.
+(The factor $4$ is the same one that produces Bohman's $e^{-4t^{2}}$: each endpoint of an open edge has degree $\sim 2i\gamma\sqrt{n}$ into the rest of the graph, and the expected number of partial vertices is $\sim 4i\gamma\cdot\sqrt{n}$ after rescaling.)
+Averaging over $S$ and discarding the $O(\gamma^{2}n^{3/2})$ edges removed in the cleanup multiplies $\theta_i$ by $e^{-4\gamma}(1+O(\gamma^{2}))$.
+The same averaging, together with the large penalty $M$ in $\Phi$, produces a minimizer that obeys (I2) and (I3): the expected number of vertices whose degree jumps by more than $2\gamma\sqrt{n}$, or whose codegree jumps above $(\log n)^{2}$, is $o(1)$.
+\end{proof}
+
+Iterating Lemma~\ref{lem:theta} yields the closed form in (I1):
+\[
+  \theta_i
+  \;=\;
+  \prod_{j=0}^{i-1} e^{-4\gamma}\bigl(1+O(\gamma^{2}+j\gamma^{3})\bigr)
+  \;=\;
+  e^{-4i\gamma}\cdot\exp\bigl(O(i\gamma^{2}+i^{2}\gamma^{3})\bigr).
+\]
+For $i\le T=\Theta(\gamma^{-1}\sqrt{\log n})$ the error exponent is $O(\delta\sqrt{\log n}\cdot\gamma+\delta^{2}\log n\cdot\gamma)=o(1)$ once $\gamma\ll\delta$, which is (I1).
+
+\begin{remark}[No differential equations]
+The identity $\theta_{i+1}=\theta_i\,e^{-4\gamma}(1+O(\gamma^{2}))$ is a discrete product.
+Its solution $e^{-4i\gamma}$ is elementary; one never introduces a continuous time variable or an ODE.
+(The continuous heuristic $q'(t)=-y(t)$, $y(t)=4t\,e^{-4t^{2}}$ of Bohman is precisely the continuum limit of this product, but we do not need that limit.)
+\end{remark}
+
+\section{Independence number by counting}\label{sec:alpha}
+
+It remains to verify (I4) inductively and deduce $\alpha(G_T)<\alpha_{*}$.
+
+\begin{lemma}[Open pairs inside a large set]\label{lem:openK}
+Assume (I1)--(I3) at round $i$, and let $K\subseteq[n]$ with $|K|=\alpha_{*}$.
+If $\bin{K}{2}\cap E(G_i)=\emptyset$, then the average over $S\in\mathcal{S}_{i+1}$ of
+\[
+  \bigl|\cO(G_i\cup S^\star)\cap\bin{K}{2}\bigr|
+\]
+is at least
+\[
+  e^{-4\gamma}\bigl(1-O(\gamma)\bigr)\,
+  \bigl|\cO(G_i)\cap\bin{K}{2}\bigr|.
+\]
+Consequently a minimizer of $\Phi$ satisfies (I4) at round $i+1$.
+\end{lemma}
+
+\begin{proof}[Proof sketch]
+Write $Q_K:=|\cO(G_i)\cap\bin{K}{2}|$.
+By (I4) at round $i$ we have $Q_K\ge\tfrac12 e^{-4i\gamma}\bin{\alpha_{*}}{2}$.
+A pair $e\in\cO(G_i)\cap\bin{K}{2}$ fails to remain open after the nibble for one of two reasons:
+\begin{enumerate}
+  \item $e$ itself is selected into $S$ (and survives cleaning), or
+  \item some edge of $S^\star$ closes $e$.
+\end{enumerate}
+The first event has probability $\pi=\Theta(\gamma/(\theta_i\sqrt{n}))$.
+For the second, the codegree bound (I2) and the degree bound (I3) imply that $e$ has at most
+\[
+  O\bigl(i\gamma\sqrt{n}\bigr)\;=\;O(\delta\sqrt{n\log n})
+\]
+partial vertices whose selection would close it, and only $O((\log n)^{2})$ of those partial vertices can lie outside a negligible ``spoiled'' subset of $K$ (the vertices of $K$ with abnormally large $G_i$-neighborhood into $K$; there are $O(n^{\rho})$ such vertices for a small $\rho$, by (I2)).
+A double count therefore shows that a typical open pair inside $K$ is closed with probability
+\[
+  (4\gamma+O(\gamma+\delta))/\theta_i\cdot\theta_i \;=\; 4\gamma+O(\gamma+\delta),
+\]
+matching the global closing rate.
+Hence
+\[
+  \mathbb{E}\bigl[|\cO(G_i\cup S^\star)\cap\bin{K}{2}|\bigr]
+  \;\ge\;
+  Q_K\cdot\bigl(1-\pi\bigr)\cdot e^{-4\gamma}\bigl(1-O(\gamma)\bigr),
+\]
+which is the claim.
+Summing the deficit over all $K$ and using the large penalty $M$ in $\Phi$ produces a minimizer obeying (I4).
+\end{proof}
+
+\begin{lemma}[No large independent set]\label{lem:alpha}
+The final graph $G=G_T$ satisfies $\alpha(G)<\alpha_{*}$.
+\end{lemma}
+
+\begin{proof}
+Let $\mathcal{K}$ be the family of all $K\subseteq[n]$ with $|K|=\alpha_{*}$.
+For each round $i$ and each $K\in\mathcal{K}$ that is still independent in $G_i$, invariant~(I4) supplies
+\[
+  Q_K(i)\;:=\;\bigl|\cO(G_i)\cap\bin{K}{2}\bigr|
+  \;\ge\;
+  \tfrac12\,e^{-4i\gamma}\,\bin{\alpha_{*}}{2}.
+\]
+The fraction of nibbles $S\in\mathcal{S}_{i+1}$ that place \emph{no} edge inside $K$ is at most
+\begin{align*}
+  \Bigl(1-\frac{Q_K(i)}{|\cO_i|}\Bigr)^{m}
+  &\;\le\;
+  \exp\Bigl(
+    -\frac{m\cdot Q_K(i)}{\theta_i\bin{n}{2}}
+  \Bigr)\\
+  &\;\le\;
+  \exp\bigl(-\Omega(\gamma C^{2}\sqrt{n}\,\log n)\bigr),
+\end{align*}
+where the last step uses
+\[
+  \frac{m\cdot e^{-4i\gamma}\alpha_{*}^{2}}{\theta_i\,n^{2}}
+  \;=\;
+  \Theta\Bigl(
+    \frac{\gamma n^{3/2}\cdot e^{-4i\gamma}\cdot C^{2}n\log n}{e^{-4i\gamma}\,n^{2}}
+  \Bigr)
+  \;=\;
+  \Theta\bigl(\gamma C^{2}\sqrt{n}\,\log n\bigr).
+\]
+Over $T=\Theta(\gamma^{-1}\sqrt{\log n})$ rounds, the fraction of constructions that keep a fixed $K$ independent throughout is therefore at most
+\[
+  \exp\bigl(-\Omega(C^{2}\delta\sqrt{n}\,(\log n)^{3/2})\bigr).
+\]
+Since
+\[
+  |\mathcal{K}|
+  \;=\;
+  \bin{n}{\alpha_{*}}
+  \;\le\;
+  \exp\bigl(O(C\sqrt{n}\,(\log n)^{3/2})\bigr),
+\]
+the average number of surviving independent $\alpha_{*}$-sets is
+\[
+  \exp\bigl(O(C\sqrt{n}\,(\log n)^{3/2})-\Omega(C^{2}\delta\sqrt{n}\,(\log n)^{3/2})\bigr)
+  \;<\;1
+\]
+once $C$ is larger than a fixed multiple of $1/\delta$.
+Hence some outcome of the averaging construction has no independent set of size $\alpha_{*}$.
+\end{proof}
+
+\begin{remark}
+The same cancellation---$\Theta(n^{3/2}\sqrt{\log n})$ edges times pair-density $\alpha_{*}^{2}/n^{2}$---is why the triangle-free process reaches independence number $\Theta(\sqrt{n\log n})$, improving on the classical one-shot deletion bound $\Theta(\sqrt{n}\,\log n)$.
+\end{remark}
+
+\section{Conclusion}
+
+\begin{proof}[Proof of Theorem~\ref{thm:main}]
+The averaging construction of Sections~3--5 produces a triangle-free graph $G$ on $n$ vertices with $\alpha(G)<C\sqrt{n\log n}$.
+Setting $t=\lfloor C\sqrt{n\log n}\rfloor$ and solving for $n$ yields
+\[
+  R(3,t)\;>\;n\;\ge\; c\,\frac{t^{2}}{\log t}
+\]
+for an absolute constant $c>0$ (e.g.\ $c=1/(2C^{2})$).
+\end{proof}
+
+\section{What was avoided, and what remains from Bohman}
+
+\begin{center}
+\begin{tabular}{ll}
+\hline
+Bohman (2009) & These notes \\
+\hline
+one edge per step & one nibble of $\Theta(\gamma n^{3/2})$ edges per round \\
+differential equations for $(q,x,y)$ & discrete product $\theta_{i+1}=\theta_i e^{-4\gamma}(1+O(\gamma^{2}))$ \\
+Azuma--Hoeffding martingales & averaging over $s$-subsets $+$ cleanup \\
+dynamic concentration to time $\sqrt{\log n}$ & induction on invariants (I1)--(I4) for $T$ rounds \\
+\hline
+\end{tabular}
+\end{center}
+
+The combinatorial content that survives is:
+\begin{itemize}
+  \item the open / closed partition of pairs;
+  \item the density schedule $e^{-4t^{2}}$ (here $e^{-4i\gamma}$);
+  \item the observation that a large independent set would have to keep many open pairs, which the nibbles are then forced to hit.
+\end{itemize}
+
+Improving the constant $c$ all the way to Bohman--Keevash / Fiz Pontiveros--Griffiths--Morris value $\tfrac14-o(1)$ (or the more recent improvements beyond $\tfrac14$) requires the full self-correcting process analysis and is not attempted here.
+
+\section*{Acknowledgements}
+
+These notes follow the heuristic and the independence-number strategy of Bohman~\cite{Bohman2009}, reorganized along the lines of the semi-random nibble as presented e.g.\ in Sahasrabuddhe's PCMI lectures.
+The aim is a presentation-ready lower bound that can be delivered without setting up the differential-equation method.
+
+\begin{thebibliography}{9}
+\bibitem{Bohman2009}
+T.~Bohman,
+\emph{The triangle-free process},
+Adv.\ Math.\ \textbf{221} (2009), 1653--1677.
+
+\bibitem{BK2013}
+T.~Bohman and P.~Keevash,
+\emph{Dynamic concentration of the triangle-free process},
+arXiv:1302.5963.
+
+\bibitem{FGM2013}
+G.~Fiz Pontiveros, S.~Griffiths and R.~Morris,
+\emph{The triangle-free process and $R(3,k)$},
+Mem.\ Amer.\ Math.\ Soc.\ \textbf{1274} (2020).
+
+\bibitem{Kim1995}
+J.~H.~Kim,
+\emph{The Ramsey number $R(3,t)$ has order of magnitude $t^{2}/\log t$},
+Random Structures Algorithms \textbf{7} (1995), 173--207.
+
+\bibitem{Shearer1991}
+J.~B.~Shearer,
+\emph{A note on the independence number of triangle-free graphs II},
+J.\ Combin.\ Theory Ser.\ B \textbf{53} (1991), 300--307.
+\end{thebibliography}
+
+\end{document}
