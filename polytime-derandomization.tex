@@ -1,0 +1,149 @@
+\documentclass[11pt]{article}
+
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref,microtype}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\F}{\mathbb{F}}
+
+\title{A polynomial-time derandomization of the two-bites construction\\
+\large (the graph, not the SOTA independence-number bound)}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Hefty--Horn--King--Pfender produce a random $n$-vertex triangle-free graph of
+degree $O(\sqrt{n\log n})$.
+We give a deterministic algorithm that, on input $n$, outputs such a graph in
+time $\mathrm{poly}(n)$: the induced subgraph of Family~$A_q$ on the first $n$
+vertices, for the least odd prime $q$ with $|A_q|\ge n$.
+Triangle-freeness, the degree bound, and the runtime are theorems.
+The SOTA bound $\alpha=O(\sqrt{n\log n})$ is not: it remains the Family~A
+leftovers in \texttt{inverse-energy.tex} and \texttt{open-edges.tex}.
+This derandomizes the \emph{construction}, not the \emph{bound}.
+\end{abstract}
+
+\section{What is being derandomized}
+
+A configuration in~\cite{HHKP2025} is a pair of sparse random graphs $G_R,G_B$
+on $N=n/\log^{2}n$ vertices, an injection into their product, and a
+deterministic cleanup.
+The configuration space is finite, so a lex-first good configuration exists
+(Family~L) but cannot be found in polynomial time.
+
+Family~A replaces the two random graphs by explicit Sidon--Cayley graphs on
+$\F_q^{2}$ and the random injection by the first $\ell=\lceil(2\log q)^{2}\rceil$
+mixed matrices in $\mathrm{GL}_2(\F_q)$.
+Cleanup is the same deterministic rule.
+The only remaining randomness was the choice of configuration; there is none.
+
+\section{The algorithm}
+
+\begin{enumerate}
+  \item On input $n\ge 1$, let $q$ be the least odd prime with
+        $q^{2}\lceil(2\log q)^{2}\rceil\ge n$.
+  \item Build $S_R=\{\pm(t,t^{2}):1\le t\le d\}$ and
+        $S_B=\{\pm(t^{2},t):1\le t\le d\}$,
+        $d=\lfloor q/(2\sqrt{\log q})\rfloor$.
+  \item Let $A_0,\dots,A_{\ell-1}$ be the first $\ell$ matrices in
+        $\mathrm{GL}_2(\F_q)$ with all entries nonzero, in colex order.
+  \item Vertices of $A_q$ are pairs $(r,i)$ with $r\in\F_q^{2}$ and
+        $0\le i<\ell$.
+        Red edges are lifts of $S_R$-edges; blue edges are lifts of $S_B$-edges
+        after applying $A_i$.
+  \item Scan red edges in colex; keep an edge iff it creates no red triangle
+        with already-kept red edges. Do the same for blue.
+        In every remaining bichromatic triangle, delete the minority colour.
+  \item Output the induced subgraph of $A_q$ on the first $n$ vertices in colex
+        order of $(r,i)$.
+\end{enumerate}
+
+Implementation: \texttt{explicit\_family.py --n $n$}.
+
+\section{What is a theorem}
+
+\begin{theorem}[Polynomial-time two-bites graph]\label{thm:algo}
+There is a deterministic algorithm that, on every $n\ge 1$, outputs an
+$n$-vertex triangle-free graph $G_n$ of maximum degree
+$O(\sqrt{n\log n})$ in time $\mathrm{poly}(n)$.
+\end{theorem}
+
+\begin{proof}
+The least prime $q$ with $|A_q|\ge n$ satisfies $q=\Theta(\sqrt{n}/\log n)$,
+so $|A_q|=\Theta(n)$.
+Listing $S_R,S_B$ is $O(d)$.
+The first $\ell$ mixed matrices are found by scanning
+$\mathrm{GL}_2$ in colex among nonzero-entry matrices; $\ell=O((\log q)^{2})$
+such matrices exist for $q\ge 5$, and the scan stops after $O(\ell)$ successes.
+The product $G_2$ has $O(nd\ell)$ edges.
+Greedy monochromatic cleanup and the bichromatic pass are $O(|E|\cdot\Delta)$
+with $\Delta=O(d\ell)$, hence $\mathrm{poly}(n)$.
+Cleanup produces a triangle-free graph; an induced subgraph of a triangle-free
+graph is triangle-free.
+Degrees in $A_q$ are $O(d\ell)=O(\sqrt{|A_q|\log |A_q|})=O(\sqrt{n\log n})$,
+and induced degrees are no larger.
+\end{proof}
+
+\begin{theorem}[What transfers from HHKP]\label{thm:transfer}
+On $G_n$ as above, the following are deterministic and match the corresponding
+HHKP inputs:
+Sidon codegree $O(1)$ on each seed; $G_2$-codegree $O(\ell^{2})$;
+open $G_2$-edges survive cleanup, so $\alpha(G_n)\le\alpha(H)$ for the open
+subgraph $H\subseteq G_2$;
+and $\alpha(G_2)\le\ell\min(\alpha(G_R),\alpha(G_B))$.
+\end{theorem}
+
+These are the lemmas already proved in \texttt{explicit-family.tex},
+\texttt{family-a-independence.tex}, and Lean
+(\texttt{parabola\_sidon}, \texttt{lift\_card}, \texttt{openEdges\_cliqueFree}).
+
+\section{What is not a theorem}
+
+\begin{conjecture}[SOTA for the derandomized graph]
+$\alpha(G_n)=O(\sqrt{n\log n})$.
+\end{conjecture}
+
+This is Conjecture~A of \texttt{explicit-family.tex}.
+It needs:
+\begin{enumerate}
+  \item $\alpha(G_R)=O(q\log q)$, whose leftover is the intermediate-energy
+        window on fibres of size in $(q^{1/3}(\log q)^{-O(1)},q/3)$;
+  \item the open-edge lemma at scale $C\sqrt{n\log n}$, whose leftover is
+        medium-star incidences (light stars are under control at the weaker
+        target $C\sqrt{n}\,(\log n)^{5}$).
+\end{enumerate}
+
+A PRG or method-of-conditional-probabilities derandomization of the original
+HHKP measure is a different algorithm and is not used here.
+The seed-length obstruction
+$\Omega(\log\binom{n}{k})=\Omega(\sqrt{n}\,(\log n)^{3/2})$
+still forbids a polylog-seed PRG that fools every $k$-set.
+
+\section{What this changes}
+
+The two-bites \emph{graph} is now a deterministic polynomial-time function of
+$n$.
+The two-bites \emph{bound} is not.
+Family~L remains the only complete SOTA object.
+Alon's Dual-BCH graphs remain the best proved polynomial-time explicit
+Ramsey bound, $\Omega(k^{3/2})$.
+
+\begin{thebibliography}{9}
+\bibitem{HHKP2025}
+Z.~Hefty, P.~Horn, D.~King and F.~Pfender,
+\emph{Improving $R(3,k)$ in just two bites},
+arXiv:2510.19718, 2025.
+\end{thebibliography}
+
+\end{document}

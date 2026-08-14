@@ -5,70 +5,46 @@ Target: Hefty–Horn–King–Pfender (arXiv:2510.19718)
 R(3,k)\ge\Bigl(\tfrac12+o(1)\Bigr)\frac{k^2}{\log k}.
 \]
 
----
+## Status
 
-## Did we get a concrete family?
+| Object | What is deterministic | SOTA \(\alpha\) | Time |
+|--------|----------------------|-----------------|------|
+| HHKP random two bites | cleanup only | **Theorem** (whp) | n/a (random) |
+| Counting rewrite (`sota-combinatorial.tex`) | cleanup + existence | **Theorem** | n/a (counting) |
+| **L** lex-first good config | entire graph | **Theorem** | exponential |
+| **A** algebraic two bites | entire graph | **Conjecture** | \(\mathrm{poly}(n)\) |
+| Alon Dual-BCH | entire graph | \(\Omega(k^{3/2})\) only | \(\mathrm{poly}(n)\) |
 
-**Yes, two of them.** Only one has a complete SOTA proof.
+The construction is derandomized in polynomial time. The SOTA bound is not.
 
-| Family | Graph | SOTA $\alpha$ bound | Efficient? |
-|--------|--------|----------------------|------------|
-| **L** (lex-first good config) | $L_n=\mathrm{Clean}(\omega_n^\star)$ | **Theorem** | No ($\exp(\Theta(n^2/\log^4 n))$ search) |
-| **A** (algebraic two bites) | $A_q$ on $n=q^2\lceil(2\log q)^2\rceil$ vertices | **Conjecture** | Yes, $\mathrm{poly}(n)$ |
+## Polynomial-time algorithm
 
-Best *proven + polynomial-time* explicit bound is still Alon's $\Omega(k^{3/2})$.
-
----
-
-## Family L — named graphs, SOTA proved
-
-Order every HHKP configuration lexicographically. Let $\omega_n^\star$ be the first one whose cleaned graph has $\alpha<(1+\varepsilon)\sqrt{n\log n}$. Set $L_n=\mathrm{Clean}(\omega_n^\star)$.
-
-The counting proof shows a good configuration exists, so $L_n$ is well-defined and meets SOTA. This is a concrete family, not a poly-time construction.
-
----
-
-## Family A — explicit algebraic graphs
-
-For each odd prime $q$:
-
-1. **Seeds.** Cayley graphs on $\mathbb{F}_q^2$ with Sidon connection sets
-   - red: truncated parabola $\{(t,t^2):1\le t\le d\}\cup\text{negatives}$
-   - blue: transpose $\{(t^2,t):1\le t\le d\}\cup\text{negatives}$
-   - $d=\lfloor q/(2\sqrt{\log q})\rfloor$
-2. **Sample.** Vertex set = $\ell$ mixed $\mathrm{GL}_2(\mathbb{F}_q)$ maps (all-nonzero entries preferred), $\ell=\lceil(2\log q)^2\rceil$. Horizontal shears are not used.
-3. **Cleanup.** Same deterministic rule as HHKP.
-
-**Proved:** triangle-free, degree $O(\sqrt{n\log n})$, poly-time; $G_2$-independent sets are lifts of seed-independent sets; heavy/vertical seed independent sets have size $O(q\sqrt{\log q})$; a tight 4-interval of medium fibres is impossible for $q>3$; mixing $T$-dense fibres give $|A|=O(q\sqrt{\log q})$; aligned AP-cylinders give $O(q\log q)$; structured $(A,B)$ incidences are $o(\sqrt{n\log n})$; open edges survive cleanup; heavy closed stars contribute $O(\sqrt{n\log n})$. See `family-a-independence.tex`, `energy-increment.tex`, `incidences.tex`, `open-edges.tex`.
-
-**Not proved:** the inverse-energy lemma for non-AP fibres (so $\alpha(G_R)=O(q\log q)$ is still conditional), and the medium-star / light-star second-moment estimates that finish the open-edge lemma at the SOTA scale.
-
-Implementation: `explicit_family.py`
+On input \(n\), output the induced subgraph of \(A_q\) on the first \(n\) vertices, where \(q\) is the least odd prime with \(|A_q|\ge n\).
 
 ```bash
+python3 explicit_family.py --n 50
 python3 explicit_family.py 7 --diagnose
 ```
 
-**Construction fix:** horizontal shears preserve $x$ and leave every vertical line $G_2$-independent of size $q\ell=\Theta(\sqrt{n}\log q)$, above the SOTA target. The sample now uses the first $\ell$ matrices in $\mathrm{GL}_2(\mathbb{F}_q)$ with all-nonzero entries preferred. After the fix, the $x$-axis lift has blue edges again (`--diagnose`).
+Details: [`polytime-derandomization.tex`](polytime-derandomization.tex).
 
-Structured seed independent sets (lines, function graphs, axis-aligned packings) are $O(q\log q)$; see `structured-cases.tex`.
+**Proved:** triangle-free, degree \(O(\sqrt{n\log n})\), time \(\mathrm{poly}(n)\).
 
-```bash
-python3 explicit_family.py 3
-python3 explicit_family.py 5
-```
+**Not proved:** \(\alpha(G_n)=O(\sqrt{n\log n})\). Leftovers: intermediate-energy fibres, medium-star incidences.
 
-Small $q$ is too sparse ($d=1$) and greedy independent sets are larger than the SOTA target — as expected. The scaling is asymptotic.
+## Why not a PRG or conditional probabilities
 
----
+A generator that fools every \(k\)-set needs seed length \(\Omega(\sqrt{n}\,(\log n)^{3/2})\). Enumerating those seeds is not polynomial. Method of conditional probabilities needs an efficiently computable proxy for surviving bad \(k\)-sets that keeps the constant \(\tfrac12\); none is known.
+
+Family A is a different algorithm: replace the random seeds and the random injection by explicit algebra, then clean deterministically.
 
 ## Files
 
 | File | Role |
 |------|------|
-| `explicit-family.tex` | Definitions, proofs, conjecture |
-| `energy-increment.tex` | Seed independence dichotomy |
-| `open-edges.tex` | Deterministic closed-pair buckets |
-| `incidences.tex` | Structured $G_2$-incidences |
-| `explicit_family.py` | Constructor for $A_q$ |
-| `sota-combinatorial.tex` | Counting existence proof used by Family L |
+| [`polytime-derandomization.tex`](polytime-derandomization.tex) | Algorithm, runtime, honesty bound |
+| [`explicit_family.py`](explicit_family.py) | Constructor (`--n` or `q`) |
+| [`explicit-family.tex`](explicit-family.tex) | Family L and Family A |
+| [`sota-combinatorial.tex`](sota-combinatorial.tex) | Counting existence proof (Family L) |
+| [`inverse-energy.tex`](inverse-energy.tex) | Seed leftover |
+| [`open-edges.tex`](open-edges.tex) | Cleanup leftover |

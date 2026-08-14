@@ -46,6 +46,8 @@ The SOTA independence-number bound for $A_q$ is **not** Lean-verified.
 
 Until both are written, Family A is not a new explicit Ramsey bound. The inverse-energy gap is no longer a Freiman loss $q^\delta$.
 
+The *graph* is a deterministic polynomial-time function of \(n\) (`explicit_family.py --n`). See [`polytime-derandomization.tex`](polytime-derandomization.tex).
+
 ## Small-$q$ checks
 
 Greedy $\alpha(G_R)$ is $2q$–$3q$ (a vertical packing). Tight 4-intervals: $0$. At $q=3,5,7$ the cleaned graph is triangle-free; greedy $\alpha(A_q)$ is still above the SOTA target because $d$ is tiny. The scaling is asymptotic.

@@ -81,25 +81,19 @@ class FamilyA:
         return self._pack(x1 - x2, y1 - y2)
 
     def _gl2_list(self) -> list[tuple[int, int, int, int]]:
-        """ell mixed invertible maps: prefer all entries nonzero (no axis preserved)."""
+        """First `ell` mixed invertible maps (all entries nonzero)."""
         q = self.q
         mixed: list[tuple[int, int, int, int]] = []
-        rest: list[tuple[int, int, int, int]] = []
-        for a in range(q):
-            for b in range(q):
-                for c in range(q):
-                    for d in range(q):
+        for a in range(1, q):
+            for b in range(1, q):
+                for c in range(1, q):
+                    for d in range(1, q):
                         if (a * d - b * c) % q == 0:
                             continue
-                        mat = (a, b, c, d)
-                        if min(a, b, c, d) > 0:
-                            mixed.append(mat)
-                        else:
-                            rest.append(mat)
-        mats = mixed + rest
-        if len(mats) < self.ell:
-            raise RuntimeError("F_q too small for ell invertible shears")
-        return mats[: self.ell]
+                        mixed.append((a, b, c, d))
+                        if len(mixed) >= self.ell:
+                            return mixed
+        raise RuntimeError("F_q too small for ell mixed invertible shears")
 
     def _shear(self, r: int, i: int) -> int:
         x, y = self._xy(r)
@@ -342,10 +336,52 @@ class FamilyA:
             "triangle_free": float(self.is_triangle_free()),
         }
 
+    @staticmethod
+    def order_of(q: int) -> int:
+        ell = max(1, math.ceil((2.0 * math.log(q)) ** 2))
+        return q * q * ell
+
+    @classmethod
+    def prime_for_order(cls, n: int) -> int:
+        """Smallest odd prime q with |A_q| >= n."""
+        if n < 1:
+            raise ValueError("n must be positive")
+        q = 3
+        while cls.order_of(q) < n:
+            q = next_odd_prime(q + 1)
+        return q
+
+    def induced(self, n: int) -> set[tuple[int, int]]:
+        """Edges of the induced subgraph on the first n vertices (colex of (r,i))."""
+        if n > self.n:
+            raise ValueError("n larger than |A_q|")
+        return {(u, v) for u, v in self.edges if u < n and v < n}
+
+
+def build_for_n(n: int) -> tuple[FamilyA, set[tuple[int, int]]]:
+    """Deterministic poly-time map n |-> an n-vertex triangle-free graph."""
+    q = FamilyA.prime_for_order(n)
+    G = FamilyA(q)
+    return G, G.induced(n)
+
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Build algebraic two-bites graph A_q")
-    parser.add_argument("q", type=int, help="odd prime (or next odd prime is used)")
+    parser = argparse.ArgumentParser(
+        description="Deterministic poly-time two-bites graph (Family A)"
+    )
+    parser.add_argument(
+        "q",
+        type=int,
+        nargs="?",
+        default=None,
+        help="odd prime (or next odd prime is used)",
+    )
+    parser.add_argument(
+        "--n",
+        type=int,
+        default=None,
+        help="output an n-vertex induced subgraph of the least A_q with |A_q|>=n",
+    )
     parser.add_argument(
         "--exact-prime",
         action="store_true",
@@ -362,6 +398,23 @@ def main() -> None:
         help="only build the seeds; report greedy alpha(G_R) and fibre profile",
     )
     args = parser.parse_args()
+    if args.n is not None:
+        if args.n < 1:
+            raise SystemExit("n must be positive")
+        G, edges = build_for_n(args.n)
+        deg = [0] * args.n
+        for u, v in edges:
+            deg[u] += 1
+            deg[v] += 1
+        print(f"n: {args.n}")
+        print(f"q: {G.q}")
+        print(f"A_q_order: {G.n}")
+        print(f"edges: {len(edges)}")
+        print(f"avg_degree: {(2.0 * len(edges) / args.n) if args.n else 0.0}")
+        print(f"max_degree: {max(deg) if deg else 0}")
+        return
+    if args.q is None:
+        raise SystemExit("provide q, or --n")
     q = args.q if args.exact_prime else next_odd_prime(args.q)
     if args.exact_prime and (q < 3 or not is_prime(q) or q == 2):
         raise SystemExit("q must be an odd prime")

@@ -26,6 +26,7 @@ R(3,k)
 See [`explicit-family.tex`](explicit-family.tex) and [`explicit_family.py`](explicit_family.py).
 
 ```bash
+python3 explicit_family.py --n 50
 python3 explicit_family.py 5
 python3 explicit_family.py 13 --seed
 python3 explicit_family.py 7 --diagnose
@@ -45,7 +46,8 @@ python3 explicit_family.py 7 --diagnose
 | [`energy-increment.tex`](energy-increment.tex) | Structure vs randomness for $\alpha(G_R)$ |
 | [`inverse-energy.tex`](inverse-energy.tex) | Medium-fibre clustering; exact/near-max packing; intermediate-energy leftover |
 | [`open-edges.tex`](open-edges.tex) | Sidon rewrite of the HHKP closed-pair buckets |
-| [`explicit_family.py`](explicit_family.py) | Constructor for $A_q$ |
+| [`polytime-derandomization.tex`](polytime-derandomization.tex) | Deterministic poly-time two-bites algorithm (graph, not SOTA $\alpha$) |
+| [`explicit_family.py`](explicit_family.py) | Constructor: `--n` or $q$ |
 | [`sota-combinatorial.tex`](sota-combinatorial.tex) | Counting proof of the $\tfrac12$ bound |
 | [`PRESENTATION.md`](PRESENTATION.md) | Talk outline for the Bohman-order combinatorial nibble |
 | [`combinatorial-proof.tex`](combinatorial-proof.tex) | Combinatorial nibble proof of $\Omega(t^2/\log t)$ |
@@ -69,7 +71,7 @@ It does **not** verify the conjectural SOTA bound for Family A.
 ## Derandomization status
 
 - **Counting existence proof of the SOTA $\tfrac12$ bound:** yes — see `sota-combinatorial.tex`.
-- **Fully explicit construction at $\tfrac12$:** no; best explicit remains $\Omega(k^{3/2})$ (Alon).
+- **Fully explicit construction at $\tfrac12$:** graph yes, bound no; best proved explicit remains $\Omega(k^{3/2})$ (Alon).
 - **Lean-verified Family A core:** yes — see [`lean/README.md`](lean/README.md). Not a SOTA proof.
 - **HHKP $1/2$-conjecture (upper bound):** not proved. Occupancy / bounded-fugacity methods are blocked; see [`hhkp-conjecture.tex`](hhkp-conjecture.tex).
 
