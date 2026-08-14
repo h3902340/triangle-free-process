@@ -1,0 +1,315 @@
+\documentclass[11pt]{article}
+
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref,microtype}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{construction}[theorem]{Construction}
+
+\newcommand{\F}{\mathbb{F}}
+\newcommand{\bin}[2]{\binom{#1}{#2}}
+\newcommand{\eps}{\varepsilon}
+
+\title{Concrete families of triangle-free Ramsey graphs\\
+aiming at the SOTA bound $R(3,k)\ge(\tfrac12+o(1))k^{2}/\log k$}
+\author{Notes after Hefty--Horn--King--Pfender}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We specify two concrete families of $n$-vertex triangle-free graphs intended to witness
+\[
+  R(3,k)\;\ge\;\Bigl(\tfrac12+o(1)\Bigr)\frac{k^{2}}{\log k}.
+\]
+Family~L (lex-first good configuration) is uniquely determined and inherits the SOTA existence proof; it is not polynomial-time constructible.
+Family~A (algebraic two bites) is polynomial-time constructible: two Sidon--Cayley graphs on $\F_q^{2}$ with transpose parabolas, sampled along an explicit family of affine shears, then deterministically cleaned.
+We prove that Family~A is triangle-free, has the intended degree and codegree, and can be built in time $\mathrm{poly}(n)$.
+The SOTA independence-number bound for Family~A is stated as a conjecture; the missing step is a Weil-type hitting estimate for open pairs inside every large set.
+A reference implementation is \texttt{explicit\_family.py}.
+\end{abstract}
+
+\section{The target}
+
+A family $(G_n)$ of triangle-free $n$-vertex graphs with
+\begin{equation}\label{eq:target}
+  \alpha(G_n)\;<\;(1+\eps)\sqrt{n\log n}
+\end{equation}
+yields $R(3,k)\ge(\tfrac12+o(1))k^{2}/\log k$.
+Hefty--Horn--King--Pfender~\cite{HHKP2025} prove that a \emph{random} two-bites configuration satisfies~\eqref{eq:target} with high probability.
+We turn that into named graphs.
+
+\section{Family L: the lex-first good configuration}
+
+This family is completely concrete and the SOTA bound is a theorem.
+It is not an efficient construction.
+
+\begin{construction}[Family L]\label{con:L}
+Fix $\eps\in(0,1/100)$ and $n$ large.
+Let $N=n/\log^{2}n$, $V_{R}=\{1,\dots,N\}$, $V_{B}=\{N+1,\dots,2N\}$.
+A \emph{configuration} is a triple $\omega=(G_{R},G_{B},\varphi)$ with $G_{R}$ a graph on $V_{R}$, $G_{B}$ a graph on $V_{B}$, and $\varphi\colon[n]\hookrightarrow V_{R}\times V_{B}$ injective.
+
+Order $\Omega$ lexicographically by:
+the $N\choose 2$ possible red edges in colex order (bit-string of $G_{R}$),
+then the blue edges,
+then the characteristic vector of $\varphi([n])$ inside $V_{R}\times V_{B}$.
+
+Let $\mathrm{Clean}(\omega)$ be the deterministic cleanup of~\cite{HHKP2025}
+(lexicographic greedy rejection of monochromatic triangles, then deletion of the minority colour in each remaining bichromatic triangle).
+
+Let $\omega_{n}^{\star}$ be the \emph{least} configuration such that
+\[
+  \alpha\bigl(\mathrm{Clean}(\omega)\bigr)\;<\;(1+\eps)\sqrt{n\log n}.
+\]
+Set $L_n:=\mathrm{Clean}(\omega_{n}^{\star})$.
+\end{construction}
+
+\begin{theorem}[SOTA, lex-first]\label{thm:L}
+For every $\eps>0$ and all large $n$, the graph $L_n$ exists, is triangle-free, has $n$ vertices, and satisfies~\eqref{eq:target}.
+Hence
+\[
+  R(3,k)\;\ge\;\Bigl(\tfrac12+o(1)\Bigr)\frac{k^{2}}{\log k}.
+\]
+\end{theorem}
+
+\begin{proof}
+The counting rewrite of~\cite{HHKP2025} (see \texttt{sota-combinatorial.tex}) shows that a positive fraction of $\Omega$ is good.
+A nonempty finite set of good configurations has a least element.
+Cleanup produces a triangle-free graph.
+\end{proof}
+
+\begin{remark}[Complexity]
+Finding $\omega_{n}^{\star}$ by brute force takes $\exp(\Theta(N^{2}))=\exp(\Theta(n^{2}/\log^{4}n))$ time.
+This is a well-defined family, not a polynomial-time one.
+The best \emph{polynomial-time} explicit triangle-free Ramsey graphs remain Alon's Dual-BCH Cayley graphs~\cite{Alon1994}, which give only $R(3,k)=\Omega(k^{3/2})$.
+\end{remark}
+
+\section{Family A: algebraic two bites}
+
+We now give a polynomial-time family that copies the HHKP template with no randomness.
+
+\subsection{Seed graphs}
+
+Let $q$ be an odd prime and write $\Gamma=\F_{q}^{2}$ additively.
+The \emph{parabola}
+\[
+  P \;=\; \bigl\{\,(t,t^{2}):t\in\F_{q}\,\bigr\}
+\]
+is a Sidon set in $\Gamma$: every nonzero difference has at most one representation $p-p'$ with $p,p'\in P$ (equivalently, the map $(x,y)\mapsto(x-y,x^{2}-y^{2})$ is injective on unordered pairs).
+The \emph{transpose parabola} is $P^{\top}=\{(t^{2},t):t\in\F_{q}\}$.
+
+\begin{construction}[Sidon--Cayley seeds]\label{con:seeds}
+Let
+\[
+  d \;=\; \Bigl\lfloor \frac{q}{2\sqrt{\log q}}\Bigr\rfloor,
+  \qquad
+  T \;=\; \{1,2,\dots,d\}\subset\F_{q}
+\]
+(identifying $\F_{q}$ with $\{0,1,\dots,q-1\}$).
+Set
+\begin{align*}
+  S_{R} &\;=\; \bigl\{\,(t,t^{2}):t\in T\,\bigr\}\;\cup\;\bigl\{\,(-t,-t^{2}):t\in T\,\bigr\},\\
+  S_{B} &\;=\; \bigl\{\,(t^{2},t):t\in T\,\bigr\}\;\cup\;\bigl\{\,(-t^{2},-t):t\in T\,\bigr\}.
+\end{align*}
+Let $G_{R}=\mathrm{Cay}(\Gamma,S_{R})$ and $G_{B}=\mathrm{Cay}(\Gamma,S_{B})$ be the undirected Cayley graphs
+(no loops: $0\notin S_{R}\cup S_{B}$).
+\end{construction}
+
+\begin{lemma}[Codegrees]\label{lem:sidon}
+For all distinct $u,v\in\Gamma$,
+\[
+  \bigl|N_{G_{R}}(u)\cap N_{G_{R}}(v)\bigr|\;\le\;2,
+  \qquad
+  \bigl|N_{G_{B}}(u)\cap N_{G_{B}}(v)\bigr|\;\le\;2.
+\]
+Both graphs are $2d$-regular on $N=q^{2}$ vertices.
+\end{lemma}
+
+\begin{proof}
+A common neighbour of $0$ and $w\neq 0$ in $G_{R}$ is an $x$ with $x,x-w\in S_{R}$.
+That is a representation of $w$ as a difference of two elements of the Sidon set $P\cap(\F_{T}\times\F_{q})$ enlarged by a sign.
+At most two signed representations exist.
+Regularity is $|S_{R}|=2d$.
+\end{proof}
+
+The two connection sets are incoherent: $S_{R}$ is supported on a graph of $t\mapsto t^{2}$, $S_{B}$ on the transpose.
+A line that is independent in $G_{R}$ (e.g.\ the $x$-axis, whose differences miss $P\setminus\{0\}$) is typically \emph{not} independent in $G_{B}$.
+This is the algebraic analogue of ``each bite kills the leftover independent sets of the other''.
+
+\subsection{Explicit sample}
+
+HHKP sample $n$ vertices of $\Gamma\times\Gamma$ uniformly.
+We take an explicit biregular incidence set of the same density.
+
+\begin{construction}[Affine shears]\label{con:sample}
+Let
+\[
+  \ell \;=\; \bigl\lceil (2\log q)^{2}\bigr\rceil,
+  \qquad
+  n \;=\; q^{2}\,\ell.
+\]
+For $i\in\{0,1,\dots,\ell-1\}$ define the invertible $\F_{q}$-affine map $A_{i}\colon\Gamma\to\Gamma$ by
+\[
+  A_{i}(x,y) \;=\; \bigl(x,\; y+ix\bigr)
+\]
+(the $i$-th horizontal shear; $\det=1$).
+The vertex set of the sampled product is
+\[
+  W_{q} \;=\; \bigl\{\,\bigl(r,\,A_{i}(r)\bigr):r\in\Gamma,\; 0\le i<\ell\,\bigr\}\;\subset\;\Gamma\times\Gamma.
+\]
+Thus $|W_{q}|=n$, each red vertex $r$ appears in exactly $\ell$ points of $W_{q}$, and each blue vertex $b$ appears in exactly $\ell$ points
+(for each $i$ there is a unique $r$ with $A_{i}(r)=b$, namely $r=A_{i}^{-1}(b)$).
+\end{construction}
+
+Write $G_{1}=G_{R}\boxtimes G_{B}$ for the strong product on $\Gamma\times\Gamma$, and $G_{2}=G_{1}[W_{q}]$.
+
+\subsection{Deterministic cleanup}
+
+\begin{construction}[Family A]\label{con:A}
+Order the red edges of $G_{2}$ by colex of their $\Gamma$-endpoints (first red coordinate, then the other).
+Scan in that order; keep a red edge iff it creates no monochromatic red triangle with already-kept red edges.
+Then do the same for blue edges.
+Then, from every remaining bichromatic triangle with two blue edges, delete the red edge;
+from every remaining bichromatic triangle with two red edges, delete the blue edge.
+
+Let $A_{q}$ be the resulting graph on $W_{q}$.
+\end{construction}
+
+\begin{theorem}[What is proved for Family A]\label{thm:A-uncond}
+For every odd prime $q\ge 5$:
+\begin{enumerate}
+  \item $A_{q}$ is triangle-free on $n=q^{2}\lceil(2\log q)^{2}\rceil$ vertices;
+  \item $A_{q}$ is constructible in time $O(n^{2}d)=O(n^{2}q/\sqrt{\log q})=\mathrm{poly}(n)$;
+  \item every vertex has degree at most $4d\ell=O(q\ell/\sqrt{\log q})=O(\sqrt{n\log n})$;
+  \item every pair of vertices has at most $O(\ell^{2})$ common neighbours in $G_{2}$ before cleanup.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+(1) is the cleanup.
+(2): listing $S_{R},S_{B}$ is $O(d)$; listing $W_{q}$ is $O(n)$; each vertex has $O(d\ell)$ product-neighbours, so the edge list of $G_{2}$ has size $O(nd\ell)$ and cleanup is a constant number of passes.
+(3): a vertex $(r,A_{i}(r))$ has at most $2d$ red neighbours in $G_{R}$, each with $\ell$ lifts, and likewise $2d\ell$ blue lifts.
+(4): two distinct points of $W_{q}$ have red projections $r,r'$ and blue projections $b,b'$.
+A common neighbour is specified by a pair of shears and a vertex of $\Gamma$ adjacent to both red (or both blue) projections; Lemma~\ref{lem:sidon} gives $O(1)$ choices in each seed, and $O(\ell^{2})$ choices of shear indices.
+\end{proof}
+
+The degree matches the HHKP scale:
+\[
+  \sqrt{n\log n}
+  \;=\;
+  \Theta\bigl(q\log q\cdot\log^{1/2}q\bigr)
+  \;=\;
+  \Theta\bigl(q\,\ell^{1/2}\log^{1/2}q\bigr),
+\]
+while $4d\ell=\Theta(q\ell/\sqrt{\log q})=\Theta(q\log^{3/2}q)$, the same order.
+
+\section{The independence number of Family A}
+
+\begin{conjecture}[SOTA for Family A]\label{conj:A}
+For every $\eps>0$ and all large primes $q$,
+\[
+  \alpha(A_{q})\;<\;(1+\eps)\sqrt{n\log n}.
+\]
+\end{conjecture}
+
+\subsection{Why the conjecture is plausible}
+
+The HHKP argument has three combinatorial steps, of which two transfer immediately.
+
+\begin{enumerate}
+  \item \emph{Typical degrees and codegrees.}
+    Lemma~\ref{lem:sidon} and Theorem~\ref{thm:A-uncond}(3)--(4) are the deterministic replacements of~\cite[Lemma~3.1]{HHKP2025}.
+    The codegree is $O(\ell^{2})=O(\log^{4}q)$, in the same polylog class as their $O(\log^{3}n)$.
+
+  \item \emph{Open pairs survive cleanup.}
+    A pair in $W_{q}$ with no common neighbour in $G_{2}$ cannot lie in a triangle, so if it is an edge of $G_{2}$ it is kept.
+    Thus: if every $k$-set $I$ has an \emph{open} $G_{2}$-edge, then $\alpha(A_{q})<k$.
+
+  \item \emph{Hitting open pairs.}
+    In~\cite{HHKP2025} the remaining open pairs inside $\pi_{R}(I)$ are still independent random edges of $G(N,p)$.
+    Here they are a deterministic subset $H_{I}\subset\bin{\pi_{R}(I)}{2}$, and we need
+    \[
+      \bigl(H_{I}-H_{I}\bigr)\;\cap\;S_{R}\;\ne\;\emptyset
+      \quad\text{or the blue analogue.}
+    \]
+    If the bucket lemmas (few pairs closed by heavy/medium/light vertices) hold for shears+Sidon as they do for $G(N,p)$, then $|H_{I}|=\Omega(k^{2})$ whenever $|I|\ge(1+\eps)\sqrt{n\log n}$.
+    The Cayley graph $G_{R}$ is an expander: Weil's bound on
+    \[
+      \sum_{t\in T}\psi\bigl(a t+b t^{2}\bigr)
+    \]
+    gives nontrivial eigenvalues $O(\sqrt{q})$ against degree $\Theta(q/\sqrt{\log q})$.
+    Expander mixing then hits every dense $H_{I}$.
+\end{enumerate}
+
+Step~3 is not written out as a complete character-sum argument in these notes.
+The obstacle is not conceptual --- it is a uniform estimate, over all $k$-sets, that the closed-pair graph is sparse.
+That estimate is elementary for $G(N,p)$ (Chernoff) and geometric for Family~A (incidences between shears and parabolas).
+We do not claim it here.
+
+\subsection{A barrier example that the second bite is necessary}
+
+The $x$-axis $X=\F_{q}\times\{0\}\subset\Gamma$ is independent in $G_{R}$: $X-X=X$ meets $P$ only at the origin.
+Its full lift
+\[
+  \widetilde{X} \;=\; \bigl\{\bigl((t,0),\,A_{i}(t,0)\bigr):t\in\F_{q},\;0\le i<\ell\bigr\}
+\]
+has size $q\ell=\Theta(\sqrt{n}\,\log q)$.
+Without $G_{B}$ this would already give $\alpha=\Omega(\sqrt{n}\log q)$, losing the SOTA constant and a log factor.
+Blue edges on $\widetilde{X}$ are differences $A_{i}(t,0)-A_{j}(t',0)$, i.e.\ images of $X$ under shears.
+Those lines meet $P^{\top}$ for generic $i,j$ (one Weil solution).
+So the second bite does cut $\widetilde{X}$.
+This is the algebraic form of the HHKP heuristic, and it is the reason we use a \emph{transpose} parabola rather than two copies of $P$.
+
+\subsection{What we do \emph{not} claim}
+
+Family~A is \emph{not} yet a proof of the SOTA bound.
+Until Conjecture~\ref{conj:A} is proved, the best fully explicit bound remains
+\[
+  R(3,k)\;=\;\Omega(k^{3/2})
+\]
+due to Alon~\cite{Alon1994}.
+Spectral methods alone cannot reach~\eqref{eq:target}: every triangle-free $n$-vertex graph has Lov\'asz $\vartheta=\Omega(\sqrt{n})$, and Alon's graphs saturate $\vartheta=\Theta(n^{2/3})$.
+
+\section{Parameters at a glance}
+
+\begin{center}
+\begin{tabular}{lcc}
+\hline
+ & HHKP random & Family A \\
+\hline
+seed order $N$ & $n/\log^{2}n$ & $q^{2}$ \\
+seed degree & $\Theta(\sqrt{N}/\sqrt{\log n})$ & $2d=\Theta(q/\sqrt{\log q})$ \\
+sample & uniform $n$-subset & $\ell$ shears, $\ell=\lceil(2\log q)^{2}\rceil$ \\
+$n$ & given & $q^{2}\ell$ \\
+cleanup & deterministic & the same rule \\
+$\alpha$ bound & theorem, $\tfrac12$ & Conjecture~\ref{conj:A} \\
+\hline
+\end{tabular}
+\end{center}
+
+\section{Implementation}
+
+The module \texttt{explicit\_family.py} builds $A_{q}$ for a given odd prime $q$, checks triangle-freeness on small instances, and reports $n$, $e(A_{q})$, and a greedy lower bound on $\alpha(A_{q})$.
+
+\begin{thebibliography}{9}
+\bibitem{HHKP2025}
+Z.~Hefty, P.~Horn, D.~King and F.~Pfender,
+\emph{Improving $R(3,k)$ in just two bites},
+arXiv:2510.19718, 2025.
+
+\bibitem{Alon1994}
+N.~Alon,
+\emph{Explicit Ramsey graphs and orthonormal labelings},
+Electron.\ J.\ Combin.\ \textbf{1} (1994), \#R12.
+\end{thebibliography}
+
+\end{document}

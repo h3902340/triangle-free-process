@@ -1,50 +1,56 @@
-# Derandomizing the SOTA lower bound — attempt
+# Derandomizing the SOTA lower bound
 
 Target: Hefty–Horn–King–Pfender (arXiv:2510.19718)
 \[
 R(3,k)\ge\Bigl(\tfrac12+o(1)\Bigr)\frac{k^2}{\log k}.
 \]
 
-Full write-up: [`sota-combinatorial.tex`](sota-combinatorial.tex).
+---
+
+## Did we get a concrete family?
+
+**Yes, two of them.** Only one has a complete SOTA proof.
+
+| Family | Graph | SOTA $\alpha$ bound | Efficient? |
+|--------|--------|----------------------|------------|
+| **L** (lex-first good config) | $L_n=\mathrm{Clean}(\omega_n^\star)$ | **Theorem** | No ($\exp(\Theta(n^2/\log^4 n))$ search) |
+| **A** (algebraic two bites) | $A_q$ on $n=q^2\lceil(2\log q)^2\rceil$ vertices | **Conjecture** | Yes, $\mathrm{poly}(n)$ |
+
+Best *proven + polynomial-time* explicit bound is still Alon's $\Omega(k^{3/2})$.
 
 ---
 
-## Verdict
+## Family L — named graphs, SOTA proved
 
-| Kind of derandomization | Result |
-|-------------------------|--------|
-| **Counting / existence** (no prob language, no DE, no nibble) | **Done** — same constant $\tfrac12$ |
-| **Deterministic cleanup** | **Done** — already deterministic in HHKP |
-| **Fully explicit construction** | **Not done** — still open; best explicit is $\Omega(k^{3/2})$ |
+Order every HHKP configuration lexicographically. Let $\omega_n^\star$ be the first one whose cleaned graph has $\alpha<(1+\varepsilon)\sqrt{n\log n}$. Set $L_n=\mathrm{Clean}(\omega_n^\star)$.
 
-We derandomized the *proof style*. We did **not** produce an explicit graph family matching $\tfrac12$.
+The counting proof shows a good configuration exists, so $L_n$ is well-defined and meets SOTA. This is a concrete family, not a poly-time construction.
 
 ---
 
-## What we did
+## Family A — explicit algebraic graphs
 
-1. Configuration space $\Omega$ = (graphs on $V_R$) × (graphs on $V_B$) × (injections $[n]\hookrightarrow V_R\times V_B$) is finite.
-2. $\mathrm{Clean}(G_R,G_B,\varphi)$ is a deterministic triangle-deletion rule.
-3. Chernoff / McDiarmid → binomial-fraction lemmas (counting tails).
-4. Double count: fraction of configurations with $\alpha(\mathrm{Clean})\ge k$ is $o(1)$.
-5. Hence some configuration yields a triangle-free $n$-vertex graph with $\alpha<(1+\varepsilon)\sqrt{n\log n}$.
+For each odd prime $q$:
 
-No probability, no differential equations, no nibble, no martingales.
+1. **Seeds.** Cayley graphs on $\mathbb{F}_q^2$ with Sidon connection sets
+   - red: truncated parabola $\{(t,t^2):1\le t\le d\}\cup\text{negatives}$
+   - blue: transpose $\{(t^2,t):1\le t\le d\}\cup\text{negatives}$
+   - $d=\lfloor q/(2\sqrt{\log q})\rfloor$
+2. **Sample.** Vertex set = $\ell$ horizontal shears $A_i(x,y)=(x,y+ix)$, $\ell=\lceil(2\log q)^2\rceil$.
+3. **Cleanup.** Same deterministic rule as HHKP.
 
----
+**Proved:** triangle-free, degree $O(\sqrt{n\log n})$, codegrees $O(\log^4 q)$, poly-time constructible.
 
-## Why full explicit derandomization fails (for now)
+**Not proved:** $\alpha(A_q)<(1+\varepsilon)\sqrt{n\log n}$. That needs a uniform Weil/incidence estimate that every large set still has an open seed edge (the random step in HHKP).
 
-- Must kill $\binom{n}{k}=\exp\bigl(\Theta(\sqrt{n}(\log n)^{3/2})\bigr)$ potential independent sets.
-- Any PRG fooling all of them needs seed $\Omega(\sqrt{n}(\log n)^{3/2})$.
-- Spectral / $\vartheta$-function proofs cannot beat $\alpha=\Omega(n^{1/2})$ for triangle-free graphs → explicit barrier at $R(3,k)=\Omega(k^{3/2})$ (Alon).
-- Polarity / Paley substitutes for $G_R,G_B$ have the wrong density or unproven independence-number control after the product step.
+Implementation: `explicit_family.py`
 
----
+```bash
+python3 explicit_family.py 3
+python3 explicit_family.py 5
+```
 
-## Talk points (2–3 min)
-
-> “The SOTA $\tfrac12$ bound can be told as a pure counting argument: average over two sparse graphs and an embedding, clean triangles by a fixed greedy rule, and count. That removes process analysis entirely. Turning the same argument into an explicit construction would break the long-standing $\Omega(k^{3/2})$ explicit-Ramsey barrier — we do not know how.”
+Small $q$ is too sparse ($d=1$) and greedy independent sets are larger than the SOTA target — as expected. The scaling is asymptotic.
 
 ---
 
@@ -52,6 +58,6 @@ No probability, no differential equations, no nibble, no martingales.
 
 | File | Role |
 |------|------|
-| `sota-combinatorial.tex` | Counting derandomization of HHKP |
-| `combinatorial-proof.tex` | Earlier combinatorial nibble proof of Bohman-order bound |
-| `PRESENTATION.md` | Original Bohman-oriented talk outline |
+| `explicit-family.tex` | Definitions, proofs, conjecture |
+| `explicit_family.py` | Constructor for $A_q$ |
+| `sota-combinatorial.tex` | Counting existence proof used by Family L |
