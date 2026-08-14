@@ -38,7 +38,7 @@ The SOTA independence-number bound for $A_q$ is **not** Lean-verified.
 - After the $\mathrm{GL}_2$ sample, those structured sets do **not** lift to $G_2$-independent sets of SOTA size (`incidences.tex`).
 - Tight 4-interval of medium fibres is impossible for $q>3$ (`energy-increment.tex`).
 - Strict mixing: energy at most random and neighbouring mass $\ge q$ force an empty fibre (Lean: `strict_mixing_empty`).
-- Medium aligned fibres ($|B_x|\ge q/3$) cluster around a common core of size $O(\log q)$ (`inverse-energy.tex`).
+- Medium aligned fibres ($|B_x|\ge q/3$) have a $1/2$-close star (`inverse-energy.tex`). This is structure, not a size bound: half-intersection does not beat the random overlap when $|U|\le q/2$, so Weyl does not pack the star.
 - Exact cylinders over a $T$-interval or any AP of $T$-steps pack by the interval lemma (Lean: `exact_cylinder_pack_ap`).
 - Three-quarters of maximal energy produces a high-multiplicity core of size $O(\overline m)$ at any fibre size (Lean: `three_quarters_energy_core`, `high_multiplicity_core_card`).
 - Half-intersection: two $3/4$-dense subsets that miss a shift force $|U\cap(U+\sigma)|\le|U|/2$ (Lean: `half_intersection`).
@@ -49,7 +49,7 @@ The SOTA independence-number bound for $A_q$ is **not** Lean-verified.
 
 ## Not proved
 
-1. **Intermediate-energy fibres** of size in $(q^{1/3}(\log q)^{-O(1)}, q/3)$, including thin three-quarters-energy stars that are not exact cylinders and two-cluster configurations whose supports in $T$ are AP-poor. Medium fibres cluster; exact cylinders (any AP support) pack by the interval lemma (Lean: `exact_cylinder_pack_ap`). Three-quarters of maximal energy produces a $1/2$-close star at any fibre size (Lean: `three_quarters_energy_core`); a thin such star does not pack elementarily. Half-intersection is Lean-verified and still vacuous for thin cores. Fibres $\le q^{1/3}/(\log q)^{O(1)}$ cannot prevent an Alon-beating bound after the lift.
+1. **Intermediate-energy fibres** of size in $(q^{1/3}(\log q)^{-O(1)}, q/3)$, including thin three-quarters-energy stars that are not exact, AP-poor two-clusters, and medium $1/2$-close stars (half-intersection does not beat random on non-heavy cores; packing would need $K$ bounded away from $2$, an interval-dense star, and Weyl). Exact cylinders (any AP support) pack by the interval lemma (Lean: `exact_cylinder_pack_ap`). Three-quarters of maximal energy produces a $1/2$-close star at any fibre size (Lean: `three_quarters_energy_core`). Fibres $\le q^{1/3}/(\log q)^{O(1)}$ cannot prevent an Alon-beating bound after the lift.
 2. **Medium-star incidences / light-star second moment.** An oversized $M_I$ reduces to high seed energy of $\pi_R(I)$ and does not open a third gap (`open-edges.tex`). Light stars are under control at the weaker target $|I|\ge C\sqrt{n}\,(\log n)^{5}$ with $t_3=(\log n)^{2}$. The SOTA scale still needs a second moment. The Sidon count $\sum D(u)^2=O(d|P|+|P|^2)$ is not $o(|I|^2)$ at $|I|\sim\Delta$.
 
 Until both are written, Family A is not a new explicit Ramsey bound. The inverse-energy gap is no longer a Freiman loss $q^\delta$.

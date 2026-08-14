@@ -73,6 +73,15 @@ lemma card_inter_image_add (B V : Finset (ZMod q)) (σ : ZMod q) :
     #(B.image (fun y => y + σ) ∩ V.image (fun y => y + σ)) = #(B ∩ V) := by
   rw [← image_inter B V (add_left_injective σ), card_image_add]
 
+/-- If `|U| ≤ q/2`, the random overlap `|U|²/q` is at most `|U|/2`.
+Half-intersection therefore does not beat the random prediction on
+non-heavy cores. -/
+lemma random_overlap_le_half {U : Finset (ZMod q)}
+    (h : 2 * #U ≤ q) : 2 * #U ^ 2 ≤ q * #U := by
+  have := Nat.mul_le_mul_right (#U) h
+  convert this using 1
+  ring
+
 /-- Two sets that are `3/4`-dense in `U` and miss a shift force
 `|U ∩ (U+σ)| ≤ |U|/2`. -/
 theorem half_intersection {U A B : Finset (ZMod q)} {σ : ZMod q}

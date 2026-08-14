@@ -29,11 +29,14 @@ Pinned toolchain: Lean 4.33.0 + mathlib `v4.33.0`. There are no `sorry`s.
 | Exact cylinder over an AP of `T`-steps packs | `exact_cylinder_ap_pack` |
 | Half-intersection for `3/4`-dense subsets | `half_intersection_bound` |
 | High-multiplicity core has size `≤ 4E/#T²` | `high_multiplicity_core_size` |
+| Almost-mixing fibre bound `q(1-1/K)` | `almost_mixing_fibre` |
+| Random overlap `≤ |U|/2` when `|U|≤q/2` | `random_overlap_at_most_half` |
 
-Not formalized (still paper-only / conjectural): medium-fibre star
-clustering, the Weyl estimate for approximate cylinders,
-the intermediate-energy window, medium-star incidences, and the SOTA
-independence-number bound for \(A_q\). See [`inverse-energy.tex`](../inverse-energy.tex).
+Not formalized (still paper-only / conjectural): the Weyl estimate for
+horizontal packings, the intermediate-energy window, medium-star incidences,
+and the SOTA independence-number bound for \(A_q\).
+Medium-fibre clustering is a structure theorem, not a size bound.
+See [`inverse-energy.tex`](../inverse-energy.tex).
 
 ## Build
 

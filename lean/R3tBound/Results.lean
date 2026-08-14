@@ -16,10 +16,12 @@ import R3tBound.TightInterval
 
 These are the lemmas from the paper that have complete Lean proofs.
 The SOTA independence-number bound for `A_q` is *not* claimed here.
-Medium-fibre clustering and the Weyl estimate for approximate cylinders
-remain paper-only (`inverse-energy.tex`). Popular-core energy, three-quarters
-energy, half-intersection, affine interval packing, and exact-cylinder
-packing (including AP supports) are verified.
+Medium-fibre clustering is a structure theorem, not a size bound:
+half-intersection does not beat the random overlap on non-heavy cores.
+The Weyl estimate for approximate cylinders remains paper-only.
+Popular-core energy, three-quarters energy, half-intersection, almost-mixing,
+affine interval packing, and exact-cylinder packing (including AP supports)
+are verified.
 -/
 
 namespace R3tBound
@@ -91,5 +93,12 @@ alias half_intersection_bound := half_intersection
 
 /-- **High-multiplicity core size.** The core has size at most `4E / #T²`. -/
 alias high_multiplicity_core_size := high_multiplicity_core_card
+
+/-- **Almost mixing.** Energy at most `K` times random bounds the fibre
+by `q(1-1/K)`. -/
+alias almost_mixing_fibre := almost_mixing_fibre_card
+
+/-- **Random overlap.** If `|U| ≤ q/2` then `|U|²/q ≤ |U|/2`. -/
+alias random_overlap_at_most_half := random_overlap_le_half
 
 end R3tBound

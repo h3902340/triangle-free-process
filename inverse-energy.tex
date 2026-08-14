@@ -25,7 +25,9 @@
 The remaining inverse step in \texttt{energy-increment.tex} is a clustering problem for a family of subsets, not a Freiman inverse-sumset problem.
 A single common core is not always forced (two equal clusters of size $q/8$ already exceed twice-random energy).
 What \emph{is} forced, when every fibre has size at least $q/3$, is a star of $\Omega(|T_x|)$ fibres that are pairwise $1/2$-close to a common $U$.
-Independence then makes $U$ miss a positive fraction of $\Omega(d)$ of its own translates, and the existing Weyl estimate bounds $|U|$ by $O(\log q)$.
+Independence then makes $U$ miss a positive fraction of $\Omega(d)$ of its own translates.
+Half-intersection only gives $|U\cap(U+\sigma)|\le|U|/2$, which does not beat
+the random prediction on non-heavy cores and does not feed the horizontal-packing Weyl estimate.
 Exact cylinders, including AP-support cylinders of any common difference,
 pack by the existing interval lemma after an affine change of
 coordinates (Lean: \texttt{exact\_cylinder\_pack\_ap}), so they do not need Weyl.
@@ -117,21 +119,66 @@ The density hypotheses give $|A\cap U|+|B\cap U|\ge\tfrac32|U|$, hence $|V|\le|U
 \end{proof}
 
 On a $3/4$-dense star the shift~\eqref{eq:shift} and Lemma~\ref{lem:half} produce $|U\cap(U+\sigma)|\le|U|/2$ for every $\sigma=2t(t-s)$ with $s,t$ in the star and $s-t\in T$.
-Those $\sigma$ cover an interval of length $\Theta(d)$ up to the nonzero factor $2t$ (the same affine image used in the exact-cylinder lemma of \texttt{energy-increment.tex}).
+Lemma~\ref{lem:half} is Lean \texttt{half\_intersection}.
 
-\begin{theorem}[Medium aligned fibres]\label{thm:medium}
-Assume the Weyl estimate already used for horizontal packings in \texttt{structured-cases.tex}.
-If every fibre at $x$ has size in $[q/3,q/2]$ and $E_x>2W_x^{2}/q$, then the piece of $A$ over the star of Lemma~\ref{lem:star} has size $O(q\log q)$.
-\end{theorem}
+That overlap bound does \emph{not} feed the Weyl estimate used for horizontal packings.
+Those packings need a set that \emph{misses} a rich difference set
+($|Z\cap(Z+\delta)|=0$ for $\delta\in\Delta$), not one that meets it in half its points.
+If $|U|\le q/2$, the random prediction is already
+$|U\cap(U+\sigma)|\sim|U|^{2}/q\le|U|/2$
+(Lean: \texttt{random\_overlap\_le\_half}).
+Half-intersection is therefore vacuous on every non-heavy core, including
+medium fibres of size $q/3$.
+The earlier claim that Lemma~\ref{lem:half} plus Weyl gives $|U|=O(\log q)$
+is false.
+
+\begin{lemma}[Above twice-random beats the random overlap]\label{lem:Kstar}
+Suppose every fibre at $x$ has size in $[q/3,q/2]$ and
+$E_x\ge K W_x^{2}/q$ with $K>2$.
+Let $G$ be the graph on $T_x$ with an edge whenever
+$|A_t\cap A_{t'}|\ge\theta\overline m$, where
+$\theta=(K+2)/6\in(2/3,\,K/3)$.
+Then $G$ has at least $(K-2)|T_x|^{2}/9$ edges, hence a vertex of degree
+$\Omega((K-2)|T_x|)$.
+For each such edge, Lemma~\ref{lem:close} gives
+$|A_t\cap(A_t+\sigma)|\le(1-\theta)|A_t|<|A_t|^{2}/q$.
+\end{lemma}
 
 \begin{proof}
-Lemma~\ref{lem:half} supplies $\Theta(d)$ differences at which $U$ meets at most half of its translate.
-The same dyadic/Weyl argument as in Proposition~4 of \texttt{structured-cases.tex} --- the Dirichlet kernel of an interval of length $\Theta(d)$ --- yields $|U|=O(\log q)$ (or $O(q/d)=O(\sqrt{\log q})$ from the trivial packing if one only uses $|U\cap(U+\sigma)|=0$, which we do not have; the half-intersection still forbids $U$ from being equidistributed, and the Gauss-sum bound on $\sum_{t\le d}e^{2\pi i a t^{2}/q}$ is unchanged).
-The star occupies $O(d)$ $x$-coordinates, so the piece has size $O(d\log q)=O(q\sqrt{\log q})$, recorded as $O(q\log q)$ to match the structured-case theorem.
+The average intersection is at least $K\overline m^{2}/q\ge(K/3)\overline m$.
+Non-edges contribute at most $\theta\overline m\,|T_x|^{2}$.
+The remaining energy is at least
+$(K/3-\theta)\overline m\,|T_x|^{2}=(K-2)\overline m\,|T_x|^{2}/6$.
+Each edge contributes at most $q/2$, and $\overline m\ge q/3$, so the number
+of edges is at least
+\[
+  \frac{(K-2)\overline m\,|T_x|^{2}}{6\cdot q/2}
+  \ge
+  \frac{(K-2)|T_x|^{2}}{9}.
+\]
+Comparable sizes give $|A_t\setminus A_{t'}|\le(1-\theta)|A_t|$.
+The threshold $\theta>2/3$ is exactly the condition
+$(1-\theta)|A_t|<|A_t|^{2}/q$ at density $1/3$.
 \end{proof}
 
-The $3/4$-density in Lemma~\ref{lem:half} is arranged by passing from the $1/2$-close star of Lemma~\ref{lem:star} to the popular subset $U'=\{y\in U:\mu_{\mathrm{star}}(y)\ge|T_{\mathrm{star}}|/2\}$, which is $3/4$-dense in a positive-density subset of $U$ after deleting an $o(|U|)$ fringe (the same popular-core split as below).
-Lemma~\ref{lem:half} is Lean \texttt{half\_intersection}.
+\begin{theorem}[Medium aligned fibres, corrected]\label{thm:medium}
+If every fibre at $x$ has size in $[q/3,q/2]$ and $E_x>2W_x^{2}/q$, then
+Lemma~\ref{lem:star} produces a $\tfrac12$-close star.
+That star is a theorem; its size is not.
+A size bound $O(q\log q)$ would need all three of:
+\begin{enumerate}
+  \item energy bounded away from twice-random ($K\ge 2+\eta$), so that
+        Lemma~\ref{lem:Kstar} supplies a genuine discrepancy
+        $|U\cap(U+\sigma)|<|U|^{2}/q$;
+  \item a star neighbourhood that is dense in an affine interval of length
+        $\Theta(d)$ (otherwise the shifts are an AP-poor set, the same
+        leftover as two-clusters);
+  \item the Weyl estimate of Proposition~4 in \texttt{structured-cases.tex},
+        now applied to a set that is actually below the random overlap.
+\end{enumerate}
+At $K\downarrow 2$ the discrepancy is $o(1)$ and (1) fails.
+We do \emph{not} claim that every medium aligned piece has size $O(q\log q)$.
+\end{theorem}
 
 \section{Exact cylinders pack without Weyl}
 
@@ -210,8 +257,9 @@ Suppose $E_x\ge\tfrac34|T_x|W_x$ and $|T_x|\ge 2$.
 Then a star of $\Omega(|T_x|)$ fibres is pairwise $\tfrac12$-close to a common $U$
 (Lemmas~\ref{lem:34core}--\ref{lem:34star}).
 \begin{itemize}
-  \item If $|U|\ge q/3$, the star is a medium approximate cylinder and
-        Theorem~\ref{thm:medium} applies (half-intersection plus Weyl).
+  \item If $|U|\ge q/3$, the star is a medium approximate cylinder:
+        Lemma~\ref{lem:star} applies, but Theorem~\ref{thm:medium} is not a
+        size bound.
   \item If the fibres are exactly equal to $U$ along an interval of $T$-steps,
         Theorem~\ref{thm:exactpack} below gives $|U|\le q/(d'+1)$ with no Weyl.
   \item If $|U|=o(q)$ and the fibres are only $\tfrac12$-close, Lemma~\ref{lem:close}
@@ -264,8 +312,9 @@ A thin fibre cannot hide a large core.
 \section{Why thin cores are a different problem}
 
 Lemma~\ref{lem:half} concludes $|U\cap(U+\sigma)|\le|U|/2$.
-A random $\delta$-dense set already has $|U\cap(U+\sigma)|\sim\delta|U|$, which is far below $|U|/2$ as soon as $\delta<1/2$.
-Half-intersection is therefore vacuous for vanishing-density cores: it does not beat the random prediction.
+A random $\delta$-dense set already has $|U\cap(U+\sigma)|\sim\delta|U|$, which is at most $|U|/2$ as soon as $\delta\le 1/2$.
+Half-intersection is therefore vacuous for every non-heavy core --- including
+medium fibres of size $q/3$, not only vanishing-density cores.
 
 The intersection-graph argument is also density-limited.
 If $\min_t m_t\ge\delta q$ and $E_x>2W_x^{2}/q$, the average pairwise intersection is $>2\delta\,\overline m$.
@@ -281,7 +330,9 @@ On the complement one has $\mu<E_x/(2W_x)$, hence $\sum_{U_{\mathrm{pop}}^{c}}\m
 (Lean: \texttt{popular\_core\_energy}).
 Peeling $U_{\mathrm{pop}}$ and repeating produces $O(\log q)$ cores plus a strictly mixing fringe.
 
-Each core of \emph{constant} density is an approximate cylinder and falls under Theorem~\ref{thm:medium}.
+Each core of \emph{constant} density produces a close star
+(Lemma~\ref{lem:star} or Lemma~\ref{lem:Kstar}); packing that star is
+Theorem~\ref{thm:medium}, which is not a size bound.
 A core of vanishing density $\delta=o(1)$ is constrained by the interval lemma only when the fibres are exactly equal to it (Theorem~\ref{thm:exactpack}).
 Three-quarters energy still produces a $\tfrac12$-close star at any size (Theorem~\ref{thm:nearmax}), but a thin $\tfrac12$-close star does not pack elementarily.
 The remaining window is intermediate energy
@@ -289,7 +340,9 @@ The remaining window is intermediate energy
   2W_x^{2}/q\;<\;E_x\;<\;\tfrac34|T_x|W_x
 \]
 on fibres of size in $\bigl(q^{1/3}(\log q)^{-O(1)},\,q/3\bigr)$,
-together with three-quarters-energy stars whose core is still that thin.
+together with three-quarters-energy stars whose core is still that thin,
+medium $\tfrac12$-close stars that do not beat the random overlap,
+and AP-poor stars.
 
 Fibres of size $\le q^{1/3}/(\log q)^{10/3}$ contribute at most $q^{4/3}/(\log q)^{10/3}$ points.
 After the lift this is $O\bigl(q^{4/3}(\log q)^{-4/3}\bigr)=o(n^{2/3})$, so those fibres cannot prevent an Alon-beating bound.
@@ -307,22 +360,26 @@ Then $A$ is a union of
   \item exact cylinders, including those whose support is an arithmetic
         progression of any common difference, each of size $O(q)$
         (interval packing; Lean \texttt{exact\_cylinder\_pack\_ap}; no Weyl);
-  \item medium ($|B_x|\ge q/3$) approximate cylinders, each of size $O(q\log q)$
-        (half-intersection plus the same Weyl input as horizontal packings),
-        including every three-quarters-energy star whose core has size $\ge q/3$;
-  \item a leftover of intermediate-energy fibres of size in
+  \item medium ($|B_x|\ge q/3$) twice-random fibres have a $\tfrac12$-close
+        star (Lemma~\ref{lem:star}); a $(2/3+)$ star with overlap below
+        $|U|^{2}/q$ exists when $K$ is bounded away from $2$
+        (Lemma~\ref{lem:Kstar});
+  \item a leftover consisting of intermediate-energy fibres of size in
         $\bigl(q^{1/3}(\log q)^{-O(1)},\,q/3\bigr)$,
-        including thin three-quarters-energy stars that are not exact cylinders
-        and two-cluster configurations whose supports in $T$ are AP-poor.
+        thin three-quarters-energy stars that are not exact cylinders,
+        two-cluster and medium stars whose supports in $T$ are AP-poor,
+        and medium stars whose energy is only barely above twice-random.
 \end{enumerate}
-Items (1)--(5) are theorems.
-Item (6) is the only unwritten inverse step.
+Items (1)--(4) are theorems (no Weyl).
+Item (5) is a structure theorem, not a size bound.
+Item (6) is the unwritten inverse step, and now also includes the medium
+pieces previously recorded as packed.
 \end{theorem}
 
 We still do \emph{not} claim $\alpha(G_R)=O(q\log q)$ as a finished theorem.
 We do claim that the inverse-energy gap is no longer a Freiman loss $q^{\delta}$,
 that exact cylinders pack elementarily, that three-quarters energy produces a
-star at any fibre size, and that every medium aligned piece is under control.
+star at any fibre size, and that half-intersection does not pack medium cores.
 
 \section{Lean}
 
@@ -335,9 +392,12 @@ star at any fibre size, and that every medium aligned piece is under control.
 \texttt{exact\_cylinder\_pack},
 \texttt{exact\_cylinder\_pack\_ap},
 \texttt{half\_intersection},
+\texttt{random\_overlap\_le\_half},
+\texttt{almost\_mixing\_fibre\_card},
 \texttt{close\_sets\_almost\_disjoint\_translates},
 \texttt{affine\_diffFree\_card\_le}, and \texttt{parabola\_codegree}
 compile with no \texttt{sorry}.
 The star-degree count and the Weyl estimate remain paper-only.
+Medium packing via half-intersection plus Weyl is not a theorem.
 
 \end{document}

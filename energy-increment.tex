@@ -27,7 +27,9 @@ Let $G_R=\mathrm{Cay}(\F_q^{2},S_R)$ with $S_R=\{\pm(t,t^{2}):t\in T\}$ and $T=\
 We prove a structure-versus-randomness dichotomy for $G_R$-independent sets.
 A tight 4-interval of fibres is impossible for $q>3$.
 If neighbouring fibres have low additive energy, the set has size $O(q\sqrt{\log q})$.
-If they have high energy, a positive-density piece is aligned to a common translate of the parabola and reduces to a horizontal packing of size $O(q\log q)$.
+If they have high energy, a positive-density piece is aligned to a common translate of the parabola.
+Exact cylinders pack by the interval lemma; medium $\tfrac12$-close stars are structure, not a size bound
+(half-intersection does not beat the random overlap on non-heavy cores).
 The inverse step converting ``energy above random'' into ``fibres are almost translates'' is a clustering problem: a single common core is not forced, but medium fibres ($|B_x|\ge q/3$) produce an $\Omega(|T_x|)$-star around a common $U$.
 That argument, exact-cylinder packing by the interval lemma, three-quarters
 energy at any fibre size, and the leftover intermediate-energy window, are in
@@ -235,8 +237,11 @@ Then for all $s,t\in T_x$ with $s-t\in T$,
 \[
   U\;\cap\;\bigl(U+2s(s-t)\bigr)\;=\;\emptyset.
 \]
-In particular $U$ is disjoint from $\Omega(|T_x|)$ of its own translates, hence $|U|=O(\log q)$ by the same Weyl estimate as in the horizontal-packing case of \texttt{structured-cases.tex}.
-The cylinder therefore contributes $O(q\log q)$ points.
+In particular $U$ is disjoint from $\Omega(|T_x|)$ of its own translates.
+If those translates are an affine image of an interval, the interval lemma
+gives $|U|=O(\sqrt{\log q})$ with no Weyl
+(Lean: \texttt{exact\_cylinder\_pack\_ap}).
+The cylinder therefore contributes $O(q)$ points.
 \end{lemma}
 
 \begin{proof}
@@ -268,7 +273,9 @@ then the piece still contributes $O(q\log q)$ points after the cylinder constrai
 \end{conjecture}
 
 A single common core is not forced (two clusters of size $q/8$ already exceed twice-random energy).
-Medium fibres of size at least $q/3$ \emph{do} cluster: see Theorem~8 of \texttt{inverse-energy.tex}.
+Medium fibres of size at least $q/3$ \emph{do} produce a $\tfrac12$-close star:
+see Lemma~5 of \texttt{inverse-energy.tex}.
+That star is not packed by half-intersection plus Weyl.
 Exact cylinders, including those whose support is an arithmetic progression
 of any common difference, pack by the interval lemma, without Weyl
 (Lean: \texttt{exact\_cylinder\_pack\_ap}).
@@ -293,15 +300,20 @@ Then $A$ is a union of
   \item exact cylinders, including AP-support cylinders of any common
         difference, each of size $O(q)$
         (interval packing; Lean \texttt{exact\_cylinder\_pack\_ap}; no Weyl);
-  \item medium approximate cylinders, each of size $O(q\log q)$ (\texttt{inverse-energy.tex}),
-        including three-quarters-energy stars with core size $\ge q/3$;
+  \item medium twice-random fibres have a $\tfrac12$-close star
+        (\texttt{inverse-energy.tex}); this is structure, not a size bound;
   \item a leftover of intermediate-energy fibres of size in
         $\bigl(q^{1/3}(\log q)^{-O(1)},q/3\bigr)$,
-        including thin three-quarters-energy stars that are not exact
-        and two-cluster configurations with AP-poor supports.
+        including thin three-quarters-energy stars that are not exact,
+        two-cluster and medium stars with AP-poor supports,
+        and medium stars whose energy is only barely above twice-random.
 \end{enumerate}
-Items (1)--(5) are theorems (item (5) uses the same Weyl input as horizontal packings).
-Item (6) is Conjecture~\ref{lem:inverse}.
+Items (1)--(4) are theorems (no Weyl).
+Item (5) is a structure theorem, not a size bound: half-intersection does not
+beat the random overlap on non-heavy cores, so the horizontal-packing Weyl
+estimate does not apply.
+Item (6) is Conjecture~\ref{lem:inverse}, now also including medium pieces
+previously recorded as packed.
 \end{theorem}
 
 \begin{theorem}[Conditional seed bound]\label{thm:seed}
@@ -345,6 +357,7 @@ The present note is about the construction as written.
 
 We do \emph{not} claim $\alpha(G_R)=O(q\log q)$ as a finished theorem.
 The missing piece is Conjecture~\ref{lem:inverse} for the intermediate-energy window, not a Freiman inverse for non-AP fibres.
-Everything else in Theorem~\ref{thm:dichotomy} is elementary or uses the same Weyl input as the horizontal-packing case.
+Items (1)--(4) of Theorem~\ref{thm:dichotomy} are elementary.
+Item (5) is structure, not a size bound.
 
 \end{document}

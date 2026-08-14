@@ -187,6 +187,47 @@ lemma energy_cs (A : Finset (ZMod q × ZMod q)) (T : Finset (ZMod q)) (x : ZMod 
   have hCS := sq_sum_le_card_mul_sum_sq (s := U) (f := multiplicity (shiftedFibre A x) T)
   simpa [hμ, hμ2] using hCS
 
+/-- Energy at most `K` times random forces the neighbouring union to cover
+at least `q/K` residues. -/
+lemma energy_implies_union_card {T : Finset (ZMod q)}
+    {A : Finset (ZMod q × ZMod q)} {x : ZMod q} {K : ℕ}
+    (_hK : 0 < K)
+    (hE0 : familyEnergy A T x ≠ 0)
+    (hE : familyEnergy A T x * q ≤ K * (coverageMass A T x) ^ 2) :
+    q ≤ K * #(T.biUnion (shiftedFibre A x)) := by
+  set E := familyEnergy A T x
+  set W := coverageMass A T x
+  set U := T.biUnion (shiftedFibre A x)
+  have hCS := energy_cs A T x
+  have h1 : K * W ^ 2 ≤ K * (#U * E) := Nat.mul_le_mul_left K hCS
+  have h2 : E * q ≤ K * (#U * E) := hE.trans h1
+  have h3 : E * q ≤ (K * #U) * E := by
+    convert h2 using 1
+    ring
+  exact Nat.le_of_mul_le_mul_right (by simpa [mul_comm E] using h3)
+    (Nat.pos_of_ne_zero hE0)
+
+/-- Almost mixing: energy at most `K` times random bounds the fibre by
+`q(1-1/K)`. The case `K = 1` is empty once neighbouring mass is `≥ q`. -/
+theorem almost_mixing_fibre_card {T : Finset (ZMod q)}
+    {A : Finset (ZMod q × ZMod q)} {x : ZMod q} {K : ℕ}
+    (hA : IsSeedIndependent T (A : Set (ZMod q × ZMod q)))
+    (hT0 : 0 ∉ T)
+    (hK : 0 < K)
+    (hE0 : familyEnergy A T x ≠ 0)
+    (hE : familyEnergy A T x * q ≤ K * (coverageMass A T x) ^ 2) :
+    K * #(fibreF A x) + q ≤ K * q := by
+  set U := T.biUnion (shiftedFibre A x)
+  have hU := energy_implies_union_card (A := A) (T := T) (x := x) hK hE0 hE
+  have hcov := coverage_le_of_independent (A := A) (T := T) (x := x) hA hT0
+  have hmul : K * (#(fibreF A x) + #U) ≤ K * q := Nat.mul_le_mul_left K hcov
+  have hmul' : K * #(fibreF A x) + K * #U ≤ K * q := by
+    convert hmul using 1
+    ring
+  have hadd : K * #(fibreF A x) + q ≤ K * #(fibreF A x) + K * #U :=
+    Nat.add_le_add_left hU _
+  exact hadd.trans hmul'
+
 /-- Strict mixing: energy at most random and neighbouring mass `≥ q` force an empty fibre. -/
 theorem strict_mixing_empty {T : Finset (ZMod q)}
     {A : Finset (ZMod q × ZMod q)} {x : ZMod q}
