@@ -24,6 +24,8 @@ Pinned toolchain: Lean 4.33.0 + mathlib `v4.33.0`. There are no `sorry`s.
 | Unsigned parabola codegree \(\le 1\) | `parabola_diff_unique` |
 | Popular core carries half the energy | `popular_core_half_energy` |
 | Affine image of `{1,…,d}` packs like the interval | `affine_interval_pack` |
+| Three-quarters energy sits on multiplicity `#T/2` | `three_quarters_energy` |
+| Exact cylinder over a `T`-interval packs | `exact_cylinder_interval_pack` |
 
 Not formalized (still paper-only / conjectural): medium-fibre star
 clustering, half-intersection, the Weyl estimate for approximate cylinders,

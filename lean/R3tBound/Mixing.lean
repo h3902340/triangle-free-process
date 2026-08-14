@@ -114,6 +114,33 @@ lemma mem_popularCore {A : Finset (ZMod q × ZMod q)} {T : Finset (ZMod q)}
         2 * coverageMass A T x * multiplicity (shiftedFibre A x) T y := by
   simp [popularCore]
 
+/-- Energy is at most `#T` times neighbouring mass, since each multiplicity
+is at most `#T`. -/
+lemma energy_le_card_mul_mass (A : Finset (ZMod q × ZMod q)) (T : Finset (ZMod q))
+    (x : ZMod q) :
+    familyEnergy A T x ≤ #T * coverageMass A T x := by
+  classical
+  set μ := multiplicity (shiftedFibre A x) T
+  have hμ : ∀ y, μ y ≤ #T := fun y => card_filter_le _ _
+  calc
+    familyEnergy A T x = ∑ y : ZMod q, μ y ^ 2 := rfl
+    _ ≤ ∑ y : ZMod q, #T * μ y :=
+      sum_le_sum fun y _ => by
+        simpa [pow_two, mul_comm] using Nat.mul_le_mul_left (μ y) (hμ y)
+    _ = #T * ∑ y : ZMod q, μ y := by simp [mul_sum]
+    _ = #T * coverageMass A T x := by simp [coverageMass, μ]
+
+/-- Points covered by at least half the neighbouring fibres. -/
+def highMultiplicityCore (A : Finset (ZMod q × ZMod q)) (T : Finset (ZMod q))
+    (x : ZMod q) : Finset (ZMod q) :=
+  univ.filter fun y => #T ≤ 2 * multiplicity (shiftedFibre A x) T y
+
+lemma mem_highMultiplicityCore {A : Finset (ZMod q × ZMod q)}
+    {T : Finset (ZMod q)} {x y : ZMod q} :
+    y ∈ highMultiplicityCore A T x ↔
+      #T ≤ 2 * multiplicity (shiftedFibre A x) T y := by
+  simp [highMultiplicityCore]
+
 lemma energy_cs (A : Finset (ZMod q × ZMod q)) (T : Finset (ZMod q)) (x : ZMod q) :
     (coverageMass A T x) ^ 2 ≤
       #(T.biUnion (shiftedFibre A x)) * familyEnergy A T x := by
@@ -216,6 +243,82 @@ theorem popular_core_energy (A : Finset (ZMod q × ZMod q)) (T : Finset (ZMod q)
         rw [hsplit, mul_add]
       have : 2 * E ≤ 2 * ∑ y ∈ U, μ y ^ 2 + (E - 1) := by
         rw [h2]; exact Nat.add_le_add_left hhalf _
+      omega
+    simpa [E, U, μ] using this
+
+/-- Energy at least three-quarters of the `#T · W` maximum puts a quarter of
+the energy on points of multiplicity at least `#T / 2`. This does not require
+a lower bound on fibre size. -/
+theorem three_quarters_energy_core (A : Finset (ZMod q × ZMod q))
+    (T : Finset (ZMod q)) (x : ZMod q)
+    (hW : 0 < coverageMass A T x)
+    (hE : 3 * #T * coverageMass A T x ≤ 4 * familyEnergy A T x) :
+    familyEnergy A T x ≤
+      4 * ∑ y ∈ highMultiplicityCore A T x,
+        (multiplicity (shiftedFibre A x) T y) ^ 2 := by
+  classical
+  set W := coverageMass A T x
+  set E := familyEnergy A T x
+  set μ := multiplicity (shiftedFibre A x) T
+  set U := highMultiplicityCore A T x
+  have hEdef : E = ∑ y : ZMod q, μ y ^ 2 := rfl
+  have hsplit : E = ∑ y ∈ U, μ y ^ 2 + ∑ y ∈ Uᶜ, μ y ^ 2 := by
+    rw [hEdef, ← sum_add_sum_compl (s := U) (f := fun y => μ y ^ 2)]
+  have hμW : ∑ y : ZMod q, μ y = W := by
+    simp [W, coverageMass, μ]
+  have hcompμ : ∑ y ∈ Uᶜ, μ y ≤ W := by
+    have : ∑ y ∈ U, μ y + ∑ y ∈ Uᶜ, μ y = W := by
+      rw [← hμW, ← sum_add_sum_compl (s := U) (f := μ)]
+    omega
+  by_cases hTempty : T = ∅
+  · have hW0 : W = 0 := by
+      simp [W, coverageMass_eq_sum, hTempty]
+    exact (Nat.lt_irrefl _ (hW0 ▸ hW)).elim
+  · have hTpos : 0 < #T := card_pos.mpr (nonempty_iff_ne_empty.mpr hTempty)
+    have hcomp : ∀ y ∈ Uᶜ, 2 * μ y < #T := by
+      intro y hy
+      have : ¬ #T ≤ 2 * μ y := by
+        simpa [U, highMultiplicityCore, mem_compl, μ] using hy
+      exact Nat.not_le.1 this
+    have hterm : ∀ y ∈ Uᶜ, 2 * (μ y) ^ 2 ≤ (#T - 1) * μ y := by
+      intro y hy
+      have hle : 2 * μ y ≤ #T - 1 := Nat.le_sub_one_of_lt (hcomp y hy)
+      have := Nat.mul_le_mul_right (μ y) hle
+      simpa [pow_two, mul_assoc, mul_left_comm, mul_comm] using this
+    have hsum : 2 * ∑ y ∈ Uᶜ, μ y ^ 2 ≤ (#T - 1) * ∑ y ∈ Uᶜ, μ y := by
+      calc
+        2 * ∑ y ∈ Uᶜ, μ y ^ 2
+            = ∑ y ∈ Uᶜ, 2 * (μ y) ^ 2 := by
+              simp [mul_sum]
+        _ ≤ ∑ y ∈ Uᶜ, (#T - 1) * μ y := sum_le_sum hterm
+        _ = (#T - 1) * ∑ y ∈ Uᶜ, μ y := by simp [mul_sum]
+    have hsumW : 2 * ∑ y ∈ Uᶜ, μ y ^ 2 ≤ (#T - 1) * W :=
+      hsum.trans (Nat.mul_le_mul_left _ hcompμ)
+    have h12 : 9 * #T * W ≤ 12 * E := by
+      calc
+        9 * #T * W = 3 * (3 * #T * W) := by ring
+        _ ≤ 3 * (4 * E) := Nat.mul_le_mul_left 3 hE
+        _ = 12 * E := by ring
+    have hcmp : 8 * (#T - 1) * W ≤ 9 * #T * W := by
+      have : 8 * (#T - 1) ≤ 9 * #T := by
+        have := hTpos
+        omega
+      exact Nat.mul_le_mul_right W this
+    have h8 : 8 * (#T - 1) * W ≤ 12 * E := hcmp.trans h12
+    have hgoal : 2 * (#T - 1) * W ≤ 3 * E := by
+      have : 4 * (2 * (#T - 1) * W) ≤ 4 * (3 * E) := by
+        convert h8 using 1 <;> ring
+      exact Nat.le_of_mul_le_mul_left this (by decide : 0 < 4)
+    have hcompE : 4 * ∑ y ∈ Uᶜ, μ y ^ 2 ≤ 3 * E := by
+      have h4 : 4 * ∑ y ∈ Uᶜ, μ y ^ 2 ≤ 2 * (#T - 1) * W := by
+        have := Nat.mul_le_mul_left 2 hsumW
+        convert this using 1 <;> ring
+      exact h4.trans hgoal
+    have : E ≤ 4 * ∑ y ∈ U, μ y ^ 2 := by
+      have h4 : 4 * E = 4 * ∑ y ∈ U, μ y ^ 2 + 4 * ∑ y ∈ Uᶜ, μ y ^ 2 := by
+        rw [hsplit, mul_add]
+      have : 4 * E ≤ 4 * ∑ y ∈ U, μ y ^ 2 + 3 * E := by
+        rw [h4]; exact Nat.add_le_add_left hcompE _
       omega
     simpa [E, U, μ] using this
 

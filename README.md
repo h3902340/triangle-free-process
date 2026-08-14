@@ -44,8 +44,8 @@ python3 explicit_family.py 7 --diagnose
 | [`structured-cases.tex`](structured-cases.tex) | Structured seed sets and the shear fix |
 | [`incidences.tex`](incidences.tex) | $G_2$-incidences of structured seed pairs |
 | [`energy-increment.tex`](energy-increment.tex) | Structure vs randomness for $\alpha(G_R)$ |
-| [`inverse-energy.tex`](inverse-energy.tex) | Medium-fibre clustering; exact/near-max packing; intermediate-energy leftover |
-| [`open-edges.tex`](open-edges.tex) | Sidon rewrite of the HHKP closed-pair buckets |
+| [`inverse-energy.tex`](inverse-energy.tex) | Medium-fibre clustering; exact-cylinder packing; three-quarters energy; leftover |
+| [`open-edges.tex`](open-edges.tex) | Sidon rewrite of the HHKP closed-pair buckets; medium stars reduce to seed energy |
 | [`polytime-derandomization.tex`](polytime-derandomization.tex) | Deterministic poly-time two-bites algorithm (graph, not SOTA $\alpha$) |
 | [`explicit_family.py`](explicit_family.py) | Constructor: `--n` or $q$ |
 | [`sota-combinatorial.tex`](sota-combinatorial.tex) | Counting proof of the $\tfrac12$ bound |

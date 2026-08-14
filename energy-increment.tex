@@ -29,8 +29,10 @@ A tight 4-interval of fibres is impossible for $q>3$.
 If neighbouring fibres have low additive energy, the set has size $O(q\sqrt{\log q})$.
 If they have high energy, a positive-density piece is aligned to a common translate of the parabola and reduces to a horizontal packing of size $O(q\log q)$.
 The inverse step converting ``energy above random'' into ``fibres are almost translates'' is a clustering problem: a single common core is not forced, but medium fibres ($|B_x|\ge q/3$) produce an $\Omega(|T_x|)$-star around a common $U$.
-That argument, exact/near-maximal packing by the interval lemma, and the leftover intermediate-energy window, are in \texttt{inverse-energy.tex}.
-Together with the structured-case list in \texttt{structured-cases.tex}, this disposes of every independent set we can describe except intermediate-energy fibres of size in $(q^{1/3}(\log q)^{-O(1)},q/3)$.
+That argument, exact-cylinder packing by the interval lemma, three-quarters
+energy at any fibre size, and the leftover intermediate-energy window, are in
+\texttt{inverse-energy.tex}.
+Together with the structured-case list in \texttt{structured-cases.tex}, this disposes of every independent set we can describe except intermediate-energy fibres of size in $(q^{1/3}(\log q)^{-O(1)},q/3)$ and thin three-quarters-energy stars that are not exact.
 \end{abstract}
 
 \section{Setup}
@@ -260,12 +262,18 @@ A clique of pairwise heavily overlapping APs therefore shares a common differenc
 \end{proof}
 
 \begin{conjecture}[Inverse energy, intermediate window]\label{lem:inverse}
-If $2W_x^{2}/q<E_x<(1-\varepsilon)|T_x|W_x$ and every fibre at $x$ has size in $\bigl(q^{1/3}(\log q)^{-O(1)},q/3\bigr)$, then the piece still contributes $O(q\log q)$ points after the cylinder constraint.
+If $2W_x^{2}/q<E_x<\tfrac34|T_x|W_x$ and every fibre at $x$ has size in $\bigl(q^{1/3}(\log q)^{-O(1)},q/3\bigr)$
+(or the fibre has three-quarters energy but is only $\tfrac12$-close to a thin core),
+then the piece still contributes $O(q\log q)$ points after the cylinder constraint.
 \end{conjecture}
 
 A single common core is not forced (two clusters of size $q/8$ already exceed twice-random energy).
 Medium fibres of size at least $q/3$ \emph{do} cluster: see Theorem~8 of \texttt{inverse-energy.tex}.
-Exact and near-maximal-energy pieces pack by the interval lemma, without Weyl.
+Exact cylinders pack by the interval lemma, without Weyl
+(Lean: \texttt{exact\_cylinder\_pack}).
+Three-quarters of maximal energy produces a $\tfrac12$-close star at any fibre
+size (Lean: \texttt{three\_quarters\_energy\_core}); a thin such star does not
+pack elementarily, and is part of the leftover.
 Half-intersection is vacuous for thin cores; twice-random energy does not force constant-fraction overlap below density $1/4$.
 The Freiman loss $q^{\delta}$ is no longer the bottleneck.
 
@@ -278,11 +286,13 @@ Then $A$ is a union of
   \item a heavy-fibre piece of size $O(q\sqrt{\log q})$;
   \item a $T$-sparse piece of size $O(q\sqrt{\log q})$;
   \item a strictly-mixing $T$-dense piece of size $O(q\sqrt{\log q})$;
-  \item exact cylinders and near-maximal-energy pieces, each of size $O(q)$
-        (interval packing; no Weyl);
-  \item medium approximate cylinders, each of size $O(q\log q)$ (\texttt{inverse-energy.tex});
+  \item exact cylinders, each of size $O(q)$
+        (interval packing; Lean \texttt{exact\_cylinder\_pack}; no Weyl);
+  \item medium approximate cylinders, each of size $O(q\log q)$ (\texttt{inverse-energy.tex}),
+        including three-quarters-energy stars with core size $\ge q/3$;
   \item a leftover of intermediate-energy fibres of size in
-        $\bigl(q^{1/3}(\log q)^{-O(1)},q/3\bigr)$.
+        $\bigl(q^{1/3}(\log q)^{-O(1)},q/3\bigr)$,
+        including thin three-quarters-energy stars that are not exact.
 \end{enumerate}
 Items (1)--(5) are theorems (item (5) uses the same Weyl input as horizontal packings).
 Item (6) is Conjecture~\ref{lem:inverse}.

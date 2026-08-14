@@ -6,6 +6,7 @@ import Mathlib.Tactic.Abel
 import Mathlib.Tactic.Ring
 import R3tBound.Heavy
 import R3tBound.Mixing
+import R3tBound.Sidon
 
 /-!
 # Shifted-fibre independence
@@ -140,5 +141,48 @@ theorem affine_diffFree_card_le {U : Finset (ZMod q)} {c : ZMod q} {d : ℕ}
     exact hne this
   have := diffFree_card_le (S := S) hd hdq hS
   simpa [hcard] using this
+
+/-- An exact cylinder over an interval of `T`-steps is affine-difference-free,
+hence packs by the interval lemma. -/
+theorem exact_cylinder_pack
+    {T : Finset (ZMod q)} {A : Finset (ZMod q × ZMod q)}
+    {x t : ZMod q} {U : Finset (ZMod q)} {d' : ℕ}
+    (hq : Odd q) (ht : t ≠ 0)
+    (hA : IsSeedIndependent T (A : Set (ZMod q × ZMod q)))
+    (hT0 : 0 ∉ T)
+    (hd : 0 < d') (hdq : d' + 1 ≤ q)
+    (hfib : ∀ k : ℕ, k ≤ d' → shiftedFibre A x (t + (k : ZMod q)) = U)
+    (hT : ∀ k : ℕ, 1 ≤ k → k ≤ d' → (k : ZMod q) ∈ T) :
+    #U * (d' + 1) ≤ q := by
+  have hc : (-2 * t : ZMod q) ≠ 0 := by
+    intro h
+    have h2t : (2 : ZMod q) * t = 0 := by
+      have : -((2 : ZMod q) * t) = 0 := by
+        simpa [neg_mul] using h
+      exact neg_eq_zero.mp this
+    rcases (mul_eq_zero.mp h2t) with h2 | ht'
+    · exact two_ne_zero hq h2
+    · exact ht ht'
+  refine affine_diffFree_card_le (U := U) (c := (-2 : ZMod q) * t) (d := d')
+    hc hd hdq ?_
+  intro k hk1 hkd a ha b hb heq
+  have hkt : (k : ZMod q) ∈ T := hT k hk1 hkd
+  have htU : shiftedFibre A x t = U := by
+    simpa using hfib 0 (Nat.zero_le _)
+  have hsU : shiftedFibre A x (t + (k : ZMod q)) = U := hfib k hkd
+  have hdiff : (t + (k : ZMod q)) - t ∈ T := by
+    simpa [add_sub_cancel_left] using hkt
+  have hdisj :=
+    exact_cylinder_shift (A := A) (x := x) (s := t + (k : ZMod q)) (t := t)
+      (U := U) hA hT0 hdiff hsU htU
+  have himg :
+      b ∈ U.image (fun y => y + 2 * t * (t - (t + (k : ZMod q)))) := by
+    refine mem_image.2 ⟨a, ha, ?_⟩
+    have hσ :
+        2 * t * (t - (t + (k : ZMod q))) = (-2 : ZMod q) * t * (k : ZMod q) := by
+      ring
+    rw [hσ]
+    exact heq.symm
+  exact disjoint_left.1 hdisj hb himg
 
 end R3tBound

@@ -162,6 +162,69 @@ This is a statement about points versus short parabolic chords in the $\mathrm{G
 The unsigned seed codegree is now Lean-verified (\texttt{parabola\_codegree}): a nonzero $\delta\in\F_q^{2}$ has at most one representation as a difference of unsigned parabola points.
 That identity is the input to a Cauchy--Schwarz count $\sum_u|P\cap(u+S_R)|^{2}=O(d|P|+|P|^{2})$, which is not yet $o(|I|^{2})$ at the SOTA scale (see the parameter discussion in the remark after Lemma~\ref{lem:light}).
 
+\section{Medium stars reduce to seed energy}
+
+An oversized $M_I$ is not a third leftover. It is a seed-energy statement.
+
+\begin{lemma}[Closed pairs lift to seed energy]\label{lem:med-seed}
+Let $I\subset W$ and $P=\pi_R(I)\subset\F_q^{2}$.
+Write $D(u)=|P\cap(u+S_R)|$ for the number of $S_R$-neighbours of $u$ in $P$.
+Every pair of $I$ closed by a $G_2$-star whose edges are red lifts of $S_R$
+contributes to $\sum_u\bin{D(u)}{2}$.
+In particular, if the medium-star sum $\sum_{w\in M_I}\bin{d_I(w)}{2}$ is
+$\omega(|I|^{2}\cdot(\log n)^{-C})$ after accounting for the $\ell$-to-$1$
+lift and the $O(\ell^{2})$ blue/red mix, then
+\[
+  \sum_{u\in\F_q^{2}}D(u)^{2}
+  \;=\;
+  \omega\bigl(|P|^{2}/(\log q)^{O(1)}\bigr).
+\]
+\end{lemma}
+
+\begin{proof}
+A red $G_2$-edge is a lift of an $S_R$-edge, so a red star at $w\in W$
+projects to a star of $P$ in $G_R$ (or a star of a $\mathrm{GL}_2$-image in
+$G_B$, which is the transpose picture).
+The map $I\to P$ is at most $\ell$-to-$1$, and each seed pair has
+$O(\ell^{2})$ lifts, so an $\omega(|I|^{2}/\mathrm{polylog})$ closed-pair count
+in $W$ yields an $\omega(|P|^{2}/\mathrm{polylog})$ closed-pair count in
+$\Gamma$.
+Double counting those pairs against their $S_R$-centres is
+$\sum_u\bin{D(u)}{2}$.
+\end{proof}
+
+\begin{proposition}[Medium stars do not open a new gap]\label{prop:med-reduce}
+Assume $\sum_{w\in M_I}\bin{d_I(w)}{2}$ is large enough to trigger
+Lemma~\ref{lem:med-seed}.
+Then $P=\pi_R(I)$ (or the corresponding blue projection) has energy above
+random.
+\begin{itemize}
+  \item If that energy is carried by a structured seed
+        (line, function graph, vertical or horizontal packing),
+        Theorem~15 of \texttt{incidences.tex} already gives
+        $|I|=o(k_{\star})$.
+  \item If that energy is carried by an exact cylinder or a medium
+        ($|B_x|\ge q/3$) approximate cylinder, the seed piece has size
+        $O(q\log q)$ and the lift is $O(\sqrt{n}\,(\log n))$, below SOTA
+        only after the same polylog bookkeeping as Theorem~\ref{thm:weak}.
+  \item If that energy is intermediate on thin fibres, $P$ is an instance
+        of the leftover in \texttt{inverse-energy.tex}.
+\end{itemize}
+In every case the medium-star bucket reduces to a seed statement already
+isolated. It does not close Conjecture~\ref{conj:med}.
+\end{proposition}
+
+The Sidon Cauchy--Schwarz bound
+$\sum_u D(u)^{2}=O(d|P|+|P|^{2})$ is still not $o(|I|^{2})$ at
+$|I|\sim\Delta=\Theta(\sqrt{n\log n})$:
+the main term $|P|^{2}$ saturates the target, and the $d|P|$ term is
+$|I|\cdot\Delta$ after the lift, the same first-moment count as
+Lemma~\ref{lem:med}.
+A genuine saving would need either a smaller energy increment on $P$
+(the leftover) or a second-moment restriction on how $I$ sits over $P$.
+
+We do \emph{not} claim the medium bucket is closed.
+
 \section{Heavy stars}
 
 \begin{lemma}[Few heavy stars]\label{lem:heavy-few}

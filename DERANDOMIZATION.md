@@ -30,7 +30,7 @@ Details: [`polytime-derandomization.tex`](polytime-derandomization.tex).
 
 **Proved:** triangle-free, degree \(O(\sqrt{n\log n})\), time \(\mathrm{poly}(n)\).
 
-**Not proved:** \(\alpha(G_n)=O(\sqrt{n\log n})\). Leftovers: intermediate-energy fibres, medium-star incidences.
+**Not proved:** \(\alpha(G_n)=O(\sqrt{n\log n})\). Leftovers: intermediate-energy fibres (including thin three-quarters-energy stars that are not exact), medium-star incidences (these reduce to seed energy and do not open a third gap).
 
 ## Why not a PRG or conditional probabilities
 

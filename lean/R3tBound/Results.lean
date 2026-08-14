@@ -18,7 +18,8 @@ These are the lemmas from the paper that have complete Lean proofs.
 The SOTA independence-number bound for `A_q` is *not* claimed here.
 Medium-fibre clustering, half-intersection, and the Weyl estimate for
 approximate cylinders remain paper-only (`inverse-energy.tex`). Popular-core
-energy and affine interval packing are verified.
+energy, three-quarters energy, affine interval packing, and exact-cylinder
+packing are verified.
 -/
 
 namespace R3tBound
@@ -71,5 +72,13 @@ alias popular_core_half_energy := popular_core_energy
 /-- **Affine packing.** Forbidden differences along an affine image of
 `{1,…,d}` pack like the unscaled interval. -/
 alias affine_interval_pack := affine_diffFree_card_le
+
+/-- **Three-quarters energy.** Energy at least `3/4` of `#T · W` puts a
+quarter of the energy on points of multiplicity `#T / 2`. -/
+alias three_quarters_energy := three_quarters_energy_core
+
+/-- **Exact cylinder packing.** Equal fibres along an interval of `T`-steps
+have size at most `q/(d'+1)`. -/
+alias exact_cylinder_interval_pack := exact_cylinder_pack
 
 end R3tBound
