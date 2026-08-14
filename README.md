@@ -49,6 +49,7 @@ python3 explicit_family.py 7 --diagnose
 | [`sota-combinatorial.tex`](sota-combinatorial.tex) | Counting proof of the $\tfrac12$ bound |
 | [`PRESENTATION.md`](PRESENTATION.md) | Talk outline for the Bohman-order combinatorial nibble |
 | [`combinatorial-proof.tex`](combinatorial-proof.tex) | Combinatorial nibble proof of $\Omega(t^2/\log t)$ |
+| [`hhkp-conjecture.tex`](hhkp-conjecture.tex) | Attempt at the HHKP $1/2$-conjecture (not a proof) |
 
 ## Lean-verified core
 
@@ -70,6 +71,7 @@ It does **not** verify the conjectural SOTA bound for Family A.
 - **Counting existence proof of the SOTA $\tfrac12$ bound:** yes — see `sota-combinatorial.tex`.
 - **Fully explicit construction at $\tfrac12$:** no; best explicit remains $\Omega(k^{3/2})$ (Alon).
 - **Lean-verified Family A core:** yes — see [`lean/README.md`](lean/README.md). Not a SOTA proof.
+- **HHKP $1/2$-conjecture (upper bound):** not proved. Occupancy / bounded-fugacity methods are blocked; see [`hhkp-conjecture.tex`](hhkp-conjecture.tex).
 
 ## Build PDFs
 

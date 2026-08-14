@@ -1,0 +1,344 @@
+\documentclass[11pt]{article}
+
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref,microtype}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\eps}{\varepsilon}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Var}{\mathrm{Var}}
+
+\title{On the HHKP $\tfrac12$-conjecture\\
+\large (an attempt, not a proof)}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Hefty--Horn--King--Pfender and Campos--Jenssen--Michelen--Sahasrabuddhe conjecture
+\[
+  R(3,k)\;=\;\Bigl(\tfrac12+o(1)\Bigr)\frac{k^{2}}{\log k}.
+\]
+The lower bound is their theorem. The missing half is an upper bound, i.e.\ a
+$\sqrt{2}$-improvement of Shearer's independence-number estimate for every
+triangle-free graph. We prove the standard reduction (doubling Shearer implies
+the conjecture), prove that every argument which only lower-bounds the
+\emph{average} independent-set size is blocked by the Davies--Jenssen--Perkins--Roberts
+occupancy theorem, and record a two-sample attempt that dies for the same reason
+local algorithms fail on $G(n,d/n)$. We do \emph{not} prove the conjecture.
+Improving Shearer's constant by any fixed factor remains open.
+\end{abstract}
+
+\section{The statement}
+
+Write $\log$ for the natural logarithm.
+Shearer~\cite{Shearer1983} proved that every $n$-vertex triangle-free graph of
+average degree $d$ satisfies
+\begin{equation}\label{eq:shearer}
+  \alpha(G)\;\ge\; f(d)\,n,
+  \qquad
+  f(d)\;=\;\frac{d\log d-d+1}{(d-1)^{2}}\;=\;\bigl(1+o_d(1)\bigr)\frac{\log d}{d}.
+\end{equation}
+Optimising against the trivial bound $\alpha(G)\ge\Delta(G)$ yields
+\begin{equation}\label{eq:shearer-R}
+  R(3,k)\;\le\;\bigl(1+o(1)\bigr)\frac{k^{2}}{\log k}.
+\end{equation}
+HHKP~\cite{HHKP2025} proved $R(3,k)\ge\bigl(\tfrac12+o(1)\bigr)k^{2}/\log k$,
+and with CJMS~\cite{CJMS2025} conjectured that this is the truth.
+
+\begin{conjecture}[HHKP / CJMS]\label{conj:half}
+\[
+  R(3,k)\;=\;\Bigl(\tfrac12+o(1)\Bigr)\frac{k^{2}}{\log k}.
+\]
+\end{conjecture}
+
+Equivalently: every $n$-vertex triangle-free graph has
+$\alpha(G)\ge\bigl(1-o(1)\bigr)\sqrt{n\log n}$.
+Shearer gives only the constant $1/\sqrt{2}$.
+
+\section{What the optimisation actually says}
+
+\begin{lemma}[Neighbourhood versus Shearer]\label{lem:opt}
+Let $G$ be an $n$-vertex triangle-free graph of average degree $d$ and maximum
+degree $\Delta$. Then
+\[
+  \alpha(G)
+  \;\ge\;
+  \max\Bigl(\Delta,\; f(d)\,n\Bigr).
+\]
+In particular
+\[
+  \alpha(G)
+  \;\ge\;
+  \bigl(1-o(1)\bigr)\,
+  \max\Bigl(\Delta,\; n\frac{\log d}{d}\Bigr).
+\]
+\end{lemma}
+
+\begin{proof}
+The neighbourhood of a maximum-degree vertex is independent, because $G$ is
+triangle-free. The second bound is~\eqref{eq:shearer}.
+\end{proof}
+
+\begin{proposition}[Shearer's Ramsey constant]\label{prop:opt}
+Write $d=\theta\sqrt{n\log n}$ with $\theta>0$ bounded away from $0$ and
+$\infty$, and assume $d=\Theta(\Delta)$. Then Lemma~\ref{lem:opt} gives
+\[
+  \frac{\alpha(G)}{\sqrt{n\log n}}
+  \;\ge\;
+  \bigl(1-o(1)\bigr)\,
+  \max\Bigl(\theta,\;\tfrac{1}{2\theta}\Bigr).
+\]
+The right-hand side is minimised at $\theta=1/\sqrt{2}$, with value $1/\sqrt{2}$.
+This is~\eqref{eq:shearer-R}.
+\end{proposition}
+
+\begin{proof}
+$\log d=\tfrac12\log n+\log\theta+\tfrac12\log\log n$, so
+\[
+  n\frac{\log d}{d}
+  \;=\;
+  \frac{\sqrt{n\log n}}{\theta}
+  \cdot
+  \frac{\tfrac12\log n+O(\log\log n)}{\log n}
+  \;=\;
+  \bigl(\tfrac{1}{2\theta}+o(1)\bigr)\sqrt{n\log n}.
+\]
+Minimise $\max(\theta,1/(2\theta))$.
+\end{proof}
+
+The HHKP graphs realise $\theta=1+o(1)$ and $\alpha=\bigl(1+o(1)\bigr)\sqrt{n\log n}$:
+both a neighbourhood and a random-like independent set meet the independence
+number. One cannot beat Shearer on those graphs by ``take a neighbourhood''.
+The only remaining gain is a better function $f$.
+
+\section{Doubling Shearer implies the conjecture}
+
+\begin{conjecture}[Shearer $\times 2$]\label{conj:double}
+Every $n$-vertex triangle-free graph of maximum degree $d$ satisfies
+\[
+  \alpha(G)\;\ge\;\bigl(2-o_d(1)\bigr)\,n\frac{\log d}{d}.
+\]
+\end{conjecture}
+
+Random $d$-regular graphs (which are triangle-free with positive probability for
+fixed $d$) have $\alpha=\bigl(2-o_d(1)\bigr)n\log d/d$, so the constant $2$ is
+best possible if it holds. Davies--Jenssen--Perkins--Roberts~\cite{DJPR2018}
+proved that the \emph{average} independent-set size is already
+$\bigl(1+o_d(1)\bigr)n\log d/d$, and that the constant $1$ is tight for the
+average. Conjecture~\ref{conj:double} is therefore a statement about the gap
+between the maximum and the average, not about the average itself.
+
+\begin{theorem}[Reduction]\label{thm:reduction}
+Conjecture~\ref{conj:double} implies Conjecture~\ref{conj:half}.
+\end{theorem}
+
+\begin{proof}
+Let $G$ be $n$-vertex triangle-free of maximum degree $d$.
+Conjecture~\ref{conj:double} and $\alpha\ge\Delta\ge$ a typical degree give,
+in the regular case $d=\theta\sqrt{n\log n}$,
+\[
+  \frac{\alpha(G)}{\sqrt{n\log n}}
+  \;\ge\;
+  \bigl(1-o(1)\bigr)\,
+  \max\Bigl(\theta,\;\tfrac{1}{\theta}\Bigr)
+  \;\ge\;
+  1.
+\]
+Thus $\alpha(G)\ge\bigl(1-o(1)\bigr)\sqrt{n\log n}$.
+If $G$ has no independent set of size $k$, then $n\le\bigl(\tfrac12+o(1)\bigr)k^{2}/\log k$.
+The irregular case is the same after deleting vertices of degree
+$\le d/(2\log d)$ as in~\cite[Lemma~1]{DJPR2018}: the deleted stars contribute
+$o\bigl(n\log d/d\bigr)$ and the remaining graph is almost regular of degree
+$\Theta(d)$.
+\end{proof}
+
+The same computation with a factor $c\in[1,2]$ in place of $2$ produces
+$R(3,k)\le\bigl(1/c+o(1)\bigr)k^{2}/\log k$.
+In particular, any fixed improvement of Shearer's leading constant improves the
+Ramsey constant. CJMS record that even this is open:
+``it is a notoriously difficult open problem to improve Shearer's bound by any
+constant factor.''
+
+\section{The occupancy barrier}
+
+Let $I$ be a random independent set of $G$ in the hard-core model at fugacity
+$\lambda>0$, and write $\alpha_G(\lambda)=\E|I|$.
+Davies--Jenssen--Perkins--Roberts proved
+\begin{equation}\label{eq:occup}
+  \frac{\alpha_G(\lambda)}{n}
+  \;\ge\;
+  \frac{\lambda}{1+\lambda}
+  \cdot
+  \frac{W\bigl(d\log(1+\lambda)\bigr)}{d\log(1+\lambda)}
+\end{equation}
+for every triangle-free graph of maximum degree $d$, where $W$ is the Lambert
+function. For every $\lambda=d^{o(1)}$ this is
+$\bigl(1-o_d(1)\bigr)\log d/d$, and the constant $1$ is tight.
+
+\begin{theorem}[Occupancy cannot prove Conjecture~\ref{conj:half}]\label{thm:barrier}
+Any lower bound on $\alpha(G)$ that uses only $\alpha(G)\ge\alpha_G(\lambda)$ for
+some $\lambda=d^{o(1)}$ yields at most Shearer's constant $1+o(1)$ in~\eqref{eq:shearer},
+hence at most~\eqref{eq:shearer-R}.
+\end{theorem}
+
+\begin{proof}
+For $\lambda=d^{o(1)}$,~\eqref{eq:occup} and its matching random-regular upper
+bound give $\alpha_G(\lambda)=\bigl(1+o_d(1)\bigr)n\log d/d$.
+The inequality $\alpha(G)\ge\alpha_G(\lambda)$ therefore cannot beat~\eqref{eq:shearer}.
+\end{proof}
+
+This includes: the uniform average over all independent sets ($\lambda=1$);
+Shearer's randomised greedy (which samples a typical independent set);
+every hard-core argument at bounded or slowly growing fugacity;
+and every local algorithm whose output distribution is contiguous with a
+bounded-fugacity hard-core sample.
+The algorithmic factor-of-two gap on $G(n,d/n)$ --- no local algorithm finds
+an independent set of size $(1+\eps)n\log d/d$ --- is the same obstruction
+with the triangle-free hypothesis removed~\cite{GS14,RV17}.
+
+To see the maximum one must take $\lambda\to\infty$.
+The identity
+\begin{equation}\label{eq:var}
+  \alpha(G)
+  \;=\;
+  \alpha_G(1)
+  \;+\;
+  \int_{1}^{\infty}
+  \frac{\Var_{\lambda}(|I|)}{\lambda}\,d\lambda
+\end{equation}
+converts Conjecture~\ref{conj:double} into a tail/variance problem:
+the integral must contribute another $\bigl(1-o_d(1)\bigr)n\log d/d$.
+At $\lambda=1$ the measure is concentrated on typical sets of size
+$\sim n\log d/d$. The independent sets of size $\sim 2n\log d/d$ are
+invisible until $\lambda$ is large enough to reweight the tail.
+
+\begin{remark}
+Davies--Jenssen--Perkins--Roberts conjectured $\alpha(G)/\alpha_G(1)\ge 2-o_d(1)$
+for triangle-free graphs of minimum degree $d$, and noted that this implies
+Conjecture~\ref{conj:half}. Their weaker conjecture $\alpha/\alpha_G(1)\ge 4/3$
+would give only $R(3,k)\le\bigl(3/4+o(1)\bigr)k^{2}/\log k$.
+The Moon--Moser bound $\alpha/\alpha_G(1)\ge 1+\alpha/n$ is $1+o(1)$ on
+Ramsey graphs, so it does not help.
+\end{remark}
+
+\section{A two-sample attempt, and why it fails}
+
+The natural try, suggested by the two-bite construction, is to draw two
+independent hard-core samples $I_1,I_2$ at $\lambda=1$ and clean the bipartite
+graph of crossing edges.
+
+\begin{lemma}[Cleaning two samples]\label{lem:twosample}
+Let $I_1,I_2$ be independent sets. The crossing graph $H$ with parts
+$(I_1\setminus I_2,\,I_2\setminus I_1)$ is bipartite, hence triangle-free, and
+\[
+  \alpha(G)
+  \;\ge\;
+  |I_1\cap I_2|
+  \;+\;
+  \alpha(H).
+\]
+\end{lemma}
+
+\begin{proof}
+$I_1\cap I_2$ is independent of both sides of $H$ (any edge from the intersection
+into $I_j$ would be an edge of $G$ inside $I_j$). A maximum independent set of
+$H$ may therefore be added to the intersection.
+\end{proof}
+
+If $I_1,I_2$ were independent uniform samples of size $s=n\log d/d$ in a
+$d$-regular triangle-free graph, a first-moment guess is
+$|I_1\cap I_2|\sim s^{2}/n=n(\log d)^{2}/d^{2}=o(s)$ and
+$e(H)\sim s^{2}\cdot(d/n)=s\log d$.
+The bipartite graph $H$ then has average degree $\sim\log d$, so Caro--Wei
+gives only $\alpha(H)\ge 2s/(\log d+1)=o(s)$.
+Shearer on $H$ gives
+\[
+  \alpha(H)
+  \;\ge\;
+  \bigl(1-o(1)\bigr)\,
+  2s\cdot\frac{\log\log d}{\log d}
+  \;=\;
+  o(s).
+\]
+One does not recover a second copy of $s$. The crossing graph is too dense:
+two typical independent sets of size $n\log d/d$ behave like a random bipartite
+graph of degree $\log d$, whose independence number is $o(s)$.
+
+Taking $I_2$ to be a neighbourhood does not help on the HHKP examples, where
+neighbourhoods already have size $\alpha(G)$.
+Taking $\lambda$ large enough that $\E|I|\ge(1+\eps)n\log d/d$ is exactly
+Conjecture~\ref{conj:double} again.
+
+\section{What a proof must do}
+
+A proof of Conjecture~\ref{conj:half} must produce, in every triangle-free
+graph, an independent set that is atypically large for the hard-core measure
+at bounded fugacity. It cannot be:
+\begin{itemize}
+  \item a neighbourhood (already used in Lemma~\ref{lem:opt});
+  \item a bounded-fugacity hard-core sample (Theorem~\ref{thm:barrier});
+  \item a local algorithm of the $G(n,d/n)$ type;
+  \item a second typical sample cleaned against the first (Lemma~\ref{lem:twosample}).
+\end{itemize}
+The missing input is a uniform tail bound: either
+$\Var_{\lambda}(|I|)$ large on a long $\lambda$-interval, or a
+non-local construction of an independent set of size
+$(2-\eps)n\log d/d$. We do not have either.
+
+\section{What is not claimed}
+
+We do not prove Conjecture~\ref{conj:half}, Conjecture~\ref{conj:double}, or
+any improvement of Shearer's leading constant.
+We do not claim $R(3,k)\le\bigl(c+o(1)\bigr)k^{2}/\log k$ for any $c<1$.
+Family~A and the counting derandomization of HHKP are lower-bound constructions;
+they cannot prove an upper bound.
+
+The theorems in this note are the reduction (Theorem~\ref{thm:reduction}),
+the occupancy barrier (Theorem~\ref{thm:barrier}), and the failure of the
+two-sample cleaning (Lemma~\ref{lem:twosample} plus the degree computation).
+
+\begin{thebibliography}{9}
+\bibitem{CJMS2025}
+M.~Campos, M.~Jenssen, M.~Michelen and J.~Sahasrabuddhe,
+\emph{A new lower bound for the Ramsey numbers $R(3,k)$},
+arXiv:2505.13371, 2025.
+
+\bibitem{DJPR2018}
+E.~Davies, M.~Jenssen, W.~Perkins and B.~Roberts,
+\emph{On the average size of independent sets in triangle-free graphs},
+Proc.\ Amer.\ Math.\ Soc.\ 146 (2018), 111--124.
+
+\bibitem{GS14}
+D.~Gamarnik and M.~Sudan,
+\emph{Limits of local algorithms over sparse random graphs},
+Ann.\ Probab.\ 45 (2017), no.~4, 2353--2376.
+\newblock arXiv:1304.1831.
+
+\bibitem{HHKP2025}
+Z.~Hefty, P.~Horn, D.~King and F.~Pfender,
+\emph{Improving $R(3,k)$ in just two bites},
+arXiv:2510.19718, 2025.
+
+\bibitem{RV17}
+M.~Rahman and B.~Vir\'ag,
+\emph{Local algorithms for independent sets are half-optimal},
+Ann.\ Probab.\ 45 (2017), no.~3, 1543--1577.
+
+\bibitem{Shearer1983}
+J.~B.~Shearer,
+\emph{A note on the independence number of triangle-free graphs},
+Discrete Math.\ 46 (1983), 83--87.
+\end{thebibliography}
+
+\end{document}
