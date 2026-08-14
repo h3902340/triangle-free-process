@@ -71,6 +71,11 @@ class FamilyA:
         x2, y2 = self._xy(s)
         return self._pack(x1 + x2, y1 + y2)
 
+    def _sub(self, r: int, s: int) -> int:
+        x1, y1 = self._xy(r)
+        x2, y2 = self._xy(s)
+        return self._pack(x1 - x2, y1 - y2)
+
     def _shear(self, r: int, i: int) -> int:
         x, y = self._xy(r)
         return self._pack(x, y + i * x)
@@ -203,6 +208,24 @@ class FamilyA:
                 blocked.update(adj[v])
         return chosen
 
+    def xaxis_lift_blue_edges(self) -> int:
+        """Blue G_2-edges inside the lift of the x-axis (should be positive)."""
+        count = 0
+        points = [
+            (self._pack(t, 0), i)
+            for t in range(self.q)
+            for i in range(self.ell)
+        ]
+        for a in range(len(points)):
+            r, i = points[a]
+            br = self._shear(r, i)
+            for b in range(a + 1, len(points)):
+                rp, j = points[b]
+                bb = self._shear(rp, j)
+                if self._sub(br, bb) in self._S_B:
+                    count += 1
+        return count
+
     def summary(self) -> dict[str, float]:
         deg = [0] * self.n
         for u, v in self.edges:
@@ -232,6 +255,11 @@ def main() -> None:
         action="store_true",
         help="fail if q is not an odd prime instead of rounding up",
     )
+    parser.add_argument(
+        "--diagnose",
+        action="store_true",
+        help="also count blue edges on the x-axis lift",
+    )
     args = parser.parse_args()
     q = args.q if args.exact_prime else next_odd_prime(args.q)
     if args.exact_prime and (q < 3 or not is_prime(q) or q == 2):
@@ -239,6 +267,9 @@ def main() -> None:
     G = FamilyA(q)
     for key, val in G.summary().items():
         print(f"{key}: {val}")
+    if args.diagnose:
+        print(f"xaxis_lift_size: {G.q * G.ell}")
+        print(f"xaxis_lift_blue_edges: {G.xaxis_lift_blue_edges()}")
 
 
 if __name__ == "__main__":

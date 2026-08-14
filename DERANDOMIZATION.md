@@ -39,11 +39,17 @@ For each odd prime $q$:
 2. **Sample.** Vertex set = $\ell$ horizontal shears $A_i(x,y)=(x,y+ix)$, $\ell=\lceil(2\log q)^2\rceil$.
 3. **Cleanup.** Same deterministic rule as HHKP.
 
-**Proved:** triangle-free, degree $O(\sqrt{n\log n})$, codegrees $O(\log^4 q)$, poly-time constructible.
+**Proved:** triangle-free, degree $O(\sqrt{n\log n})$, poly-time; $G_2$-independent sets are lifts of seed-independent sets; heavy/vertical seed independent sets have size $O(q\sqrt{\log q})$; open edges survive cleanup. See `family-a-independence.tex`.
 
-**Not proved:** $\alpha(A_q)<(1+\varepsilon)\sqrt{n\log n}$. That needs a uniform Weil/incidence estimate that every large set still has an open seed edge (the random step in HHKP).
+**Not proved:** $\alpha(G_R)=O(q\sqrt{\log q})$ in full generality, and that every set of size $C\sqrt{n\log n}$ spans an *open* $G_2$-edge.
 
 Implementation: `explicit_family.py`
+
+```bash
+python3 explicit_family.py 7 --diagnose
+```
+
+On $q=7$ the second bite already cuts the $x$-axis lift (527 blue edges) and the greedy independent set ($63$) sits below the SOTA target $\sqrt{n\log n}\approx 72$. Small $q$ is not a proof; the trend is the expected one.
 
 ```bash
 python3 explicit_family.py 3

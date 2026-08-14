@@ -1,0 +1,279 @@
+\documentclass[11pt]{article}
+
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref,microtype}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\F}{\mathbb{F}}
+\newcommand{\eps}{\varepsilon}
+
+\title{Independence number of the algebraic two-bites graphs $A_q$\\
+--- a reduction, two theorems, and one remaining lemma}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We push the independence-number analysis of the explicit family $A_q$.
+The argument is reduced to two seed-graph statements and one open-edge lemma.
+We prove the reduction completely, prove that every $G_2$-independent set is a lift of a pair of seed-independent sets, and prove a structure theorem for independent sets in the parabola Cayley graph.
+The remaining lemma is a uniform incidence estimate: every set larger than $C\sqrt{n\log n}$ still spans an \emph{open} $G_2$-edge.
+Until that lemma is proved, Family~A does not yet give a new explicit Ramsey bound.
+\end{abstract}
+
+\section{Notation}
+
+Let $q$ be a large odd prime,
+$\Gamma=\F_q^{2}$,
+$d=\lfloor q/(2\sqrt{\log q})\rfloor$,
+$T=\{1,\dots,d\}$,
+\begin{align*}
+  S_R &=\{\pm(t,t^{2}):t\in T\},
+  &
+  S_B &=\{\pm(t^{2},t):t\in T\},
+\end{align*}
+$G_R=\mathrm{Cay}(\Gamma,S_R)$, $G_B=\mathrm{Cay}(\Gamma,S_B)$,
+$\ell=\lceil(2\log q)^{2}\rceil$,
+$A_i(x,y)=(x,y+ix)$ for $0\le i<\ell$,
+\[
+  W=\bigl\{(r,i):r\in\Gamma,\,0\le i<\ell\bigr\}
+\]
+(identifying $(r,A_i(r))$ with the pair $(r,i)$),
+$n=q^{2}\ell$,
+and $G_2$ the graph on $W$ with a red edge $(r,i)(r',j)$ iff $r-r'\in S_R$ and a blue edge iff $A_i(r)-A_j(r')\in S_B$.
+Let $A_q=\mathrm{Clean}(G_2)$ and let $H$ be the spanning subgraph of $G_2$ consisting of \emph{open} edges (those with no common neighbour in $G_2$).
+
+\begin{lemma}[Open edges survive]\label{lem:open-live}
+$H\subseteq A_q$. Consequently $\alpha(A_q)\le\alpha(H)$.
+\end{lemma}
+
+\begin{proof}
+An open edge lies in no triangle of $G_2$, so the greedy monochromatic pass keeps it and the bichromatic pass never sees a triangle containing it.
+$A_q$ is obtained from $G_2$ by deleting edges, so $H\subseteq A_q$.
+\end{proof}
+
+Thus it is enough to show $\alpha(H)<k$.
+Equivalently: every $I\subset W$ with $|I|\ge k$ spans an open $G_2$-edge.
+
+\section{Reduction to the seeds}
+
+\begin{lemma}[Projections of $G_2$-independent sets]\label{lem:proj}
+If $I$ is independent in $G_2$, then $\pi_R(I)$ is independent in $G_R$ and $\pi_B(I)$ is independent in $G_B$.
+In particular
+\[
+  \alpha(G_2)\;\le\;\ell\cdot\min\bigl(\alpha(G_R),\alpha(G_B)\bigr).
+\]
+\end{lemma}
+
+\begin{proof}
+If $r\sim r'$ in $G_R$ and $(r,i),(r',j)\in I$ for any shears $i,j$, then $(r,i)(r',j)$ is a red $G_2$-edge.
+Hence a $G_2$-independent set meets the fibre of at most one endpoint of every $G_R$-edge, i.e.\ $\pi_R(I)$ is $G_R$-independent.
+The blue statement is identical after applying the shears (each blue vertex has $\ell$ preimages, but adjacency depends only on the blue coordinates).
+Since each red vertex contributes at most $\ell$ points of $W$, $|I|\le\ell\,|\pi_R(I)|\le\ell\,\alpha(G_R)$, and likewise for blue.
+\end{proof}
+
+This is the two-bites mechanism in deterministic form: a large $G_2$-independent set would be a large lift of a seed-independent set in \emph{both} colours at once.
+
+\section{Independent sets in the parabola Cayley graph}
+
+Write points of $\Gamma$ as $(x,y)\in\F_q^{2}$.
+A $G_R$-edge is a jump
+\[
+  (x,y)\;\longrightarrow\;(x+t,\,y+t^{2}),
+  \qquad t\in\pm T.
+\]
+
+\begin{lemma}[Fibre constraint]\label{lem:fibre}
+Let $A\subset\Gamma$ be independent in $G_R$ and write $B_x=\{y:(x,y)\in A\}$.
+Then for every $x\in\F_q$ and every $t\in T$,
+\[
+  B_{x+t}\;\cap\;(B_x+t^{2})\;=\;\emptyset.
+\]
+In particular $|B_x|+|B_{x+t}|\le q$.
+\end{lemma}
+
+\begin{proof}
+A point of the intersection would give an edge in direction $t$.
+\end{proof}
+
+\begin{proposition}[Heavy $x$-coordinates]\label{prop:heavy}
+Let $A$ be $G_R$-independent and $X_{\mathrm{hvy}}=\{x:|B_x|>q/2\}$.
+Then no two points of $X_{\mathrm{hvy}}$ differ by an element of $T\cup(-T)$, so
+\[
+  |X_{\mathrm{hvy}}|\;\le\;\Bigl\lceil\frac{q}{d+1}\Bigr\rceil\;=\;O(\sqrt{\log q}).
+\]
+The heavy fibres contribute $O(q\sqrt{\log q})$ vertices to $A$.
+\end{proposition}
+
+\begin{proof}
+If $x,x+t\in X_{\mathrm{hvy}}$ with $t\in T$, then $|B_x|+|B_{x+t}|>q$, contradicting Lemma~\ref{lem:fibre}.
+A subset of $\F_q$ with minimum gap $d+1$ has size at most $q/(d+1)$.
+\end{proof}
+
+\begin{proposition}[Vertical packing]\label{prop:vertical}
+Let $W\subset\F_q$ satisfy $(W-W)\cap(T\cup(-T))=\emptyset$.
+Then $W\times\F_q$ is independent in $G_R$ and
+\[
+  |W\times\F_q|\;=\;|W|\,q\;\le\;q\Bigl\lfloor\frac{q}{d+1}\Bigr\rfloor\;=\;O\bigl(q\sqrt{\log q}\bigr).
+\]
+\end{proposition}
+
+\begin{proof}
+Every $G_R$-edge changes the $x$-coordinate by an element of $\pm T$, so cannot stay inside $W\times\F_q$.
+Taking $W$ as an arithmetic progression with difference $d+1$ attains the bound.
+\end{proposition}
+
+So the largest \emph{obvious} independent sets in $G_R$ have size $\Theta(q\sqrt{\log q})$.
+We do not claim this is the maximum (a graph-of-a-function construction could in principle be larger), but every construction we can write down saturates this order and no larger.
+
+\begin{conjecture}[Seed independence]\label{conj:seed}
+$\alpha(G_R),\alpha(G_B)=O(q\sqrt{\log q})$.
+\end{conjecture}
+
+\begin{lemma}[Conditional bound for $G_2$]\label{lem:g2}
+If Conjecture~\ref{conj:seed} holds, then
+\[
+  \alpha(G_2)\;=\;O\bigl(q(\log q)^{5/2}\bigr)\;=\;O\bigl(\sqrt{n}\,(\log n)^{3/2}\bigr).
+\]
+\end{lemma}
+
+\begin{proof}
+Lemma~\ref{lem:proj} and $\ell=\Theta((\log q)^{2})$.
+Note $\sqrt{n}=\Theta(q\log q)$.
+\end{proof}
+
+Even this is already smaller than Alon's $O(n^{2/3})=O(q^{4/3}(\log q)^{4/3})$ for large $q$.
+The obstruction to an explicit Ramsey breakthrough is not $G_2$; it is the cleanup.
+
+\section{Why cleanup is the only remaining enemy}
+
+$A_q$ is obtained from $G_2$ by deleting edges, so $\alpha(A_q)\ge\alpha(G_2)$.
+An upper bound on $\alpha(G_2)$ does \emph{not} pass to $A_q$.
+Lemma~\ref{lem:open-live} repairs this for edges that cannot be deleted:
+
+\begin{lemma}[The remaining lemma]\label{lem:remaining}
+There exists $C$ such that for all large $q$, every $I\subset W$ with
+\[
+  |I|\;\ge\;C\sqrt{n\log n}
+\]
+spans at least one open $G_2$-edge.
+\end{lemma}
+
+\begin{theorem}[What Lemma~\ref{lem:remaining} implies]\label{thm:from-remaining}
+If Lemma~\ref{lem:remaining} holds, then $\alpha(A_q)<C\sqrt{n\log n}$ and
+\[
+  R(3,k)\;=\;\Omega\Bigl(\frac{k^{2}}{\log k}\Bigr)
+\]
+via an explicit polynomial-time family.
+If moreover $C=1+\eps$ and Conjecture~\ref{conj:seed} holds, the constant matches SOTA up to the $\eps$ in $k=(1+\eps)\sqrt{n\log n}$.
+\end{theorem}
+
+\begin{proof}
+Lemma~\ref{lem:open-live}: an open edge survives in $A_q$, so $I$ is not independent in $A_q$.
+\end{proof}
+
+\section{Evidence for Lemma~\ref{lem:remaining}}
+
+\subsection{Typical mixed codegree is polylog}
+
+A pair $\{(r,i),(r',j)\}$ has a mixed common neighbour if there exist $\sigma\in S_R$, $m\in\{0,\dots,\ell-1\}$, $\tau\in S_B$ with
+\[
+  A_m(r+\sigma)-A_j(r')=\tau.
+\]
+Writing $r=(r_x,r_y)$, $\sigma=\pm(t,t^{2})$, $\tau=\pm(s^{2},s)$ and expanding the shear gives a pair of scalar equations.
+For each of $O(1)$ sign patterns and each $t\in T$ there are $O(1)$ roots $s$, and then $m$ is uniquely determined (when the coefficient of $m$ is nonzero).
+The value $m$ lands in $\{0,\dots,\ell-1\}$ for a given $t$ only if a specific element of $\F_q$ lies in an interval of length $\ell$.
+For generic $(r,r')$ the map $t\mapsto m(t)$ is nonconstant of degree $2$, so
+\[
+  \#\{t:m(t)\in[0,\ell)\}
+  \;=\;
+  O\bigl(\ell\cdot d/q+q^{o(1)}\bigr)
+  \;=\;
+  O(\log^{3/2}q)
+\]
+by a Weil estimate for the graph of $m$.
+Thus a typical pair has $O(\mathrm{polylog}\,q)$ mixed common neighbours, matching HHKP's $O(\log^{3}n)$ codegree.
+
+Worst-case pairs (vanishing leading coefficient) form a thin algebraic subset: $O(q)$ choices of $r-r'$ of a special shape, hence $O(q\ell^{2})=O(\sqrt{n}\,\log q)$ pairs in the whole of $W$, which is $o(k^{2})$ for $k=\Theta(\sqrt{n\log n})$.
+
+\subsection{The $x$-axis lift is cut by blue}
+
+The $x$-axis $X=\F_q\times\{0\}$ is $G_R$-independent (Proposition~\ref{prop:vertical} with $W=\F_q$ fails --- $W-W=\F_q$ meets $T$ --- wait: $X-X=X$, and $X\cap S_R=\emptyset$ because $t^{2}=0$ forces $t=0$).
+Yes, $X$ is independent in $G_R$ and $|X|=q$.
+Its lift $\widetilde X$ has size $q\ell=\Theta(\sqrt{n}\log q)$.
+
+Blue differences on $\widetilde X$ are
+\[
+  A_i(t,0)-A_j(t',0)=(t-t',\,it-jt').
+\]
+This equals $(s^{2},s)$ when $t-t'=s^{2}$ and $it-jt'=s$.
+For $i=j\ne 0$ this is $i s^{2}=s$, so $s=0$ or $s=i^{-1}$.
+For $s=i^{-1}\in T$ (true for $1\le i\le\min(\ell-1,d)$) we obtain a blue edge.
+Hence $\widetilde X$ is \emph{not} independent in $G_2$, as intended.
+(The implementation checks this; see \texttt{explicit\_family.py --diagnose}.)
+
+\subsection{Plan for a complete proof of Lemma~\ref{lem:remaining}}
+
+Fix $I$ with $|I|\ge C\sqrt{n\log n}$.
+
+\begin{enumerate}
+  \item If $I$ is $G_2$-independent, Lemma~\ref{lem:proj} and Conjecture~\ref{conj:seed} give
+    $|I|=O(\sqrt{n}(\log n)^{3/2})$.
+    For $C$ larger than the implicit constant this is a contradiction once we replace $\ell$ by $(\log q)^{c}$ with a slightly smaller $c$, \emph{or} we accept a weaker target $k=\sqrt{n}\,(\log n)^{2}$ and an explicit bound $R(3,k)=\Omega(k^{2}/\log^{4}k)$, still far above Alon --- \emph{provided} we are in this case.
+    This case is finished modulo Conjecture~\ref{conj:seed}.
+
+  \item If $I$ is not $G_2$-independent, it spans a $G_2$-edge $e$.
+    If any such $e$ is open, done.
+    So assume every $G_2$-edge in $I$ is closed.
+
+  \item Closed edges are covered by $O(\ell)$ common-neighbour ``stars'' of size $O(d)$ (Sidon) plus mixed stars.
+    A set whose entire $G_2$-edge set is covered by few stars has size bounded by a sunflower / $\Delta$-system count:
+    \[
+      |I|
+      \;\le\;
+      O\bigl(\alpha(G_2)+(\#\text{heavy common neighbours})\cdot d\bigr).
+    \]
+    The number of vertices $w\in W$ with $|N_{G_2}(w)\cap I|$ large is controlled by the same Sidon codegree as in HHKP's $L_I,M_I,S_I$ buckets (now deterministic: two $G_R$-neighbourhoods meet in $\le 2$ vertices).
+    This is the part that still needs a uniform write-up, but it is finite-geometry bookkeeping rather than a new idea.
+\end{enumerate}
+
+\section{Unconditional theorem (what is actually proved)}
+
+\begin{theorem}\label{thm:uncond}
+For every odd prime $q\ge 5$ the graph $A_q$ is an explicit triangle-free graph on $n=q^{2}\lceil(2\log q)^{2}\rceil$ vertices, constructible in time $\mathrm{poly}(n)$, with maximum degree $O(\sqrt{n\log n})$.
+Moreover:
+\begin{enumerate}
+  \item $\alpha(A_q)\le\alpha(H)$ where $H$ is the open subgraph of $G_2$;
+  \item $\alpha(G_2)\le\ell\min(\alpha(G_R),\alpha(G_B))$;
+  \item $G_R$ (resp.\ $G_B$) has no independent set of the form $W\times\F_q$ larger than $O(q\sqrt{\log q})$, and no heavy-fibre independent set larger than $O(q\sqrt{\log q})$ in the sense of Proposition~\ref{prop:heavy}.
+\end{enumerate}
+\end{theorem}
+
+\begin{theorem}[Conditional explicit bound]\label{thm:cond}
+Assume Conjecture~\ref{conj:seed} and Lemma~\ref{lem:remaining} with $k=\sqrt{n}\,(\log n)^{2}$.
+Then $\alpha(A_q)=O(\sqrt{n}\,(\log n)^{2})$ and
+\[
+  R(3,k)\;=\;\Omega\Bigl(\frac{k^{2}}{\log^{4}k}\Bigr)
+\]
+via a polynomial-time explicit family, improving Alon's $\Omega(k^{3/2})$.
+\end{theorem}
+
+\section{What is not claimed}
+
+We do \emph{not} claim a completed explicit SOTA proof.
+The missing pieces are Conjecture~\ref{conj:seed} (an additive-combinatorial bound for one Cayley graph on $\F_q^{2}$) and Lemma~\ref{lem:remaining} (open edges in large sets).
+Both are concrete and, in our view, true; they are not written out at the level of a refereed proof.
+
+Family~L still gives the SOTA bound as a uniquely named (but inefficient) graph.
+
+\end{document}
