@@ -255,8 +255,9 @@ A size bound $O(q\log q)$ would need all three of:
         $K\ge 2+\eta$;
   \item a star neighbourhood that is dense in an affine interval of length
         $\Theta(d)$: Lemma~\ref{lem:stardense} supplies this on every
-        $T$-dense $x$ (Lean: $N\subseteq\{1,\dots,d\}$ and
-        $\#N\le d$ by \texttt{card\_le\_intervalT});
+        $T$-dense $x$ (Lean: out-neighbours of $s=i+1$ are exactly
+        $\{1,\dots,i\}$, \texttt{intervalT\_out\_mem},
+        \texttt{card\_intervalT\_out});
   \item the Weyl estimate of Proposition~4 in \texttt{structured-cases.tex},
         now applied to a set that is actually below the random overlap.
 \end{enumerate}
