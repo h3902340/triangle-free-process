@@ -28,7 +28,8 @@ We push the independence-number analysis of the explicit family $A_q$.
 The argument is reduced to two seed-graph statements and one open-edge lemma.
 We prove the reduction completely, prove that every $G_2$-independent set is a lift of a pair of seed-independent sets, and prove a structure theorem for independent sets in the parabola Cayley graph.
 The remaining lemma is a uniform incidence estimate: every set larger than $C\sqrt{n\log n}$ still spans an \emph{open} $G_2$-edge.
-Until that lemma is proved, Family~A does not yet give a new explicit Ramsey bound.
+A structure-versus-randomness attack on the seed bound is in \texttt{energy-increment.tex}; a Sidon rewrite of the HHKP buckets is in \texttt{open-edges.tex}; structured $G_2$-incidences are in \texttt{incidences.tex}.
+Until the leftover inverse-energy and medium-star lemmas are proved, Family~A does not yet give a new explicit Ramsey bound.
 \end{abstract}
 
 \section{Notation}
@@ -44,7 +45,8 @@ $T=\{1,\dots,d\}$,
 \end{align*}
 $G_R=\mathrm{Cay}(\Gamma,S_R)$, $G_B=\mathrm{Cay}(\Gamma,S_B)$,
 $\ell=\lceil(2\log q)^{2}\rceil$,
-$A_i(x,y)=(x,y+ix)$ for $0\le i<\ell$,
+$A_0,\dots,A_{\ell-1}$ the first $\ell$ matrices in $\mathrm{GL}_2(\F_q)$ preferring all-nonzero entries
+(horizontal shears $A_i(x,y)=(x,y+ix)$ are \emph{not} used; see \texttt{structured-cases.tex}),
 \[
   W=\bigl\{(r,i):r\in\Gamma,\,0\le i<\ell\bigr\}
 \]
@@ -76,9 +78,9 @@ In particular
 \end{lemma}
 
 \begin{proof}
-If $r\sim r'$ in $G_R$ and $(r,i),(r',j)\in I$ for any shears $i,j$, then $(r,i)(r',j)$ is a red $G_2$-edge.
+If $r\sim r'$ in $G_R$ and $(r,i),(r',j)\in I$ for any sample maps $i,j$, then $(r,i)(r',j)$ is a red $G_2$-edge.
 Hence a $G_2$-independent set meets the fibre of at most one endpoint of every $G_R$-edge, i.e.\ $\pi_R(I)$ is $G_R$-independent.
-The blue statement is identical after applying the shears (each blue vertex has $\ell$ preimages, but adjacency depends only on the blue coordinates).
+The blue statement is identical after applying the sample maps (each blue vertex has $\ell$ preimages, but adjacency depends only on the blue coordinates).
 Since each red vertex contributes at most $\ell$ points of $W$, $|I|\le\ell\,|\pi_R(I)|\le\ell\,\alpha(G_R)$, and likewise for blue.
 \end{proof}
 
@@ -271,9 +273,12 @@ via a polynomial-time explicit family, improving Alon's $\Omega(k^{3/2})$.
 \section{What is not claimed}
 
 We do \emph{not} claim a completed explicit SOTA proof.
-The missing pieces are Conjecture~\ref{conj:seed} (an additive-combinatorial bound for one Cayley graph on $\F_q^{2}$) and Lemma~\ref{lem:remaining} (open edges in large sets).
-Both are concrete and, in our view, true; they are not written out at the level of a refereed proof.
-
+The missing pieces are now narrower than Conjecture~\ref{conj:seed} as a black box:
+\begin{itemize}
+  \item the inverse-energy lemma for non-AP fibres (\texttt{energy-increment.tex}, Conjecture~12);
+  \item the medium-star incidence bound and a light-star second moment (\texttt{open-edges.tex}).
+\end{itemize}
+Heavy fibres, $T$-sparse supports, strictly-mixing $T$-dense supports, aligned AP-cylinders, tight 4-intervals, structured $G_2$-incidences, and heavy closed stars are theorems.
 Family~L still gives the SOTA bound as a uniquely named (but inefficient) graph.
 
 \end{document}

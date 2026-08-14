@@ -27,16 +27,22 @@ See [`explicit-family.tex`](explicit-family.tex) and [`explicit_family.py`](expl
 
 ```bash
 python3 explicit_family.py 5
+python3 explicit_family.py 13 --seed
+python3 explicit_family.py 7 --diagnose
 ```
 
 ## Files
 
 | File | Contents |
 |------|----------|
+| [`EXPLICIT-STATUS.md`](EXPLICIT-STATUS.md) | One-page proved / not-proved list |
 | [`DERANDOMIZATION.md`](DERANDOMIZATION.md) | Status of derandomization + concrete families |
 | [`explicit-family.tex`](explicit-family.tex) | Family L (proved SOTA) and Family A (explicit) |
 | [`family-a-independence.tex`](family-a-independence.tex) | Reduction + remaining lemma for $\alpha(A_q)$ |
 | [`structured-cases.tex`](structured-cases.tex) | Structured seed sets and the shear fix |
+| [`incidences.tex`](incidences.tex) | $G_2$-incidences of structured seed pairs |
+| [`energy-increment.tex`](energy-increment.tex) | Structure vs randomness for $\alpha(G_R)$ |
+| [`open-edges.tex`](open-edges.tex) | Sidon rewrite of the HHKP closed-pair buckets |
 | [`explicit_family.py`](explicit_family.py) | Constructor for $A_q$ |
 | [`sota-combinatorial.tex`](sota-combinatorial.tex) | Counting proof of the $\tfrac12$ bound |
 | [`PRESENTATION.md`](PRESENTATION.md) | Talk outline for the Bohman-order combinatorial nibble |

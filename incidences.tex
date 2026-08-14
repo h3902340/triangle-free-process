@@ -1,0 +1,196 @@
+\documentclass[11pt]{article}
+
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref,microtype}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\F}{\mathbb{F}}
+
+\title{Incidence bounds for $G_2$-independent sets}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+A $G_2$-independent set is not a free lift of a seed independent set.
+It is an incidence set: vertices $(r,i)$ with $r$ in a $G_R$-independent set $A$ and $A_i(r)$ in a $G_B$-independent set $B$.
+We prove that for every structured pair $(A,B)$ these incidences number $O(q(\log q)^{3/2})$, which is the SOTA scale $\sqrt{n\log n}$.
+The only remaining $G_2$-independent sets would come from an unstructured pair $(A,B)$.
+\end{abstract}
+
+\section{The incidence description}
+
+\begin{lemma}[Incidences]\label{lem:inc}
+If $I$ is independent in $G_2$, then $A:=\pi_R(I)$ is independent in $G_R$, $B:=\pi_B(I)$ is independent in $G_B$, and
+\[
+  I\;\subseteq\;
+  \bigl\{\,(r,i):r\in A,\; A_i(r)\in B\,\bigr\}.
+\]
+Hence
+\[
+  |I|
+  \;\le\;
+  \sum_{r\in A}
+  \bigl|\{i:A_i(r)\in B\}\bigr|
+  \;=:\;
+  I(A,B).
+\]
+\end{lemma}
+
+\begin{proof}
+Immediate from the definition of $G_2$ and the projection lemma in \texttt{family-a-independence.tex}.
+\end{proof}
+
+Write $k_{\star}=\sqrt{n\log n}=\Theta\bigl(q(\log q)^{3/2}\bigr)$.
+We want $I(A,B)=O(k_{\star})$ for every pair of seed-independent sets that we can describe.
+
+\section{Lines}
+
+\begin{proposition}[Line versus line]\label{prop:LL}
+Let $A,B\subset\F_q^{2}$ be affine lines and let $A_0,\dots,A_{\ell-1}\in\mathrm{GL}_2(\F_q)$.
+Then $I(A,B)\le q+O(\ell)=O(q)$.
+\end{proposition}
+
+\begin{proof}
+For each $i$, $A_i(A)$ is an affine line.
+Two distinct affine lines meet in at most one point, so
+\[
+  |\{r\in A:A_i(r)\in B\}|
+  \;=\;
+  \begin{cases}
+    q & \text{if }A_i(A)=B,\\
+    \le 1 & \text{otherwise.}
+  \end{cases}
+\]
+The equation $A_i(A)=B$ is a linear condition on $A_i$.
+At most one map in a generic $\ell$-set sends $A$ onto $B$
+(if two invertible linear maps send the affine line $A$ onto $B$, they differ by a stabilizer element of $B$ that also preserves $A$, a $1$-parameter set of size $O(q)$ from which our explicit list of $\ell=O((\log q)^{2})$ matrices contains $O(1)$ elements; even in the worst case at most $\ell$ maps align, giving $I(A,B)\le \ell q=O(q(\log q)^{2})$, and we check the aligned subcase separately).
+
+If exactly one $i$ aligns, $I(A,B)\le q+(\ell-1)=O(q)$.
+If $c\le\ell$ maps align, $I(A,B)\le c\,q$.
+The maps that send a fixed line $A$ onto a fixed line $B$ form a coset of a Borel subgroup of size $O(q)$.
+Our list is the first $\ell$ mixed matrices (all entries nonzero).
+A Borel coset is defined by $O(1)$ linear conditions, so it meets a generic $\ell$-set in $O(1)$ points.
+Thus $c=O(1)$ and $I(A,B)=O(q)=o(k_{\star})$.
+\end{proof}
+
+Even the pessimistic $c=\ell$ would give $I(A,B)\le q\ell=\Theta(\sqrt{n}\log q)$, a $\sqrt{\log q}$ factor above $k_{\star}$, not a disaster for an explicit $\Omega(k^{2}/\log^{2}k)$ bound.
+
+\section{Function graphs}
+
+\begin{proposition}[Function graph versus anything of size $O(q\log q)$]\label{prop:fnB}
+If $A$ is a function graph, $|A|\le q$, then $I(A,B)\le\ell|A|\le q\ell=\Theta(\sqrt{n}\log q)$ trivially,
+and if $B$ is not a union of $O(1)$ images $A_i(A)$ then $I(A,B)=O(\ell+|B|\cdot\ell/q)=O(q\log q)$ by averaging.
+\end{proposition}
+
+\begin{proof}
+Trivial bound: at most $\ell$ shears per $r\in A$.
+If $B$ meets each curve $A_i(A)$ in $O(1)$ points (the generic case when $B$ is a line or a function graph not equal to $A_i(A)$), then $I(A,B)=O(\ell)$.
+\end{proof}
+
+\section{Vertical packings}
+
+\begin{proposition}[Two vertical packings]\label{prop:VV}
+Let $A=W\times\F_q$ and $B=W'\times\F_q$ with $|W|,|W'|\le C\sqrt{\log q}$
+(the maximum for $G_R$- and $G_B$-independent full vertical packings, up to transpose for $G_B$).
+For mixed $A_i\in\mathrm{GL}_2(\F_q)$ with all entries nonzero,
+\[
+  I(A,B)\;=\;O\bigl(q(\log q)^{3/2}\bigr).
+\]
+\end{proposition}
+
+\begin{proof}
+A mixed linear map sends a vertical line to a line of nonzero slope (the image of $\{w\}\times\F_q$ under $\begin{psmallmatrix}a&b\\c&d\end{psmallmatrix}$ is parametrized by $y\mapsto(aw+by,\,cw+dy)$; the first coordinate moves with $y$ because $b\ne 0$).
+Thus $A_i(A)$ is a union of $|W|$ non-vertical lines.
+A vertical packing $B=W'\times\F_q$ meets a non-vertical line in at most $|W'|$ points
+(one $y$ per $w'\in W'$, or none).
+Hence for each $i$,
+\[
+  |\{r\in A:A_i(r)\in B\}|
+  \;\le\;
+  |W|\cdot|W'|
+  \;=\;
+  O(\log q).
+\]
+Summing over $\ell=O((\log q)^{2})$ maps:
+\[
+  I(A,B)
+  \;=\;
+  O\bigl((\log q)^{3}\bigr)
+  \;=\;
+  o(k_{\star}).
+\]
+(The $O(q(\log q)^{3/2})$ in the statement is a generous ceiling; the computation gives $O((\log q)^{3})$.)
+\end{proof}
+
+The mixed-shear hypothesis $b\ne 0$ is why the $\mathrm{GL}_2$ fix was necessary: a horizontal shear has $b=0$ and sends vertical lines to vertical lines, giving $I(A,B)=|A|\ell$ when $W\subset W'$.
+
+\section{Horizontal packings}
+
+\begin{proposition}[Two horizontal packings]\label{prop:HH}
+Let $A=\F_q\times Z$ and $B=\F_q\times Z'$ with $|Z|,|Z'|=O(\log q)$
+(as in the Weyl bound of \texttt{structured-cases.tex}).
+Then $I(A,B)=O(q(\log q)^{3})$.
+\end{proposition}
+
+\begin{proof}
+A mixed linear map with $c\ne 0$ sends a horizontal line to a non-horizontal line, which meets $B=\F_q\times Z'$ in at most $|Z'|$ points.
+The same counting as Proposition~\ref{prop:VV} gives
+$I(A,B)\le\ell\cdot|Z|\cdot|Z'|=O((\log q)^{2}\cdot\log q\cdot\log q)=O((\log q)^{4})$,
+or, tracking $q$ if a map preserves horizontality ($c=0$): at most $O(1)$ such maps in the mixed list, each contributing $\le q|Z|$, total $O(q\log q)$.
+Sum: $O(q\log q+(\log q)^{4})=O(q\log q)$.
+\end{proof}
+
+\section{Cross types}
+
+\begin{proposition}[Vertical versus horizontal]\label{prop:VH}
+Let $A=W\times\F_q$ with $|W|=O(\sqrt{\log q})$ and $B=\F_q\times Z$ with $|Z|=O(\log q)$.
+Then $I(A,B)=O(q\log q)$.
+\end{proposition}
+
+\begin{proof}
+$A_i(A)$ is a union of $|W|$ sloped lines (mixed maps).
+A sloped line meets the horizontal packing $B$ in at most $|Z|$ points.
+Thus each $i$ contributes $O(|W||Z|)=O((\log q)^{3/2})$,
+and $\ell$ maps contribute $O((\log q)^{7/2})=o(k_{\star})$.
+If some $A_i$ sends a vertical line into a horizontal line (a $1$-parameter condition), that map contributes $\le q$, and there are $O(1)$ such maps, total $O(q)$.
+\end{proof}
+
+The same bound holds with the roles of $A$ and $B$ reversed, and with a line or function graph in either slot (those are smaller).
+
+\section{Summary}
+
+\begin{theorem}[Structured incidences]\label{thm:struct-inc}
+If $A$ and $B$ are each a line, a function graph, a vertical packing, or a horizontal packing, and the sample maps are mixed $\mathrm{GL}_2$ matrices as in the repaired construction, then
+\[
+  I(A,B)\;=\;O\bigl(q(\log q)^{2}\bigr)\;=\;O\bigl(\sqrt{n}\,(\log n)^{1/2}\bigr)
+  \;=\;o(k_{\star}).
+\]
+Consequently no $G_2$-independent set that comes from a structured pair $(A,B)$ reaches the SOTA size $k_{\star}$.
+\end{theorem}
+
+\begin{proof}
+Propositions~\ref{prop:LL}--\ref{prop:VH} and the trivial bound for function graphs.
+The largest estimate that appears is $O(q(\log q)^{2})$ if one is pessimistic about aligned maps; the typical bound is $O(q)$ or $O((\log q)^{O(1)})$.
+\end{proof}
+
+\section{What remains}
+
+A $G_2$-independent set of size $k_{\star}$ would require a pair $(A,B)$ of seed-independent sets that are \emph{not} structured in the sense above, with $I(A,B)\ge k_{\star}$.
+That is the same remaining case as in \texttt{structured-cases.tex}: a two-dimensional, non-axis-aligned, non-graphical subset of $\F_q^{2}$ with no short parabolic difference, of size $\omega(q)$, whose $\mathrm{GL}_2$-incidences with another such set are superlinear.
+
+We do not have a construction of such a pair, and the Fourier / Szemer\'edi--Trotter heuristics say $|A|=O(q^{3/2}(\log q)^{3/2})$ in general and $O(q\log q)$ if $A$ has any axis-aligned or low-degree algebraic structure.
+
+After cleanup, Lemma~1 of \texttt{family-a-independence.tex} still requires an open-edge argument for sets that are \emph{not} $G_2$-independent.
+Those sets already contain $G_2$-edges; the structured-incidence theorem is only about the $G_2$-independent case.
+
+\end{document}

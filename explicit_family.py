@@ -43,7 +43,7 @@ def next_odd_prime(q: int) -> int:
 class FamilyA:
     """Explicit two-bites graph A_q on n = q^2 * ell vertices."""
 
-    def __init__(self, q: int):
+    def __init__(self, q: int, seed_only: bool = False):
         if q < 3 or not is_prime(q) or q == 2:
             raise ValueError("q must be an odd prime")
         self.q = q
@@ -60,7 +60,9 @@ class FamilyA:
             (r, i) for r in range(self.N) for i in range(self.ell)
         ]
         self._index = {v: idx for idx, v in enumerate(self._vertices)}
-        self.edges = self._clean(self._product_edges())
+        self.edges: set[tuple[int, int]] = set()
+        if not seed_only:
+            self.edges = self._clean(self._product_edges())
 
     def _xy(self, r: int) -> tuple[int, int]:
         return divmod(r, self.q)
@@ -232,6 +234,76 @@ class FamilyA:
                 blocked.update(adj[v])
         return chosen
 
+    def _seed_neighbours(self, r: int, transpose: bool = False) -> list[int]:
+        S = self._S_B if transpose else self._S_R
+        return self._neighbours_seed(r, S)
+
+    def seed_greedy_independent_set(self, transpose: bool = False) -> list[int]:
+        """Greedy independent set in G_R (or G_B if transpose)."""
+        adj: dict[int, set[int]] = defaultdict(set)
+        for r in range(self.N):
+            for rp in self._seed_neighbours(r, transpose=transpose):
+                if r < rp:
+                    adj[r].add(rp)
+                    adj[rp].add(r)
+        order = sorted(range(self.N), key=lambda x: len(adj[x]))
+        chosen: list[int] = []
+        blocked: set[int] = set()
+        for v in order:
+            if v not in blocked:
+                chosen.append(v)
+                blocked.add(v)
+                blocked.update(adj[v])
+        return chosen
+
+    def fibre_weights(self, points: list[int]) -> list[int]:
+        weights = [0] * self.q
+        for r in points:
+            x, _y = self._xy(r)
+            weights[x] += 1
+        return weights
+
+    def tight_4_intervals(self, points: list[int]) -> int:
+        """Count x where four consecutive fibres are pairwise tight (should be 0 for q>3)."""
+        B: list[set[int]] = [set() for _ in range(self.q)]
+        for r in points:
+            x, y = self._xy(r)
+            B[x].add(y)
+        count = 0
+        if self.d < 3:
+            return 0
+        for x in range(self.q):
+            sizes = [len(B[(x + i) % self.q]) for i in range(4)]
+            if min(sizes) == 0:
+                continue
+            tight = (
+                sizes[0] + sizes[1] == self.q
+                and sizes[1] + sizes[2] == self.q
+                and sizes[2] + sizes[3] == self.q
+                and sizes[0] + sizes[3] == self.q
+            )
+            if tight:
+                count += 1
+        return count
+
+    def vertical_line_lift_blue_edges(self, w: int = 0) -> int:
+        """Blue G_2-edges inside the lift of the vertical line x=w."""
+        count = 0
+        points = [
+            (self._pack(w, y), i)
+            for y in range(self.q)
+            for i in range(self.ell)
+        ]
+        for a in range(len(points)):
+            r, i = points[a]
+            br = self._shear(r, i)
+            for b in range(a + 1, len(points)):
+                rp, j = points[b]
+                bb = self._shear(rp, j)
+                if self._sub(br, bb) in self._S_B:
+                    count += 1
+        return count
+
     def xaxis_lift_blue_edges(self) -> int:
         """Blue G_2-edges inside the lift of the x-axis (should be positive)."""
         count = 0
@@ -282,18 +354,36 @@ def main() -> None:
     parser.add_argument(
         "--diagnose",
         action="store_true",
-        help="also count blue edges on the x-axis lift",
+        help="also count blue edges on the x-axis and a vertical-line lift",
+    )
+    parser.add_argument(
+        "--seed",
+        action="store_true",
+        help="only build the seeds; report greedy alpha(G_R) and fibre profile",
     )
     args = parser.parse_args()
     q = args.q if args.exact_prime else next_odd_prime(args.q)
     if args.exact_prime and (q < 3 or not is_prime(q) or q == 2):
         raise SystemExit("q must be an odd prime")
-    G = FamilyA(q)
+    G = FamilyA(q, seed_only=args.seed)
+    if args.seed:
+        ind = G.seed_greedy_independent_set()
+        weights = G.fibre_weights(ind)
+        print(f"q: {G.q}")
+        print(f"N: {G.N}")
+        print(f"d: {G.d}")
+        print(f"seed_alpha_greedy: {len(ind)}")
+        print(f"seed_target_q_sqrt_log_q: {G.q * math.sqrt(math.log(G.q))}")
+        print(f"seed_max_fibre: {max(weights) if weights else 0}")
+        print(f"seed_nonzero_fibres: {sum(1 for w in weights if w)}")
+        print(f"seed_tight_4_intervals: {G.tight_4_intervals(ind)}")
+        return
     for key, val in G.summary().items():
         print(f"{key}: {val}")
     if args.diagnose:
         print(f"xaxis_lift_size: {G.q * G.ell}")
         print(f"xaxis_lift_blue_edges: {G.xaxis_lift_blue_edges()}")
+        print(f"vertical_line_lift_blue_edges: {G.vertical_line_lift_blue_edges()}")
 
 
 if __name__ == "__main__":

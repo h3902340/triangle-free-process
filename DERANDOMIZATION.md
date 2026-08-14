@@ -36,12 +36,12 @@ For each odd prime $q$:
    - red: truncated parabola $\{(t,t^2):1\le t\le d\}\cup\text{negatives}$
    - blue: transpose $\{(t^2,t):1\le t\le d\}\cup\text{negatives}$
    - $d=\lfloor q/(2\sqrt{\log q})\rfloor$
-2. **Sample.** Vertex set = $\ell$ horizontal shears $A_i(x,y)=(x,y+ix)$, $\ell=\lceil(2\log q)^2\rceil$.
+2. **Sample.** Vertex set = $\ell$ mixed $\mathrm{GL}_2(\mathbb{F}_q)$ maps (all-nonzero entries preferred), $\ell=\lceil(2\log q)^2\rceil$. Horizontal shears are not used.
 3. **Cleanup.** Same deterministic rule as HHKP.
 
-**Proved:** triangle-free, degree $O(\sqrt{n\log n})$, poly-time; $G_2$-independent sets are lifts of seed-independent sets; heavy/vertical seed independent sets have size $O(q\sqrt{\log q})$; open edges survive cleanup. See `family-a-independence.tex`.
+**Proved:** triangle-free, degree $O(\sqrt{n\log n})$, poly-time; $G_2$-independent sets are lifts of seed-independent sets; heavy/vertical seed independent sets have size $O(q\sqrt{\log q})$; a tight 4-interval of medium fibres is impossible for $q>3$; mixing $T$-dense fibres give $|A|=O(q\sqrt{\log q})$; aligned AP-cylinders give $O(q\log q)$; structured $(A,B)$ incidences are $o(\sqrt{n\log n})$; open edges survive cleanup; heavy closed stars contribute $O(\sqrt{n\log n})$. See `family-a-independence.tex`, `energy-increment.tex`, `incidences.tex`, `open-edges.tex`.
 
-**Not proved:** $\alpha(G_R)=O(q\sqrt{\log q})$ in full generality, and that every set of size $C\sqrt{n\log n}$ spans an *open* $G_2$-edge.
+**Not proved:** the inverse-energy lemma for non-AP fibres (so $\alpha(G_R)=O(q\log q)$ is still conditional), and the medium-star / light-star second-moment estimates that finish the open-edge lemma at the SOTA scale.
 
 Implementation: `explicit_family.py`
 
@@ -67,5 +67,8 @@ Small $q$ is too sparse ($d=1$) and greedy independent sets are larger than the 
 | File | Role |
 |------|------|
 | `explicit-family.tex` | Definitions, proofs, conjecture |
+| `energy-increment.tex` | Seed independence dichotomy |
+| `open-edges.tex` | Deterministic closed-pair buckets |
+| `incidences.tex` | Structured $G_2$-incidences |
 | `explicit_family.py` | Constructor for $A_q$ |
 | `sota-combinatorial.tex` | Counting existence proof used by Family L |

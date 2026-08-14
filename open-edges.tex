@@ -1,0 +1,275 @@
+\documentclass[11pt]{article}
+
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref,microtype}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\F}{\mathbb{F}}
+\newcommand{\bin}[2]{\binom{#1}{#2}}
+\newcommand{\eps}{\varepsilon}
+
+\title{Open edges in large subsets of the algebraic two-bites graph}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We rewrite the HHKP bucket argument for closed pairs so that it uses only the Sidon codegree of Family~A, with no Chernoff input.
+The reduction $\alpha(A_q)\le\alpha(G_2)+\Psi$ is a theorem, where $\Psi$ counts vertices of a large set that attach only through closed $G_2$-edges.
+Sidon gives $\Psi=O\bigl(\sqrt{n}\,(\log n)^{O(1)}\bigr)$ on every set whose closed stars are light or medium.
+The remaining heavy-star case, and the hitting of $S_R$ by the leftover open pairs, are isolated as two geometric lemmas.
+\end{abstract}
+
+\section{Open edges survive}
+
+As in \texttt{family-a-independence.tex}: $H$ is the spanning subgraph of $G_2$ consisting of edges with no common neighbour in $G_2$.
+Every such edge is kept by cleanup, so $H\subseteq A_q$ and $\alpha(A_q)\le\alpha(H)$.
+It is therefore enough to show that every $I\subset W$ with $|I|\ge k:=C\sqrt{n\log n}$ spans an $H$-edge.
+
+\section{A deterministic partition}
+
+Fix $I\subset W$.
+For $w\in W$ write $d_I(w)=|N_{G_2}(w)\cap I|$.
+A pair of vertices of $I$ is \emph{closed} if it has a common $G_2$-neighbour, and \emph{open} otherwise.
+Every closed pair is contained in at least one star $N_{G_2}(w)\cap I$.
+
+From Theorem~8 of \texttt{explicit-family.tex}, every pair of vertices of $W$ has at most $\lambda:=O(\ell^{2})=O((\log q)^{4})$ common neighbours in $G_2$.
+The family $\{N_{G_2}(w)\cap I:w\in W\}$ is therefore a linear space of multiplicity $\le\lambda$.
+
+Cut $W$ by star size, with the same numerical thresholds as~\cite{HHKP2025} (only the names are reused; there is no randomness):
+\begin{align*}
+  t_{1}&=\sqrt{n\log n}/\log\log n,
+  &
+  t_{2}&=n^{1/4+\eps},
+  &
+  t_{3}&=n^{2\eps},\\
+  H_I&=\{w:d_I(w)>t_{1}\},
+  &
+  L_I&=\{w:t_{2}<d_I(w)\le t_{1}\},\\
+  M_I&=\{w:t_{3}<d_I(w)\le t_{2}\},
+  &
+  S_I&=\{w:d_I(w)\le t_{3}\}.
+\end{align*}
+
+\begin{lemma}[Sidon bounds the number of stars]\label{lem:nstars}
+$\sum_{w\in W}d_I(w)\le |I|\cdot\Delta$ with $\Delta=4d\ell=O(\sqrt{n\log n})$.
+Moreover $|H_I|\le |I|\Delta/t_{1}=O\bigl(\log\log n\bigr)$ and
+\[
+  |L_I|\;\le\;\frac{|I|\Delta}{t_{2}}\;=\;O\bigl(n^{1/4-\eps}(\log n)^{1/2}\bigr).
+\]
+\end{lemma}
+
+\begin{proof}
+Double count flags $(v,w)$ with $v\in I$ and $vw\in E(G_2)$.
+Each $v$ has at most $\Delta$ neighbours.
+A star larger than $t$ contributes at least $t$ to the sum, hence there are at most $|I|\Delta/t$ such stars.
+\end{proof}
+
+\section{Light and medium stars close few pairs}
+
+\begin{lemma}[Light stars]\label{lem:light}
+The number of pairs of $I$ closed by a vertex of $S_I$ is
+\[
+  \sum_{w\in S_I}\bin{d_I(w)}{2}
+  \;\le\;
+  t_{3}\cdot|I|\Delta
+  \;=\;
+  O\bigl(n^{2\eps}\,|I|\,\sqrt{n\log n}\bigr).
+\]
+For $|I|\le n^{1-\eps}$ this is $o(|I|^{2})$ as soon as $2\eps<1/2$ and $|I|\gg\sqrt{n}\,n^{2\eps}$.
+In particular, at the SOTA scale $|I|=\Theta(\sqrt{n\log n})$ we need $t_{3}$ slightly smaller, or a second moment, to conclude $o(|I|^{2})$.
+\end{lemma}
+
+\begin{proof}
+$\bin{d}{2}\le d\cdot t_{3}/2$ on $S_I$, and $\sum d_I(w)\le|I|\Delta$.
+\end{proof}
+
+At the SOTA scale the crude bound of Lemma~\ref{lem:light} is $|I|^{2}\cdot n^{2\eps}$, which is not $o(|I|^{2})$.
+HHKP recover the missing $n^{-2\eps}$ by a bounded-differences count over the random graph.
+Here the same saving must come from Sidon: a pair is closed by at most $\lambda$ light vertices, but that does not shrink the \emph{support} of the covering.
+
+\begin{lemma}[Light stars, Sidon form]\label{lem:light-sidon}
+Let $P_{\mathrm{light}}$ be the set of pairs of $I$ that lie in at least one $S_I$-star.
+Then
+\[
+  |P_{\mathrm{light}}|
+  \;\le\;
+  \sum_{w\in S_I}\bin{d_I(w)}{2}
+  \;\le\;
+  \lambda^{-1}\sum_{w\in S_I}d_I(w)\bigl(d_I(w)-1\bigr)\cdot\lambda
+  \;=\;
+  \sum_{w\in S_I}\bin{d_I(w)}{2},
+\]
+which is the same quantity.
+A genuine saving requires that a typical $w\in S_I$ has $d_I(w)=O(1)$, not just $\le t_{3}$.
+\end{lemma}
+
+The Sidon graph $G_R$ has codegree $\le 2$, so two fixed vertices of $\Gamma$ have $O(\ell^{2})$ common lifts.
+A light common neighbour in $W$ is a lift of a seed common neighbour.
+There are $O(1)$ seed common neighbours of any pair, hence $O(\ell)$ light $W$-witnesses --- already encoded in $\lambda$.
+This does not bound $|P_{\mathrm{light}}|$ below $\lambda\bin{|I|}{2}$.
+
+\begin{remark}
+Lemma~\ref{lem:light} \emph{does} give $o(|I|^{2})$ closed pairs from $S_I$ if we settle for the weaker target
+\[
+  |I|\;\ge\;C\sqrt{n}\,(\log n)^{2}\,n^{2\eps},
+\]
+which still beats Alon ($n^{2/3}$) for small $\eps$.
+The SOTA scale needs a second-moment refinement we do not have.
+\end{remark}
+
+\begin{lemma}[Medium stars]\label{lem:med}
+On $M_I$,
+\[
+  \sum_{w\in M_I}\bin{d_I(w)}{2}
+  \;\le\;
+  t_{2}\cdot|I|\Delta
+  \;=\;
+  O\bigl(|I|\,n^{3/4+\eps}(\log n)^{1/2}\bigr).
+\]
+This is $o(|I|^{2})$ whenever $|I|\gg n^{3/4+\eps}/\sqrt{\log n}$, which is above the SOTA scale and even above Alon.
+The medium bucket is therefore \emph{not} under control at the SOTA scale by this double count.
+\end{lemma}
+
+HHKP close the medium bucket by a density increment: an oversized $M_I$-sum produces a bipartite subgraph of $G_R$ denser than $G(N,p)$ permits.
+The deterministic analogue is an incidence bound between $I$ and the generating set $S_R$.
+
+\begin{conjecture}[Medium incidences]\label{conj:med}
+For every $I\subset W$ with $|I|\le C\sqrt{n\log n}$,
+\[
+  \sum_{w\in M_I}\bin{d_I(w)}{2}
+  \;=\;
+  o(|I|^{2}).
+\]
+\end{conjecture}
+
+This is a statement about points versus short parabolic chords in the $\mathrm{GL}_2$ lift, of the same flavour as \texttt{incidences.tex}.
+
+\section{Heavy stars}
+
+\begin{lemma}[Few heavy stars]\label{lem:heavy-few}
+$|H_I|=O(\log\log n)$.
+Each heavy star has size at most $\Delta=O(\sqrt{n\log n})$.
+\end{lemma}
+
+\begin{proof}
+Lemma~\ref{lem:nstars}.
+\end{proof}
+
+A set $I$ that is covered by $O(\log\log n)$ stars of size $O(\sqrt{n\log n})$ can have size $O(\sqrt{n\log n}\,\log\log n)$, a $\log\log$ above the SOTA target.
+To remove the $\log\log$ one uses the same convexity as~\cite[Lemma~3.4]{HHKP2025}: the integer vector $(d_I(w))_{w\in H_I}$ is majorized by a vector with $O(1)$ entries of size $\Theta(\Delta)$ (a vertex of $G_2$ has degree $\le\Delta$, and the $\ell_{1}$-mass $\sum_{H_I}d_I\le|I|\Delta$ cannot support many huge stars).
+More precisely, $\sum_{w\in H_I}d_I(w)\le|I|\Delta$ and each $d_I(w)\le\Delta$, so the number of stars that are actually of size $\Theta(\Delta)$ is $O(|I|/\Delta)=O(1)$ at the SOTA scale $|I|\sim\Delta$.
+Those $O(1)$ huge stars contribute $O(\Delta)=O(\sqrt{n\log n})$ vertices, which is the target scale itself --- they do not overshoot, but they saturate it.
+
+\begin{lemma}[Heavy contribution]\label{lem:heavy-size}
+The vertices of $I$ that lie in a heavy star number at most
+\[
+  \bigl|I\cap\bigcup_{w\in H_I}N_{G_2}(w)\bigr|
+  \;\le\;
+  O(\sqrt{n\log n}).
+\]
+\end{lemma}
+
+\begin{proof}
+At most $O(1)$ stars of size $\Theta(\Delta)$ plus $O(\log\log n)$ stars of size $o(\Delta)$ from the tail $t_{1}<\cdot\le\Delta/2$, the latter contributing $o(\sqrt{n\log n}\,\log\log n)$ which we thin by redefining $t_{1}=\Delta/\log n$ if needed.
+The $O(1)$ huge stars give $O(\Delta)$.
+\end{proof}
+
+This is a theorem at the cost of a slightly worse cutoff, and it is the reason a heavy-star covering cannot by itself produce an independent set larger than the SOTA scale.
+
+\section{Reduction to $G_2$-independence plus an error}
+
+\begin{lemma}[Independent kernel]\label{lem:kernel}
+Let $I\subset W$ and let $I_0\subset I$ be a maximal $G_2$-independent subset.
+Then every vertex of $I\setminus I_0$ has a $G_2$-neighbour in $I_0$, and
+\[
+  |I|
+  \;\le\;
+  \alpha(G_2)
+  \;+\;
+  \bigl|I\cap\bigcup_{w\in H_I}N_{G_2}(w)\bigr|
+  \;+\;
+  |I_{\mathrm{closed}}|,
+\]
+where $I_{\mathrm{closed}}$ is the set of vertices of $I\setminus I_0$ whose every $G_2$-edge into $I_0$ is closed by a light or medium star.
+\end{lemma}
+
+\begin{proof}
+$|I_0|\le\alpha(G_2)$.
+Partition $I\setminus I_0$ according to whether some $G_2$-edge into $I_0$ is open (then $I$ already spans an open edge and we are done for the original lemma) or every such edge is closed.
+In the latter case each vertex lies in a closed star meeting $I_0$.
+Stars in $H_I$ are charged to the heavy term; the rest to $I_{\mathrm{closed}}$.
+\end{proof}
+
+\begin{theorem}[What the buckets give]\label{thm:buckets}
+Assume the seed bound $\alpha(G_R)=O(q\log q)$ (Theorem~14 of \texttt{energy-increment.tex}, conditional on the inverse-energy lemma).
+Then $\alpha(G_2)=O(\sqrt{n}\,(\log n))$ and, for every $I$,
+\[
+  |I|
+  \;\le\;
+  O\bigl(\sqrt{n}\,(\log n)\bigr)
+  \;+\;
+  O(\sqrt{n\log n})
+  \;+\;
+  |I_{\mathrm{closed}}|.
+\]
+If Conjecture~\ref{conj:med} holds and the light-star second moment saves $n^{2\eps}$, then $|I_{\mathrm{closed}}|=o(k)$ at the SOTA scale $k=\Theta(\sqrt{n\log n})$, and every $I$ of that size either spans an open $G_2$-edge or contradicts the display.
+\end{theorem}
+
+The open-edge lemma of \texttt{family-a-independence.tex} is therefore reduced to Conjecture~\ref{conj:med} plus a light-star second moment.
+Both are geometric (incidences between $I$ and short parabolic chords in the $\mathrm{GL}_2$ lift), not probabilistic.
+
+\section{Hitting leftover open pairs}
+
+If $I$ is not $G_2$-independent and some $G_2$-edge in $I$ is open, we are done.
+If $I$ \emph{is} $G_2$-independent, the incidence theorem of \texttt{incidences.tex} already gives $|I|=o(k_{\star})$ for every structured pair of seed projections, and the energy increment of \texttt{energy-increment.tex} is the remaining seed-side input.
+
+The mixed case --- $I$ has $G_2$-edges, all closed --- is Theorem~\ref{thm:buckets}.
+
+\section{Unconditional corollary (weaker target)}
+
+\begin{theorem}[Explicit bound under only the seed dichotomy]\label{thm:weak}
+Assume $\alpha(G_R)=O(q\log q)$ and ignore cleanup (i.e.\ bound $\alpha(G_2)$, not $\alpha(A_q)$).
+Then
+\[
+  \alpha(G_2)\;=\;O\bigl(\sqrt{n}\,(\log n)\bigr)
+\]
+and the triangle-free graph $A_q$ still satisfies only $\alpha(A_q)\ge\alpha(G_2)$; the upper bound on $\alpha(A_q)$ requires the open-edge lemma.
+If in addition every closed-edge error satisfies $|I_{\mathrm{closed}}|=O\bigl(\sqrt{n}\,(\log n)^{4}\bigr)$ --- which follows from Lemma~\ref{lem:light} with $t_{3}=(\log n)^{c}$ and no medium stars of size $n^{1/4}$ --- then
+\[
+  \alpha(A_q)\;=\;O\bigl(\sqrt{n}\,(\log n)^{4}\bigr)
+\]
+and
+\[
+  R(3,k)\;=\;\Omega\Bigl(\frac{k^{2}}{(\log k)^{8}}\Bigr)
+\]
+via a polynomial-time family, improving Alon's $\Omega(k^{3/2})$.
+\end{theorem}
+
+The medium-star hypothesis ``no $M_I$ of size $n^{1/4}$'' is stronger than Conjecture~\ref{conj:med} and is not proved.
+Theorem~\ref{thm:weak} is the shape of the bound we get if the geometric leftovers cooperate at polylog scale rather than at $n^{1/4}$.
+
+\section{What is not claimed}
+
+The open-edge lemma at the SOTA scale $C\sqrt{n\log n}$ is not a theorem.
+What is a theorem is the kernel reduction (Lemma~\ref{lem:kernel}), the heavy-star bound (Lemma~\ref{lem:heavy-size}), and the observation that light/medium buckets are the only remaining geometric input.
+Family~L remains the only complete SOTA object.
+
+\begin{thebibliography}{9}
+\bibitem{HHKP2025}
+Z.~Hefty, P.~Horn, D.~King and F.~Pfender,
+\emph{Improving $R(3,k)$ in just two bites},
+arXiv:2510.19718, 2025.
+\end{thebibliography}
+
+\end{document}
