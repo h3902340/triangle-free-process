@@ -30,7 +30,8 @@ These statements compile in Lean 4.33 + mathlib with no `sorry`:
 - Energy above \(W + B\cdot|T|\cdot(|T|-1)\) forces one off-diagonal intersection larger than \(B\). This is not an \(\Omega(|T|^2)\) star.
 - If \(A\) misses \(B+\sigma\), then \(|A\cap(A+\sigma)|\le|A\setminus B|\). Neighbouring independence therefore bounds one self-translate by the fringe.
 - Maximal energy makes every nonempty shifted fibre equal. Fibres of size \(\ge q/2\) cannot be strictly aligned; twice-random equality on those fibres is an exact cylinder.
-- Mean size \(\ge 3q/8\) and alignment force three-quarters energy, so that intermediate window is empty.
+- Two-thirds of maximal energy produces the same high-multiplicity core as three-quarters.
+- Mean size \(\ge q/3\) and alignment force two-thirds energy, so the intermediate window is empty on every medium fibre. Medium aligned fibres have a high-multiplicity core (structure, not a size bound).
 - On \(T=\{1,\dots,d\}\) with \(2d\le q\), every pair of \(T_x\)-fibres is \(T\)-adjacent. A heavy pair is therefore one almost-disjoint translate.
 
 The SOTA independence-number bound for $A_q$ is **not** Lean-verified.
@@ -55,7 +56,7 @@ The SOTA independence-number bound for $A_q$ is **not** Lean-verified.
 
 ## Not proved
 
-1. **Intermediate-energy fibres** of size in $(q^{1/3}(\log q)^{-O(1)}, 3q/8)$. The window $(3q/8,q/2]$ is empty: alignment there is three-quarters energy (Lean: `aligned_implies_three_quarters`), and size $q/2$ cannot be strictly aligned (Lean: `no_aligned_of_half_fibres`). The remaining leftover is thin three-quarters-energy stars that are not exact, AP-poor two-clusters, and medium $1/2$-close stars with mean size in $[q/3,3q/8)$ (half-intersection does not beat random on non-heavy cores; packing would need $K$ bounded away from $2$, an interval-dense star, and Weyl). Exact cylinders (any AP support) pack by the interval lemma (Lean: `exact_cylinder_pack_ap`). Fibres $\le q^{1/3}/(\log q)^{O(1)}$ cannot prevent an Alon-beating bound after the lift.
+1. **Intermediate-energy fibres** of size in $(q^{1/3}(\log q)^{-O(1)}, q/3)$. The window $[q/3,q/2]$ is empty of intermediate energy: alignment there is two-thirds energy (Lean: `aligned_implies_two_thirds`, `aligned_medium_has_core`), and size $q/2$ cannot be strictly aligned (Lean: `no_aligned_of_half_fibres`). Medium aligned fibres have a high-multiplicity core; packing that $\tfrac12$-close star still needs a discrepancy, an interval-dense neighbourhood, and Weyl. The remaining leftover is thin two-thirds-energy stars that are not exact, AP-poor two-clusters, and those unpacked medium stars. Exact cylinders (any AP support) pack by the interval lemma (Lean: `exact_cylinder_pack_ap`). Fibres $\le q^{1/3}/(\log q)^{O(1)}$ cannot prevent an Alon-beating bound after the lift.
 2. **Medium-star incidences / light-star second moment.** An oversized $M_I$ reduces to high seed energy of $\pi_R(I)$ and does not open a third gap (`open-edges.tex`). Light stars are under control at the weaker target $|I|\ge C\sqrt{n}\,(\log n)^{5}$ with $t_3=(\log n)^{2}$. The SOTA scale still needs a second moment. The Sidon count $\sum D(u)^2=O(d|P|+|P|^2)$ is not $o(|I|^2)$ at $|I|\sim\Delta$.
 
 Until both are written, Family A is not a new explicit Ramsey bound. The inverse-energy gap is no longer a Freiman loss $q^\delta$.

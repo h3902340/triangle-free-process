@@ -449,13 +449,14 @@ theorem popular_core_energy (A : Finset (ZMod q × ZMod q)) (T : Finset (ZMod q)
       omega
     simpa [E, U, μ] using this
 
-/-- Energy at least three-quarters of the `#T · W` maximum puts a quarter of
-the energy on points of multiplicity at least `#T / 2`. This does not require
-a lower bound on fibre size. -/
-theorem three_quarters_energy_core (A : Finset (ZMod q × ZMod q))
+/-- Energy at least two-thirds of the `#T · W` maximum puts a quarter of
+the energy on points of multiplicity at least `#T / 2`. This does not
+require a lower bound on fibre size. Three-quarters is the special case
+`3 #T W ≤ 4 E`. -/
+theorem two_thirds_energy_core (A : Finset (ZMod q × ZMod q))
     (T : Finset (ZMod q)) (x : ZMod q)
     (hW : 0 < coverageMass A T x)
-    (hE : 3 * #T * coverageMass A T x ≤ 4 * familyEnergy A T x) :
+    (hE : 2 * #T * coverageMass A T x ≤ 3 * familyEnergy A T x) :
     familyEnergy A T x ≤
       4 * ∑ y ∈ highMultiplicityCore A T x,
         (multiplicity (shiftedFibre A x) T y) ^ 2 := by
@@ -477,8 +478,7 @@ theorem three_quarters_energy_core (A : Finset (ZMod q × ZMod q))
   · have hW0 : W = 0 := by
       simp [W, coverageMass_eq_sum, hTempty]
     exact (Nat.lt_irrefl _ (hW0 ▸ hW)).elim
-  · have hTpos : 0 < #T := card_pos.mpr (nonempty_iff_ne_empty.mpr hTempty)
-    have hcomp : ∀ y ∈ Uᶜ, 2 * μ y < #T := by
+  · have hcomp : ∀ y ∈ Uᶜ, 2 * μ y < #T := by
       intro y hy
       have : ¬ #T ≤ 2 * μ y := by
         simpa [U, highMultiplicityCore, mem_compl, μ] using hy
@@ -497,21 +497,9 @@ theorem three_quarters_energy_core (A : Finset (ZMod q × ZMod q))
         _ = (#T - 1) * ∑ y ∈ Uᶜ, μ y := by simp [mul_sum]
     have hsumW : 2 * ∑ y ∈ Uᶜ, μ y ^ 2 ≤ (#T - 1) * W :=
       hsum.trans (Nat.mul_le_mul_left _ hcompμ)
-    have h12 : 9 * #T * W ≤ 12 * E := by
-      calc
-        9 * #T * W = 3 * (3 * #T * W) := by ring
-        _ ≤ 3 * (4 * E) := Nat.mul_le_mul_left 3 hE
-        _ = 12 * E := by ring
-    have hcmp : 8 * (#T - 1) * W ≤ 9 * #T * W := by
-      have : 8 * (#T - 1) ≤ 9 * #T := by
-        have := hTpos
-        omega
-      exact Nat.mul_le_mul_right W this
-    have h8 : 8 * (#T - 1) * W ≤ 12 * E := hcmp.trans h12
-    have hgoal : 2 * (#T - 1) * W ≤ 3 * E := by
-      have : 4 * (2 * (#T - 1) * W) ≤ 4 * (3 * E) := by
-        convert h8 using 1 <;> ring
-      exact Nat.le_of_mul_le_mul_left this (by decide : 0 < 4)
+    have hgoal : 2 * (#T - 1) * W ≤ 3 * E :=
+      (Nat.mul_le_mul_right W
+        (Nat.mul_le_mul_left 2 (Nat.sub_le #T 1))).trans hE
     have hcompE : 4 * ∑ y ∈ Uᶜ, μ y ^ 2 ≤ 3 * E := by
       have h4 : 4 * ∑ y ∈ Uᶜ, μ y ^ 2 ≤ 2 * (#T - 1) * W := by
         have := Nat.mul_le_mul_left 2 hsumW
@@ -524,6 +512,26 @@ theorem three_quarters_energy_core (A : Finset (ZMod q × ZMod q))
         rw [h4]; exact Nat.add_le_add_left hcompE _
       omega
     simpa [E, U, μ] using this
+
+/-- Energy at least three-quarters of the `#T · W` maximum puts a quarter of
+the energy on points of multiplicity at least `#T / 2`. Special case of
+`two_thirds_energy_core`. -/
+theorem three_quarters_energy_core (A : Finset (ZMod q × ZMod q))
+    (T : Finset (ZMod q)) (x : ZMod q)
+    (hW : 0 < coverageMass A T x)
+    (hE : 3 * #T * coverageMass A T x ≤ 4 * familyEnergy A T x) :
+    familyEnergy A T x ≤
+      4 * ∑ y ∈ highMultiplicityCore A T x,
+        (multiplicity (shiftedFibre A x) T y) ^ 2 := by
+  refine two_thirds_energy_core A T x hW ?_
+  have h6 : 6 * #T * coverageMass A T x ≤ 8 * familyEnergy A T x := by
+    have := Nat.mul_le_mul_left 2 hE
+    convert this using 1 <;> ring
+  have h9 : 6 * #T * coverageMass A T x ≤ 9 * familyEnergy A T x :=
+    h6.trans (Nat.mul_le_mul_right _ (by decide : 8 ≤ 9))
+  have : 3 * (2 * #T * coverageMass A T x) ≤ 3 * (3 * familyEnergy A T x) := by
+    convert h9 using 1 <;> ring
+  exact Nat.le_of_mul_le_mul_left this (by decide : 0 < 3)
 
 /-- Maximal energy forces every multiplicity to be `0` or `#T`. -/
 lemma multiplicity_eq_zero_or_card
@@ -643,7 +651,8 @@ lemma three_quarters_le_twice_random (A : Finset (ZMod q × ZMod q))
   convert this using 1 <;> ring
 
 /-- On fibres of mean size at least `3q/8`, alignment forces three-quarters
-of maximal energy. The intermediate window is empty. -/
+of maximal energy. Superseded for the leftover window by
+`aligned_implies_two_thirds` at mean size `q/3`. -/
 lemma aligned_implies_three_quarters (A : Finset (ZMod q × ZMod q))
     (T : Finset (ZMod q)) (x : ZMod q)
     (h : 3 * #T * q ≤ 8 * coverageMass A T x)
@@ -659,6 +668,44 @@ lemma aligned_implies_three_quarters (A : Finset (ZMod q × ZMod q))
   have hlt : 3 * #T * W * q < 4 * E * q := h34.trans_lt h8
   have hq : 0 < q := (Fact.out : Nat.Prime q).pos
   exact Nat.le_of_lt (Nat.lt_of_mul_lt_mul_right (a := q) hlt)
+
+/-- Mean fibre size at least `q/3` makes two-thirds of maximal energy
+no larger than twice-random energy. -/
+lemma two_thirds_le_twice_random (A : Finset (ZMod q × ZMod q))
+    (T : Finset (ZMod q)) (x : ZMod q)
+    (h : #T * q ≤ 3 * coverageMass A T x) :
+    2 * #T * coverageMass A T x * q ≤ 6 * (coverageMass A T x) ^ 2 := by
+  have := Nat.mul_le_mul_right (2 * coverageMass A T x) h
+  convert this using 1 <;> ring
+
+/-- On fibres of mean size at least `q/3`, alignment forces two-thirds
+of maximal energy. The intermediate window is empty on every medium fibre. -/
+lemma aligned_implies_two_thirds (A : Finset (ZMod q × ZMod q))
+    (T : Finset (ZMod q)) (x : ZMod q)
+    (h : #T * q ≤ 3 * coverageMass A T x)
+    (hE : 2 * (coverageMass A T x) ^ 2 < familyEnergy A T x * q) :
+    2 * #T * coverageMass A T x ≤ 3 * familyEnergy A T x := by
+  set W := coverageMass A T x
+  set E := familyEnergy A T x
+  have h23 : 2 * #T * W * q ≤ 6 * W ^ 2 :=
+    two_thirds_le_twice_random A T x h
+  have h6 : 6 * W ^ 2 < 3 * E * q := by
+    have := Nat.mul_lt_mul_of_pos_right hE (by decide : 0 < 3)
+    convert this using 1 <;> ring
+  have hlt : 2 * #T * W * q < 3 * E * q := h23.trans_lt h6
+  exact Nat.le_of_lt (Nat.lt_of_mul_lt_mul_right (a := q) hlt)
+
+/-- Medium aligned fibres have a high-multiplicity core carrying a
+quarter of the energy. This is structure, not a size bound. -/
+lemma aligned_medium_has_core (A : Finset (ZMod q × ZMod q))
+    (T : Finset (ZMod q)) (x : ZMod q)
+    (hW : 0 < coverageMass A T x)
+    (h : #T * q ≤ 3 * coverageMass A T x)
+    (hE : 2 * (coverageMass A T x) ^ 2 < familyEnergy A T x * q) :
+    familyEnergy A T x ≤
+      4 * ∑ y ∈ highMultiplicityCore A T x,
+        (multiplicity (shiftedFibre A x) T y) ^ 2 :=
+  two_thirds_energy_core A T x hW (aligned_implies_two_thirds A T x h hE)
 
 /-- Equality of twice-random with the energy upper bound, on half-size
 fibres, forces maximal energy and therefore an exact cylinder. -/

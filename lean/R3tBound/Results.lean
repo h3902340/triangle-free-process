@@ -22,9 +22,9 @@ The Weyl estimate for approximate cylinders remains paper-only.
 Popular-core energy, three-quarters energy, half-intersection, almost-mixing,
 affine interval packing, exact-cylinder packing (including AP supports),
 the pairwise energy identity, one heavy off-diagonal pair, maximal-energy
-exact cylinders, and the empty intermediate window at mean size `3q/8`
-are verified. One independent pair has an almost-disjoint self-translate;
-that is not a packing of the star.
+exact cylinders, the two-thirds energy core, and the empty intermediate
+window at mean size `q/3` are verified. One independent pair has an
+almost-disjoint self-translate; that is not a packing of the star.
 -/
 
 namespace R3tBound
@@ -131,9 +131,21 @@ alias maximal_energy_is_exact := maximal_energy_exact_cylinder
 strictly aligned. -/
 alias no_half_size_alignment := no_aligned_of_half_fibres
 
-/-- **Empty intermediate window.** Mean size `≥ 3q/8` and alignment force
-three-quarters energy. -/
+/-- **Two-thirds energy.** Energy `2 #T W / 3` puts a quarter of the
+energy on multiplicity `#T / 2`. -/
+alias two_thirds_energy := two_thirds_energy_core
+
+/-- **Empty intermediate window at `3q/8`.** Mean size `≥ 3q/8` and
+alignment force three-quarters energy. -/
 alias aligned_is_three_quarters := aligned_implies_three_quarters
+
+/-- **Empty intermediate window at `q/3`.** Mean size `≥ q/3` and
+alignment force two-thirds energy. -/
+alias aligned_is_two_thirds := aligned_implies_two_thirds
+
+/-- **Medium aligned core.** Medium aligned fibres have a
+high-multiplicity core. Structure, not a size bound. -/
+alias medium_aligned_core := aligned_medium_has_core
 
 /-- **Half-size exact.** Twice-random equality on half-size fibres is an
 exact cylinder. -/

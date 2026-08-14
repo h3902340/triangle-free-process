@@ -38,6 +38,9 @@ Pinned toolchain: Lean 4.33.0 + mathlib `v4.33.0`. There are no `sorry`s.
 | Neighbouring independence bounds one self-translate | `shifted_close_pair` |
 | Maximal energy makes every nonempty fibre equal | `maximal_energy_is_exact` |
 | Fibres of size `≥ q/2` are not strictly aligned | `no_half_size_alignment` |
+| Two-thirds of max energy produces the high-multiplicity core | `two_thirds_energy` |
+| Mean size `≥ q/3` and alignment ⇒ two-thirds energy | `aligned_is_two_thirds` |
+| Medium aligned fibres have a high-multiplicity core | `medium_aligned_core` |
 | Mean size `≥ 3q/8` and alignment ⇒ three-quarters energy | `aligned_is_three_quarters` |
 | Twice-random equality on half-size fibres is exact | `half_fibre_is_exact` |
 | Distinct points of `{1,…,d}` differ by `±T` | `interval_T_pair_diff` |
@@ -47,8 +50,9 @@ Not formalized (still paper-only / conjectural): the Weyl estimate for
 horizontal packings, the \(\Omega(|T|^2)\) star-degree count, packing of
 medium \(\tfrac12\)-close stars, medium-star incidences, and the SOTA
 independence-number bound for \(A_q\).
-The intermediate window is empty at mean fibre size `≥ 3q/8`; it remains
-open on `(q^{1/3}(\log q)^{-O(1)}, 3q/8)`.
+The intermediate window is empty at mean fibre size `≥ q/3`; it remains
+open on `(q^{1/3}(\log q)^{-O(1)}, q/3)`. Medium aligned fibres all have
+a high-multiplicity core; that core is not packed.
 One heavy pair plus one almost-disjoint translate is not a packing.
 See [`inverse-energy.tex`](../inverse-energy.tex).
 

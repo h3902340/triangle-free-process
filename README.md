@@ -61,8 +61,8 @@ fibre constraint, the corrected tight 4-interval (\(B=B+6\), hence empty or
 the whole field for \(q>3\)), heavy-fibre exclusion, cycle packing, the
 parabola Sidon property, the lift lemma, open-edge cleanup monotonicity,
 the pairwise energy identity, one heavy off-diagonal pair (not an
-\(\Omega(|T|^2)\) star), maximal-energy exact cylinders, and the empty
-intermediate window at mean fibre size \(3q/8\).
+\(\Omega(|T|^2)\) star), maximal-energy exact cylinders, the two-thirds
+energy core, and the empty intermediate window at mean fibre size \(q/3\).
 
 It does **not** verify the conjectural SOTA bound for Family A.
 
