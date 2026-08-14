@@ -159,4 +159,16 @@ alias interval_T_pair_diff := intervalT_pair_diff
 `T`-adjacent and supplies one almost-disjoint translate. -/
 alias heavy_pair_on_interval := heavy_pair_interval_overlap
 
+/-- **Total fringe.** Off-diagonal symmetric difference sums to
+`#T · W - E`. -/
+alias total_fringe := sum_sdiff_off_diag
+
+/-- **Star self-overlap.** Summed self-translates are at most the
+star fringe. -/
+alias star_overlap_sum := star_self_overlap_sum
+
+/-- **Below-random star.** Large star intersections force self-translates
+at most random on average. Discrepancy, not a packing. -/
+alias star_overlap_below_random := star_overlap_le_random
+
 end R3tBound

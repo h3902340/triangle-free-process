@@ -225,6 +225,94 @@ lemma familyEnergy_off_diag (A : Finset (ZMod q × ZMod q))
           ∑ t ∈ T, ∑ t' ∈ T.filter (· ≠ t), #(F t ∩ F t') := by
         rw [coverageMass_eq_sum]
 
+/-- `#(A \ B) = #A - #(A ∩ B)`. -/
+lemma card_sdiff_eq_card_sub_inter {α : Type*} [DecidableEq α]
+    (A B : Finset α) : #(A \ B) = #A - #(A ∩ B) := by
+  have : #(A ∩ B) + #(A \ B) = #A := card_inter_add_card_sdiff A B
+  omega
+
+/-- The total off-diagonal fringe is `#T · W - E`. High energy makes
+the average fringe small. -/
+lemma sum_sdiff_off_diag (A : Finset (ZMod q × ZMod q))
+    (T : Finset (ZMod q)) (x : ZMod q) :
+    ∑ t ∈ T, ∑ t' ∈ T.filter (· ≠ t),
+        #(shiftedFibre A x t \ shiftedFibre A x t') =
+      #T * coverageMass A T x - familyEnergy A T x := by
+  classical
+  set F := shiftedFibre A x
+  set W := coverageMass A T x
+  set E := familyEnergy A T x
+  have hsplit : E = W + ∑ t ∈ T, ∑ t' ∈ T.filter (· ≠ t), #(F t ∩ F t') :=
+    familyEnergy_off_diag A T x
+  have hEoff :
+      ∑ t ∈ T, ∑ t' ∈ T.filter (· ≠ t), #(F t ∩ F t') = E - W := by
+    omega
+  have hcard : ∀ t ∈ T, #(T.filter (· ≠ t)) = #T - 1 := fun t ht => by
+    have hsub : T.filter (· ≠ t) ⊆ T.erase t := by
+      intro t' ht'
+      exact mem_erase.2 ⟨(mem_filter.1 ht').2, (mem_filter.1 ht').1⟩
+    have hsup : T.erase t ⊆ T.filter (· ≠ t) := by
+      intro t' ht'
+      exact mem_filter.2 ⟨(mem_erase.1 ht').2, (mem_erase.1 ht').1⟩
+    simp [Subset.antisymm hsub hsup, card_erase_of_mem ht]
+  have hpt : ∀ t ∈ T,
+      ∑ t' ∈ T.filter (· ≠ t), #(F t \ F t') =
+        (#T - 1) * #(F t) -
+          ∑ t' ∈ T.filter (· ≠ t), #(F t ∩ F t') := fun t ht => by
+    have hle : ∀ t' ∈ T.filter (· ≠ t), #(F t ∩ F t') ≤ #(F t) :=
+      fun t' _ => card_le_card inter_subset_left
+    have hsub :
+        ∑ t' ∈ T.filter (· ≠ t), #(F t \ F t') =
+          ∑ t' ∈ T.filter (· ≠ t), (#(F t) - #(F t ∩ F t')) :=
+      sum_congr rfl fun t' _ => card_sdiff_eq_card_sub_inter (F t) (F t')
+    have htsub :=
+      sum_tsub_distrib (s := T.filter (· ≠ t))
+        (f := fun _ => #(F t)) (g := fun t' => #(F t ∩ F t')) hle
+    have hconst :
+        ∑ t' ∈ T.filter (· ≠ t), #(F t) = (#T - 1) * #(F t) := by
+      simp [sum_const, smul_eq_mul, hcard t ht]
+    rw [hsub, htsub, hconst]
+  have hle2 : ∀ t ∈ T,
+      ∑ t' ∈ T.filter (· ≠ t), #(F t ∩ F t') ≤ (#T - 1) * #(F t) :=
+    fun t ht => by
+      have hle : ∀ t' ∈ T.filter (· ≠ t), #(F t ∩ F t') ≤ #(F t) :=
+        fun t' _ => card_le_card inter_subset_left
+      calc
+        ∑ t' ∈ T.filter (· ≠ t), #(F t ∩ F t')
+            ≤ ∑ t' ∈ T.filter (· ≠ t), #(F t) := sum_le_sum hle
+        _ = (#T - 1) * #(F t) := by
+              simp [sum_const, smul_eq_mul, hcard t ht]
+  have hsum :=
+    sum_tsub_distrib (s := T)
+      (f := fun t => (#T - 1) * #(F t))
+      (g := fun t => ∑ t' ∈ T.filter (· ≠ t), #(F t ∩ F t')) hle2
+  have hW : ∑ t ∈ T, (#T - 1) * #(F t) = (#T - 1) * W := by
+    simp [F, W, coverageMass_eq_sum, mul_sum]
+  have hEW : W ≤ E := by omega
+  have hWE : E ≤ #T * W := energy_le_card_mul_mass A T x
+  have hlast : (#T - 1) * W - (E - W) = #T * W - E := by
+    by_cases hTempty : T = ∅
+    · have hW0 : W = 0 := by simp [W, coverageMass_eq_sum, hTempty]
+      have hE0 : E = 0 := by
+        simp [E, familyEnergy, multiplicity, hTempty]
+      simp [hW0, hE0]
+    · have hTpos : 1 ≤ #T := card_pos.mpr (nonempty_iff_ne_empty.mpr hTempty)
+      have hadd : (#T - 1) * W + W = #T * W := by
+        calc
+          (#T - 1) * W + W = (#T - 1) * W + 1 * W := by rw [one_mul]
+          _ = (#T - 1 + 1) * W := (add_mul _ _ W).symm
+          _ = #T * W := by rw [Nat.sub_add_cancel hTpos]
+      omega
+  calc
+    ∑ t ∈ T, ∑ t' ∈ T.filter (· ≠ t), #(F t \ F t')
+        = ∑ t ∈ T, ((#T - 1) * #(F t) -
+            ∑ t' ∈ T.filter (· ≠ t), #(F t ∩ F t')) :=
+          sum_congr rfl hpt
+    _ = ∑ t ∈ T, (#T - 1) * #(F t) -
+          ∑ t ∈ T, ∑ t' ∈ T.filter (· ≠ t), #(F t ∩ F t') := hsum
+    _ = (#T - 1) * W - (E - W) := by rw [hW, hEoff]
+    _ = #T * W - E := hlast
+
 /-- If every off-diagonal intersection is at most `B`, energy is at most
 `W + B · #T · (#T-1)`. Contrapositively, larger energy forces a heavy pair. -/
 lemma exists_heavy_off_diag_pair {B : ℕ}

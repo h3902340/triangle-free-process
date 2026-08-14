@@ -179,15 +179,51 @@ The threshold $\theta>2/3$ is exactly the condition
 $(1-\theta)|A_t|<|A_t|^{2}/q$ at density $1/3$.
 \end{proof}
 
+\begin{lemma}[Total fringe]\label{lem:fringe}
+\[
+  \sum_{t\neq t'}|A_t\setminus A_{t'}|
+  \;=\;
+  |T_x|W_x-E_x.
+\]
+Independence bounds each applicable self-translate by a fringe
+(Lean: \texttt{shifted\_close\_overlap}).
+Summing over a star $N$ at $s$ with $s-t\in T$ for $t\in N$ gives
+\[
+  \sum_{t\in N}|A_s\cap(A_s+\sigma_{s,t})|
+  \;\le\;
+  |N|\,|A_s|-\sum_{t\in N}|A_s\cap A_t|
+\]
+(Lean: \texttt{star\_self\_overlap\_sum}).
+If the star intersections satisfy
+$\sum|A_s\cap A_t|\ge|N|\,|A_s|(1-|A_s|/q)$, the self-translates are
+at most random on average
+(Lean: \texttt{star\_overlap\_le\_random}).
+At density $\delta=1/3$ that intersection threshold is $\tfrac23|A_s|$,
+the same cutoff as Lemma~\ref{lem:Kstar}.
+Globally, the average fringe is
+$(|T_x|W_x-E_x)/(|T_x|(|T_x|-1))$, which is below $\overline m^{2}/q$
+precisely when $E_x$ exceeds
+$(W_x^{2}/q)\,(1-\delta)/\delta$.
+At $\delta\ge 1/3$ that is the alignment threshold $E_x>2W_x^{2}/q$.
+\end{lemma}
+
+Thus item (1) of Theorem~\ref{thm:medium} does not need $K$ bounded
+away from $2$ by a constant: any strict alignment at density $\ge 1/3$
+makes the \emph{average} fringe smaller than the random overlap.
+A single star still needs the $\tfrac23$ intersection cutoff.
+This is a discrepancy, not a packing. Weyl and an interval-dense
+neighbourhood remain.
+
 \begin{theorem}[Medium aligned fibres, corrected]\label{thm:medium}
 If every fibre at $x$ has size in $[q/3,q/2]$ and $E_x>2W_x^{2}/q$, then
 Lemma~\ref{lem:star} produces a $\tfrac12$-close star.
 That star is a theorem; its size is not.
 A size bound $O(q\log q)$ would need all three of:
 \begin{enumerate}
-  \item energy bounded away from twice-random ($K\ge 2+\eta$), so that
-        Lemma~\ref{lem:Kstar} supplies a genuine discrepancy
-        $|U\cap(U+\sigma)|<|U|^{2}/q$;
+  \item a discrepancy $|U\cap(U+\sigma)|<|U|^{2}/q$: Lemma~\ref{lem:fringe}
+        supplies this on average from any strict alignment at density
+        $\ge 1/3$, and Lemma~\ref{lem:Kstar} supplies it on a star when
+        $K\ge 2+\eta$;
   \item a star neighbourhood that is dense in an affine interval of length
         $\Theta(d)$ (otherwise the shifts are an AP-poor set, the same
         leftover as two-clusters);
@@ -462,6 +498,9 @@ fibres, and that half-intersection does not pack medium cores.
 \texttt{half\_fibre\_energy\_exact\_cylinder},
 \texttt{intervalT\_pair\_diff},
 \texttt{heavy\_pair\_interval\_overlap},
+\texttt{sum\_sdiff\_off\_diag},
+\texttt{star\_self\_overlap\_sum},
+\texttt{star\_overlap\_le\_random},
 \texttt{affine\_diffFree\_card\_le}, and \texttt{parabola\_codegree}
 compile with no \texttt{sorry}.
 One heavy pair and one almost-disjoint translate are Lean; on
@@ -470,8 +509,8 @@ The $\Omega(|T|^{2})$ star-degree count and the Weyl estimate remain
 paper-only.
 Medium packing via half-intersection plus Weyl is not a theorem.
 The SOTA leftover is a genuine wall, not a bookkeeping gap:
-the intermediate window is now empty on every medium fibre, but packing a
-$\tfrac12$-close star still needs a discrepancy, an interval-dense
-neighbourhood, and Weyl.
+the intermediate window is empty on every medium fibre, and a star with
+large intersections has below-random self-translates (the discrepancy).
+Packing still needs an interval-dense neighbourhood and Weyl.
 
 \end{document}

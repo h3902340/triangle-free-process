@@ -45,6 +45,9 @@ Pinned toolchain: Lean 4.33.0 + mathlib `v4.33.0`. There are no `sorry`s.
 | Twice-random equality on half-size fibres is exact | `half_fibre_is_exact` |
 | Distinct points of `{1,…,d}` differ by `±T` | `interval_T_pair_diff` |
 | A heavy pair on `{1,…,d}` is one almost-disjoint translate | `heavy_pair_on_interval` |
+| Off-diagonal fringe sums to `#T·W - E` | `total_fringe` |
+| Star self-translates sum to at most the fringe | `star_overlap_sum` |
+| Large star intersections ⇒ self-translates ≤ random | `star_overlap_below_random` |
 
 Not formalized (still paper-only / conjectural): the Weyl estimate for
 horizontal packings, the \(\Omega(|T|^2)\) star-degree count, packing of
@@ -54,6 +57,8 @@ The intermediate window is empty at mean fibre size `≥ q/3`; it remains
 open on `(q^{1/3}(\log q)^{-O(1)}, q/3)`. Medium aligned fibres all have
 a high-multiplicity core; that core is not packed.
 One heavy pair plus one almost-disjoint translate is not a packing.
+A star with large intersections has below-random self-translates; that
+is a discrepancy, not a packing.
 See [`inverse-energy.tex`](../inverse-energy.tex).
 
 ## Build

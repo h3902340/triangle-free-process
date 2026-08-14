@@ -33,6 +33,7 @@ These statements compile in Lean 4.33 + mathlib with no `sorry`:
 - Two-thirds of maximal energy produces the same high-multiplicity core as three-quarters.
 - Mean size \(\ge q/3\) and alignment force two-thirds energy, so the intermediate window is empty on every medium fibre. Medium aligned fibres have a high-multiplicity core (structure, not a size bound).
 - On \(T=\{1,\dots,d\}\) with \(2d\le q\), every pair of \(T_x\)-fibres is \(T\)-adjacent. A heavy pair is therefore one almost-disjoint translate.
+- The total off-diagonal fringe is \(|T|W-E\). A star with intersections above \(|A_s|(1-|A_s|/q)\) has self-translates at most random on average. That is the discrepancy Weyl needs, not a packing.
 
 The SOTA independence-number bound for $A_q$ is **not** Lean-verified.
 

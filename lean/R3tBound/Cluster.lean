@@ -213,6 +213,93 @@ lemma heavy_pair_interval_overlap {d B : ℕ}
       shifted_close_overlap (A := A) (x := x) (s := t) (t := s) hA hT0 hts⟩
     simpa [inter_comm] using hB
 
+/-- Summing the pair overlap bound over a star: self-translates are
+controlled by the total fringe. -/
+lemma star_self_overlap_sum {T N : Finset (ZMod q)}
+    {A : Finset (ZMod q × ZMod q)} {x s : ZMod q}
+    (hA : IsSeedIndependent T (A : Set (ZMod q × ZMod q)))
+    (hT0 : 0 ∉ T) (_hs : s ∈ T) (_hN : N ⊆ T)
+    (hdiff : ∀ t ∈ N, s - t ∈ T) :
+    ∑ t ∈ N, #(shiftedFibre A x s ∩
+        (shiftedFibre A x s).image (fun y => y + 2 * t * (t - s))) ≤
+      #N * #(shiftedFibre A x s) -
+        ∑ t ∈ N, #(shiftedFibre A x s ∩ shiftedFibre A x t) := by
+  classical
+  set F := shiftedFibre A x
+  have hle : ∀ t ∈ N, #(F s ∩ F t) ≤ #(F s) :=
+    fun t _ => card_le_card inter_subset_left
+  have hpt : ∀ t ∈ N,
+      #(F s ∩ (F s).image (fun y => y + 2 * t * (t - s))) ≤
+        #(F s \ F t) := fun t ht =>
+    shifted_close_overlap (A := A) (x := x) (s := s) (t := t)
+      hA hT0 (hdiff t ht)
+  have hsum : ∑ t ∈ N,
+      #(F s ∩ (F s).image (fun y => y + 2 * t * (t - s))) ≤
+        ∑ t ∈ N, #(F s \ F t) := sum_le_sum hpt
+  have hsdiff :
+      ∑ t ∈ N, #(F s \ F t) =
+        #N * #(F s) - ∑ t ∈ N, #(F s ∩ F t) := by
+    have hsub :
+        ∑ t ∈ N, #(F s \ F t) =
+          ∑ t ∈ N, (#(F s) - #(F s ∩ F t)) :=
+      sum_congr rfl fun t _ => card_sdiff_eq_card_sub_inter (F s) (F t)
+    have htsub :=
+      sum_tsub_distrib (s := N) (f := fun _ => #(F s))
+        (g := fun t => #(F s ∩ F t)) hle
+    have hconst : ∑ t ∈ N, #(F s) = #N * #(F s) := by
+      simp [sum_const, smul_eq_mul]
+    rw [hsub, htsub, hconst]
+  exact hsum.trans_eq hsdiff
+
+/-- If the star intersections beat `|A_s|(1 - |A_s|/q)`, the self-translates
+are at most random on average. This is the discrepancy input for Weyl,
+not a packing. -/
+lemma star_overlap_le_random {T N : Finset (ZMod q)}
+    {A : Finset (ZMod q × ZMod q)} {x s : ZMod q}
+    (hA : IsSeedIndependent T (A : Set (ZMod q × ZMod q)))
+    (hT0 : 0 ∉ T) (hs : s ∈ T) (hN : N ⊆ T)
+    (hdiff : ∀ t ∈ N, s - t ∈ T)
+    (hinter : #N * #(shiftedFibre A x s) *
+        (q - #(shiftedFibre A x s)) ≤
+          q * ∑ t ∈ N, #(shiftedFibre A x s ∩ shiftedFibre A x t)) :
+    q * ∑ t ∈ N, #(shiftedFibre A x s ∩
+        (shiftedFibre A x s).image (fun y => y + 2 * t * (t - s))) ≤
+      #N * #(shiftedFibre A x s) ^ 2 := by
+  set F := shiftedFibre A x
+  set m := #(F s)
+  set S := ∑ t ∈ N, #(F s ∩ F t)
+  have hsum :=
+    star_self_overlap_sum (A := A) (T := T) (N := N) (x := x) (s := s)
+      hA hT0 hs hN hdiff
+  have hSle : S ≤ #N * m := by
+    have : ∀ t ∈ N, #(F s ∩ F t) ≤ #(F s) :=
+      fun t _ => card_le_card inter_subset_left
+    calc
+      S ≤ ∑ t ∈ N, #(F s) := sum_le_sum this
+      _ = #N * m := by simp [sum_const, smul_eq_mul, m]
+  have hmq : m ≤ q :=
+    (card_le_univ (F s)).trans_eq (ZMod.card q)
+  have hmul : q * (#N * m - S) = q * (#N * m) - q * S :=
+    Nat.mul_sub_left_distrib q (#N * m) S
+  have hsub : q * (#N * m) - q * S ≤
+      q * (#N * m) - #N * m * (q - m) :=
+    Nat.sub_le_sub_left hinter _
+  have hid : q * (#N * m) - #N * m * (q - m) = #N * m ^ 2 := by
+    have hre : q * (#N * m) = #N * m * q := by ring
+    calc
+      q * (#N * m) - #N * m * (q - m)
+          = #N * m * q - #N * m * (q - m) := by rw [hre]
+      _ = #N * m * (q - (q - m)) :=
+            (Nat.mul_sub_left_distrib (#N * m) q (q - m)).symm
+      _ = #N * m * m := by rw [Nat.sub_sub_self hmq]
+      _ = #N * m ^ 2 := by rw [pow_two, mul_assoc]
+  have hfringe : q * (#N * m - S) ≤ #N * m ^ 2 := by
+    rw [hmul]
+    exact hsub.trans_eq hid
+  have : q * ∑ t ∈ N, #(F s ∩ (F s).image (fun y => y + 2 * t * (t - s))) ≤
+      q * (#N * m - S) := Nat.mul_le_mul_left q hsum
+  exact this.trans hfringe
+
 /-- An affine image of a short interval of forbidden differences packs like
 the unscaled interval packing. -/
 theorem affine_diffFree_card_le {U : Finset (ZMod q)} {c : ZMod q} {d : ℕ}
