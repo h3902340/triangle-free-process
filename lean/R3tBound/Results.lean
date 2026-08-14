@@ -3,8 +3,11 @@ Copyright (c) 2026 The triangle-free-process contributors.
 Released under Apache 2.0 license as described in the file LICENSE.
 -/
 import R3tBound.Cleanup
+import R3tBound.Cluster
 import R3tBound.Heavy
+import R3tBound.Incidences
 import R3tBound.Lift
+import R3tBound.Mixing
 import R3tBound.Sidon
 import R3tBound.TightInterval
 
@@ -12,8 +15,9 @@ import R3tBound.TightInterval
 # Verified core of Family A
 
 These are the lemmas from the paper that have complete Lean proofs.
-Conjectural statements (inverse energy, medium-star incidences, the SOTA
-independence-number bound for `A_q`) are *not* claimed here.
+The SOTA independence-number bound for `A_q` is *not* claimed here.
+Medium-fibre clustering and the Weyl estimate for approximate cylinders
+remain paper-only (`inverse-energy.tex`).
 -/
 
 namespace R3tBound
@@ -46,5 +50,17 @@ alias open_graph_triangle_free := openEdges_cliqueFree
 /-- **Cleanup monotonicity.** `α(A_q) ≤ α(H)` when `H` is a subgraph of the
 cleaned graph. -/
 alias alpha_open_subgraph := alpha_le_of_open_subgraph
+
+/-- **Strict mixing.** Energy at most random and neighbouring mass `≥ q`
+force an empty fibre. -/
+alias strictly_mixing_fibre := strict_mixing_empty
+
+/-- **Shifted independence.** Neighbouring fibres are disjoint after the
+quadratic increment `2t(t-s)`. -/
+alias shifted_fibres_disjoint := shifted_independent
+
+/-- **Unsigned codegree.** A nonzero difference has at most one
+representation as a difference of unsigned parabola points. -/
+alias parabola_diff_unique := parabola_codegree
 
 end R3tBound

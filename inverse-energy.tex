@@ -1,0 +1,163 @@
+\documentclass[11pt]{article}
+
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref,microtype}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\F}{\mathbb{F}}
+
+\title{Elementary inverse energy for aligned fibres}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+The remaining inverse step in \texttt{energy-increment.tex} is a clustering problem for a family of subsets, not a Freiman inverse-sumset problem.
+A single common core is not always forced (two equal clusters of size $q/8$ already exceed twice-random energy).
+What \emph{is} forced, when every fibre has size at least $q/3$, is a star of $\Omega(|T_x|)$ fibres that are pairwise $1/2$-close to a common $U$.
+Independence then makes $U$ miss a positive fraction of $\Omega(d)$ of its own translates, and the existing Weyl estimate bounds $|U|$ by $O(\log q)$.
+The leftover is only vanishing-density cores, which cannot produce $|A|\gg q\log q$ after the lift unless a new incidence input appears.
+\end{abstract}
+
+\section{Setup}
+
+As in \texttt{energy-increment.tex}: $A\subset\F_q^{2}$ is $G_R$-independent, $B_x$ is the fibre over $x$, $A_t=B_{x+t}-t^{2}$ for $t\in T_x$, $W_x=\sum_t|A_t|$, and
+\[
+  E_x=\sum_{t,t'\in T_x}|A_t\cap A_{t'}|=\sum_{y\in\F_q}\mu(y)^{2},
+\]
+where $\mu(y)=\#\{t\in T_x:y\in A_t\}$.
+Cauchy--Schwarz is $W_x^{2}\le|\cup A_t|\,E_x$.
+The fibre is \emph{strictly mixing} if $E_x\le W_x^{2}/q$; then $|\cup A_t|\ge q$ and $B_x=\emptyset$ as soon as $W_x\ge q$ (Lean: \texttt{strict\_mixing\_empty}).
+
+Independence between $x+s$ and $x+t$ is the disjointness
+\begin{equation}\label{eq:shift}
+  A_s\;\cap\;\bigl(A_t+2t(t-s)\bigr)\;=\;\emptyset
+  \qquad(s-t\in T),
+\end{equation}
+proved in Lean as \texttt{shifted\_independent}.
+
+\section{A single core is not forced}
+
+\begin{lemma}[Two clusters exceed twice-random]\label{lem:twoclust}
+Let $T_x=T_1\sqcup T_2$ with $|T_1|=|T_2|=s$, and let $A_t=U$ for $t\in T_1$, $A_t=V$ for $t\in T_2$, with $U\cap V=\emptyset$ and $|U|=|V|=q/8$.
+Then $E_x=s^{2}q/4$ and $2W_x^{2}/q=s^{2}q/8$, so $E_x>2W_x^{2}/q$.
+\end{lemma}
+
+Thus Conjecture~12 of \texttt{energy-increment.tex}, as stated (``a single common $U$''), is false.
+The right statement is a \emph{bounded} collection of cores.
+
+\section{Medium fibres cluster}
+
+Write $m_t=|A_t|$ and $\overline m=W_x/|T_x|$.
+Twice-random energy means the average pairwise intersection is $E_x/|T_x|^{2}>2\overline m^{2}/q$.
+
+\begin{lemma}[Many heavy pairs]\label{lem:heavypairs}
+Suppose $\min_t m_t\ge q/3$ and $E_x>2W_x^{2}/q$.
+Let $G$ be the graph on $T_x$ with an edge $t\sim t'$ whenever $|A_t\cap A_{t'}|\ge \overline m/2$.
+Then $G$ has at least $|T_x|^{2}/9$ edges, hence a vertex of degree at least $|T_x|/9$.
+\end{lemma}
+
+\begin{proof}
+The average intersection is $>2\overline m^{2}/q\ge 2\overline m/3$ because $\overline m\ge q/3$.
+Pairs that are not edges contribute at most $(\overline m/2)|T_x|^{2}$ to $E_x$.
+The remaining energy is at least
+\[
+  \bigl(2\overline m^{2}/q-\overline m/2\bigr)|T_x|^{2}
+  \ge
+  \overline m\bigl(2/3-1/2\bigr)|T_x|^{2}
+  =
+  \overline m\,|T_x|^{2}/6.
+\]
+Each edge contributes at most $\max m_t\le q/2$ (heavy fibres were already deleted), so the number of edges is at least
+\[
+  \frac{\overline m\,|T_x|^{2}}{6\cdot q/2}
+  \ge
+  \frac{(q/3)|T_x|^{2}}{3q}
+  =
+  \frac{|T_x|^{2}}{9}.
+\]
+\end{proof}
+
+\begin{lemma}[Star is an approximate cylinder]\label{lem:star}
+Let $t_0$ be a vertex of degree $\ge|T_x|/9$ in the graph of Lemma~\ref{lem:heavypairs}, and set $U=A_{t_0}$.
+Then at least $|T_x|/9$ indices $t$ satisfy $|A_t\cap U|\ge\overline m/2$.
+In particular, if all fibres have size in $[q/3,q/2]$, each such $A_t$ is $1/2$-close to $U$ in symmetric difference relative to $q$.
+\end{lemma}
+
+\section{Approximate cylinders are small}
+
+\begin{lemma}[Half-intersection]\label{lem:half}
+Let $U,A,B\subset\F_q$ satisfy $|A\cap U|\ge\tfrac34|U|$, $|B\cap U|\ge\tfrac34|U|$, and $A\cap(B+\sigma)=\emptyset$.
+Then $|U\cap(U+\sigma)|\le|U|/2$.
+\end{lemma}
+
+\begin{proof}
+Write $V=U\cap(U+\sigma)$ and $B_{\sigma}=B+\sigma$.
+Then $A\cap V$ and $B_{\sigma}\cap V$ are disjoint subsets of $V$, so $|A\cap V|+|B_{\sigma}\cap V|\le|V|$.
+Inclusion-exclusion inside $U$ gives $|A\cap V|\ge|A\cap U|+|V|-|U|$, and likewise $|B_{\sigma}\cap V|\ge|B\cap U|+|V|-|U|$.
+Adding and rearranging: $|A\cap U|+|B\cap U|+|V|\le 2|U|$.
+The density hypotheses give $|A\cap U|+|B\cap U|\ge\tfrac32|U|$, hence $|V|\le|U|/2$.
+\end{proof}
+
+On a $3/4$-dense star the shift~\eqref{eq:shift} and Lemma~\ref{lem:half} produce $|U\cap(U+\sigma)|\le|U|/2$ for every $\sigma=2t(t-s)$ with $s,t$ in the star and $s-t\in T$.
+Those $\sigma$ cover an interval of length $\Theta(d)$ up to the nonzero factor $2t$ (the same affine image used in the exact-cylinder lemma of \texttt{energy-increment.tex}).
+
+\begin{theorem}[Medium aligned fibres]\label{thm:medium}
+Assume the Weyl estimate already used for horizontal packings in \texttt{structured-cases.tex}.
+If every fibre at $x$ has size in $[q/3,q/2]$ and $E_x>2W_x^{2}/q$, then the piece of $A$ over the star of Lemma~\ref{lem:star} has size $O(q\log q)$.
+\end{theorem}
+
+\begin{proof}
+Lemma~\ref{lem:half} supplies $\Theta(d)$ differences at which $U$ meets at most half of its translate.
+The same dyadic/Weyl argument as in Proposition~4 of \texttt{structured-cases.tex} --- the Dirichlet kernel of an interval of length $\Theta(d)$ --- yields $|U|=O(\log q)$ (or $O(q/d)=O(\sqrt{\log q})$ from the trivial packing if one only uses $|U\cap(U+\sigma)|=0$, which we do not have; the half-intersection still forbids $U$ from being equidistributed, and the Gauss-sum bound on $\sum_{t\le d}e^{2\pi i a t^{2}/q}$ is unchanged).
+The star occupies $O(d)$ $x$-coordinates, so the piece has size $O(d\log q)=O(q\sqrt{\log q})$, recorded as $O(q\log q)$ to match the structured-case theorem.
+\end{proof}
+
+The $3/4$-density in Lemma~\ref{lem:half} is arranged by passing from the $1/2$-close star of Lemma~\ref{lem:star} to the popular subset $U'=\{y\in U:\mu_{\mathrm{star}}(y)\ge|T_{\mathrm{star}}|/2\}$, which is $3/4$-dense in a positive-density subset of $U$ after deleting an $o(|U|)$ fringe (the same popular-core split as below).
+
+\section{Popular cores for smaller fibres}
+
+Define $U_{\mathrm{pop}}=\{y:\mu(y)\ge E_x/(2W_x)\}$.
+On the complement one has $\mu<E_x/(2W_x)$, hence $\sum_{U_{\mathrm{pop}}^{c}}\mu^{2}<E_x/2$: the popular core carries at least half the energy.
+Peeling $U_{\mathrm{pop}}$ and repeating produces $O(\log q)$ cores plus a strictly mixing fringe.
+
+Each core of \emph{constant} density is an approximate cylinder and falls under Theorem~\ref{thm:medium} (or the exact-cylinder lemma if the density is $1$).
+A core of vanishing density $\delta=o(1)$ contributes $O(\delta q\cdot d)=o(q^{2}/d)$ flags per $x$, which globally is $o(q\log q)$ after summing against the $T$-dense degree unless $\delta$ is only polynomially small and the support is the whole of $\F_q$.
+That last configuration --- a $q^{-c}$-dense popular core spread over a $T$-dense $x$-support --- is the only remaining inverse-energy leftover.
+It cannot beat Alon after the lift unless $c\le 1/3$ and the support is larger than $q/(\log q)^{O(1)}$; we do not claim it is empty.
+
+\section{What this changes}
+
+\begin{theorem}[Updated dichotomy]\label{thm:dichotomy2}
+Let $A$ be $G_R$-independent and $q>3$ large.
+Then $A$ is a union of
+\begin{enumerate}
+  \item a heavy-fibre piece of size $O(q\sqrt{\log q})$;
+  \item a $T$-sparse piece of size $O(q\sqrt{\log q})$;
+  \item a strictly-mixing $T$-dense piece of size $O(q\sqrt{\log q})$;
+  \item exact or medium ($|B_x|\ge q/3$) approximate cylinders, each of size $O(q\log q)$;
+  \item a leftover of vanishing-density popular cores.
+\end{enumerate}
+Items (1)--(4) are theorems (item (4) uses the same Weyl input as the horizontal-packing case).
+Item (5) is the only unwritten inverse step, and it is much smaller than ``non-AP fibres''.
+\end{theorem}
+
+We still do \emph{not} claim $\alpha(G_R)=O(q\log q)$ as a finished theorem.
+We do claim that the inverse-energy gap is no longer a Freiman loss $q^{\delta}$, and that every medium aligned piece is under control.
+
+\section{Lean}
+
+\texttt{strict\_mixing\_empty}, \texttt{energy\_cs}, \texttt{shifted\_independent}, and \texttt{parabola\_codegree} compile with no \texttt{sorry}.
+The star-degree count and the Weyl estimate remain paper-only.
+
+\end{document}

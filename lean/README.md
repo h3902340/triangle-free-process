@@ -19,10 +19,14 @@ Pinned toolchain: Lean 4.33.0 + mathlib `v4.33.0`. There are no `sorry`s.
 | Lift: red-independent product projects and \(\lvert I\rvert\le\ell\cdot\lvert\pi_R(I)\rvert\) | `lift_lemma` |
 | Every-open-edge \(\Rightarrow\) triangle-free | `open_graph_triangle_free` |
 | \(\alpha(G')\le\alpha(H)\) for \(H\le G'\) | `alpha_open_subgraph` |
+| Strict mixing empties a fibre | `strictly_mixing_fibre` |
+| Shifted fibres are disjoint after \(2t(t-s)\) | `shifted_fibres_disjoint` |
+| Unsigned parabola codegree \(\le 1\) | `parabola_diff_unique` |
 
-Not formalized (still paper-only / conjectural): inverse energy for
-non-AP fibres, medium-star incidences, and the SOTA independence-number
-bound for \(A_q\).
+Not formalized (still paper-only / conjectural): medium-fibre star
+clustering, the Weyl estimate for approximate cylinders, vanishing-density
+popular cores, medium-star incidences, and the SOTA independence-number
+bound for \(A_q\). See [`inverse-energy.tex`](../inverse-energy.tex).
 
 ## Build
 
