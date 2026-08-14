@@ -23,8 +23,11 @@ Popular-core energy, three-quarters energy, half-intersection, almost-mixing,
 affine interval packing, exact-cylinder packing (including AP supports),
 the pairwise energy identity, one heavy off-diagonal pair, maximal-energy
 exact cylinders, the two-thirds energy core, and the empty intermediate
-window at mean size `q/3` are verified. One independent pair has an
-almost-disjoint self-translate; that is not a packing of the star.
+window at mean size `q/3`, and `|intervalT q d| = d` are verified.
+On a `T`-dense fibre the heavy-pair graph orients as `(max, min)`, so
+some out-neighbourhood is interval-dense (item (2) of the packing path;
+paper, using `card_intervalT`). Weyl on that affine image (item (3))
+remains paper-only.
 -/
 
 namespace R3tBound
@@ -170,5 +173,24 @@ alias star_overlap_sum := star_self_overlap_sum
 /-- **Below-random star.** Large star intersections force self-translates
 at most random on average. Discrepancy, not a packing. -/
 alias star_overlap_below_random := star_overlap_le_random
+
+/-- **Interval support.** Family A's `T = {1,…,d}` has size `d`. -/
+alias interval_T_card := card_intervalT
+
+/-- **Interval support bound.** A subset of `{1,…,d}` has size at most
+`d` when `d < q`. -/
+alias interval_T_card_le := card_le_intervalT
+
+/-- **Oriented out-neighbourhood.** Out-neighbours of `s = i+1` in
+`{1,…,d}` are exactly `{1,…,i}`. -/
+alias interval_T_out := intervalT_out_mem
+
+/-- **Oriented star sits in an interval.** A set of out-neighbours of
+`s = i+1` has size at most `i`. -/
+alias interval_T_out_card := card_intervalT_out
+
+/-- **Oriented star bound.** Any out-neighbourhood of `s = i+1` has
+size at most `i`. -/
+alias interval_T_out_card_le := card_le_intervalT_out
 
 end R3tBound

@@ -48,14 +48,20 @@ Pinned toolchain: Lean 4.33.0 + mathlib `v4.33.0`. There are no `sorry`s.
 | Off-diagonal fringe sums to `#T·W - E` | `total_fringe` |
 | Star self-translates sum to at most the fringe | `star_overlap_sum` |
 | Large star intersections ⇒ self-translates ≤ random | `star_overlap_below_random` |
+| Family A's `T = {1,…,d}` has size `d` | `interval_T_card` |
+| Out-neighbours of `s = i+1` are `{1,…,i}` | `interval_T_out` |
+| An out-neighbourhood of `s = i+1` has size `≤ i` | `interval_T_out_card_le` |
 
 Not formalized (still paper-only / conjectural): the Weyl estimate for
-horizontal packings, the \(\Omega(|T|^2)\) star-degree count, packing of
-medium \(\tfrac12\)-close stars, medium-star incidences, and the SOTA
-independence-number bound for \(A_q\).
+horizontal packings and for below-random star autocorrelations, the
+\(\Omega(|T|^2)\) star-degree count, packing of medium \(\tfrac12\)-close
+stars, medium-star incidences, and the SOTA independence-number bound
+for \(A_q\).
 The intermediate window is empty at mean fibre size `≥ q/3`; it remains
 open on `(q^{1/3}(\log q)^{-O(1)}, q/3)`. Medium aligned fibres all have
 a high-multiplicity core; that core is not packed.
+On a `T`-dense fibre the oriented star neighbourhood is interval-dense
+(item (2) of the packing path). Weyl (item (3)) remains paper-only.
 One heavy pair plus one almost-disjoint translate is not a packing.
 A star with large intersections has below-random self-translates; that
 is a discrepancy, not a packing.

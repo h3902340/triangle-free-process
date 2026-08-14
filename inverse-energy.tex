@@ -35,8 +35,10 @@ Two-thirds of maximal energy produces a $\tfrac12$-close star at any fibre
 size (Lean: \texttt{two\_thirds\_energy\_core}); a thin such star still does
 not pack elementarily.
 The leftover is intermediate energy on fibres smaller than $q/3$, thin
-two-thirds-energy stars that are not exact, AP-poor two-clusters, and
-medium $\tfrac12$-close stars (half-intersection does not pack them).
+two-thirds-energy stars that are not exact, thin AP-poor two-clusters
+($|T_i|=o(d)$), and medium $\tfrac12$-close stars whose remaining gap
+is Weyl (items (1) and (2) of the packing path are theorems on every
+$T$-dense $x$; AP-poor support is not a separate obstruction there).
 The window $[q/3,q/2]$ contains no intermediate energy: alignment there
 is two-thirds of maximal energy and produces a high-multiplicity core,
 and size $q/2$ cannot be strictly aligned.
@@ -211,8 +213,35 @@ Thus item (1) of Theorem~\ref{thm:medium} does not need $K$ bounded
 away from $2$ by a constant: any strict alignment at density $\ge 1/3$
 makes the \emph{average} fringe smaller than the random overlap.
 A single star still needs the $\tfrac23$ intersection cutoff.
-This is a discrepancy, not a packing. Weyl and an interval-dense
-neighbourhood remain.
+This is a discrepancy, not a packing.
+
+\begin{lemma}[Oriented star is interval-dense]\label{lem:stardense}
+Let $T=\{1,\dots,d\}$ with $2d\le q$, and let $G$ be an undirected graph
+on $T_x\subseteq T$ with at least $|T_x|^{2}/9$ edges.
+Every undirected edge $\{s,t\}$ orients as $(\max,\min)$ with
+difference in $T$.
+Writing $N^+(s)=\{t\sim s:s-t\in T\}$, one has
+$\sum_s|N^+(s)|\ge|T_x|^{2}/9$, so some $s$ satisfies
+$|N^+(s)|\ge|T_x|/9$.
+Then $N^+(s)\subseteq\{1,\dots,s-1\}$ and $s-1\ge|T_x|/9$, so $N^+(s)$
+is a subset of an interval of length at least $|N^+(s)|$.
+If $x$ is $T$-dense, $|T_x|\ge d/2$ and $|N^+(s)|\ge d/18$:
+$N^+(s)$ is $\Omega(1)$-dense in an interval of length $\Theta(d)$
+(in the worst case it \emph{is} an interval of length $d/18$).
+The shifts $2s(s-N^+(s))$ are an affine image of that set.
+A $T$-sparse $x$-support already contributes $O(q\sqrt{\log q})$ points,
+so the only medium pieces that can prevent a seed bound are $T$-dense,
+where this interval-density holds.
+\end{lemma}
+
+Item (2) of the packing path is therefore a theorem on every medium
+piece that is large enough to matter.
+The remaining gap is Weyl for below-random autocorrelations along that
+affine image (item (3)).
+AP-poor support is not a separate obstruction here: Weyl needs density
+in an interval, not a long AP inside $N^+$.
+A leftover exact two-cluster can still be AP-poor and thin
+($|T_i|=o(d)$), which is a different, smaller piece.
 
 \begin{theorem}[Medium aligned fibres, corrected]\label{thm:medium}
 If every fibre at $x$ has size in $[q/3,q/2]$ and $E_x>2W_x^{2}/q$, then
@@ -225,12 +254,14 @@ A size bound $O(q\log q)$ would need all three of:
         $\ge 1/3$, and Lemma~\ref{lem:Kstar} supplies it on a star when
         $K\ge 2+\eta$;
   \item a star neighbourhood that is dense in an affine interval of length
-        $\Theta(d)$ (otherwise the shifts are an AP-poor set, the same
-        leftover as two-clusters);
+        $\Theta(d)$: Lemma~\ref{lem:stardense} supplies this on every
+        $T$-dense $x$ (Lean: $N\subseteq\{1,\dots,d\}$ and
+        $\#N\le d$ by \texttt{card\_le\_intervalT});
   \item the Weyl estimate of Proposition~4 in \texttt{structured-cases.tex},
         now applied to a set that is actually below the random overlap.
 \end{enumerate}
-At $K\downarrow 2$ the discrepancy is $o(1)$ and (1) fails.
+Items (1) and (2) are theorems on $T$-dense medium fibres.
+Item (3) remains paper-only and is the remaining gap for those fibres.
 We do \emph{not} claim that every medium aligned piece has size $O(q\log q)$.
 \end{theorem}
 
@@ -337,6 +368,8 @@ Then a star of $\Omega(|T_x|)$ fibres is pairwise $\tfrac12$-close to a common $
         shifts $\sigma$ unless $\varepsilon\ll 1/d$, i.e.\ unless the fibres
         are essentially exact.
         Thin two-thirds-energy stars remain in the leftover.
+        On a $T$-dense fibre the star neighbourhood is interval-dense
+        (Lemma~\ref{lem:stardense}; Lean \texttt{intervalT\_out\_mem}).
 \end{itemize}
 \end{theorem}
 
@@ -427,8 +460,10 @@ The remaining window is intermediate energy
 \]
 on fibres of size in $\bigl(q^{1/3}(\log q)^{-O(1)},\,q/3\bigr)$,
 together with two-thirds-energy stars whose core is still that thin,
-medium $\tfrac12$-close stars that do not beat the random overlap,
-and AP-poor stars.
+medium $\tfrac12$-close stars whose remaining gap is Weyl on a
+$T$-dense interval-dense neighbourhood
+(Lemma~\ref{lem:stardense}),
+and thin AP-poor two-clusters ($|T_i|=o(d)$).
 
 Fibres of size $\le q^{1/3}/(\log q)^{10/3}$ contribute at most $q^{4/3}/(\log q)^{10/3}$ points.
 After the lift this is $O\bigl(q^{4/3}(\log q)^{-4/3}\bigr)=o(n^{2/3})$, so those fibres cannot prevent an Alon-beating bound.
@@ -455,9 +490,11 @@ Then $A$ is a union of
   \item a leftover consisting of intermediate-energy fibres of size in
         $\bigl(q^{1/3}(\log q)^{-O(1)},\,q/3\bigr)$,
         thin two-thirds-energy stars that are not exact cylinders,
-        two-cluster and medium stars whose supports in $T$ are AP-poor,
-        and medium $\tfrac12$-close stars that do not beat the random
-        overlap.
+        thin AP-poor two-clusters ($|T_i|=o(d)$),
+        and medium $\tfrac12$-close stars whose remaining gap on
+        $T$-dense $x$ is Weyl (items (1)--(2) of
+        Theorem~\ref{thm:medium}; AP-poor support is not a separate
+        obstruction for those stars).
 \end{enumerate}
 Items (1)--(4) are theorems (no Weyl).
 Item (5) is a structure theorem, not a size bound.
@@ -501,16 +538,23 @@ fibres, and that half-intersection does not pack medium cores.
 \texttt{sum\_sdiff\_off\_diag},
 \texttt{star\_self\_overlap\_sum},
 \texttt{star\_overlap\_le\_random},
+\texttt{card\_intervalT},
+\texttt{intervalT\_out\_mem},
+\texttt{card\_intervalT\_out},
 \texttt{affine\_diffFree\_card\_le}, and \texttt{parabola\_codegree}
 compile with no \texttt{sorry}.
 One heavy pair and one almost-disjoint translate are Lean; on
 $T=\{1,\dots,d\}$ they compose.
+The out-neighbourhood of $s=i+1$ in $T$ is exactly $\{1,\dots,i\}$
+(Lean: \texttt{intervalT\_out\_mem}), so item (2) of the packing path
+is a theorem on every $T$-dense fibre.
 The $\Omega(|T|^{2})$ star-degree count and the Weyl estimate remain
 paper-only.
 Medium packing via half-intersection plus Weyl is not a theorem.
 The SOTA leftover is a genuine wall, not a bookkeeping gap:
 the intermediate window is empty on every medium fibre, and a star with
 large intersections has below-random self-translates (the discrepancy).
-Packing still needs an interval-dense neighbourhood and Weyl.
+On $T$-dense $x$ the neighbourhood is interval-dense; packing still
+needs Weyl.
 
 \end{document}
