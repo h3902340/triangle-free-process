@@ -1,0 +1,360 @@
+\documentclass[11pt]{article}
+
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref,microtype}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{construction}[theorem]{Construction}
+
+\newcommand{\bin}[2]{\binom{#1}{#2}}
+\newcommand{\cG}{\mathcal{G}}
+\newcommand{\cC}{\mathcal{C}}
+\newcommand{\cB}{\mathcal{B}}
+\newcommand{\cR}{\mathcal{R}}
+\newcommand{\cD}{\mathcal{D}}
+\newcommand{\eps}{\varepsilon}
+
+\title{A combinatorial counting proof of the SOTA lower bound\\
+$R(3,k)\ge\bigl(\tfrac12+o(1)\bigr)k^{2}/\log k$}
+\author{Derandomization notes\\[0.4em]
+\large After Hefty--Horn--King--Pfender, arXiv:2510.19718}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We rewrite the current state-of-the-art lower bound
+\[
+  R(3,k)\;\ge\;\Bigl(\tfrac12+o(1)\Bigr)\frac{k^{2}}{\log k}
+\]
+as a pure counting argument over a finite configuration space.
+The triangle-cleanup step is deterministic.
+No differential equations, no nibble, and no probabilistic language appear:
+every estimate is a bound on the number of configurations with a stated combinatorial defect.
+This is a \emph{counting derandomization} of~\cite{HHKP2025}, not an explicit construction.
+We record separately why a fully explicit derandomization to the same constant remains out of reach.
+\end{abstract}
+
+\section{What is being derandomized}
+
+Hefty--Horn--King--Pfender~\cite{HHKP2025} prove
+\begin{equation}\label{eq:sota}
+  R(3,k)\;\ge\;\Bigl(\tfrac12+o(1)\Bigr)\frac{k^{2}}{\log k}
+\end{equation}
+by a random ``two bites'' construction: two sparse graphs on $N=n/\log^{2}n$ vertices, their strong product, a random $n$-vertex induced subgraph, and a deterministic greedy deletion of triangles.
+Their analysis uses only Chernoff and McDiarmid bounds.
+
+We translate the same argument into counting.
+The gain is presentational and conceptual: the proof becomes an existence argument by double counting, matching the classical Erd\H{o}s style, with a fully deterministic cleanup.
+The loss is honesty: we do \emph{not} produce an algorithm that outputs the graph, nor an explicit description.
+
+\begin{theorem}[SOTA, counting form]\label{thm:main}
+For every $\eps>0$ and all sufficiently large $n$ there exists a triangle-free graph $G$ on $n$ vertices with
+\[
+  \alpha(G)\;<\;(1+\eps)\sqrt{n\log n}.
+\]
+Equivalently,~\eqref{eq:sota} holds.
+\end{theorem}
+
+\section{Configuration space}
+
+Fix $\eps\in(0,1/100)$ and a large integer $n$.
+Set
+\begin{align*}
+  N &\;=\; \frac{n}{\log^{2} n},
+  &
+  p &\;=\; \tfrac12\sqrt{\frac{\log n}{n}},
+  &
+  k &\;=\; (1+\eps)\sqrt{n\log n},
+\end{align*}
+and fix auxiliary constants $0<\eps_{2}\ll\eps_{1}\ll\eps$.
+
+Let $V_{R},V_{B}$ be disjoint $N$-sets.
+Write $\cG_{R}$ (resp.\ $\cG_{B}$) for the set of all graphs on $V_{R}$ (resp.\ $V_{B}$).
+Write $\Phi$ for the set of all injections $\varphi\colon[n]\hookrightarrow V_{R}\times V_{B}$.
+The \emph{configuration space} is the finite set
+\[
+  \Omega \;:=\; \cG_{R}\times\cG_{B}\times\Phi.
+\]
+We equip $\Omega$ with the uniform counting measure: the \emph{fraction} of configurations in a subset $A\subseteq\Omega$ is $|A|/|\Omega|$.
+
+\begin{construction}[Deterministic cleanup]\label{con:cleanup}
+Given $(G_{R},G_{B},\varphi)\in\Omega$, form the strong product $G_{1}=G_{R}\boxtimes G_{B}$ on $V_{R}\times V_{B}$:
+\[
+  (r,b)\sim(r',b')
+  \quad\text{iff}\quad
+  rr'\in E(G_{R})\ \text{or}\ bb'\in E(G_{B}),
+\]
+coloured red in the first case and blue in the second.
+Let $G_{2}$ be the induced subgraph of $G_{1}$ on $\varphi([n])$.
+
+Build $G=\mathrm{Clean}(G_{R},G_{B},\varphi)$ as follows, in order:
+\begin{enumerate}
+  \item Inspect red edges of $G_{2}$ in lexicographic order of their $V_{R}$-endpoints; keep an edge iff it creates no monochromatic red triangle with previously kept red edges.
+  \item Do the same for blue edges.
+  \item From every remaining bichromatic triangle with two blue edges, delete the red edge.
+  \item From every remaining bichromatic triangle with two red edges, delete the blue edge.
+\end{enumerate}
+The output $G$ is triangle-free and isomorphic to a subgraph of $G_{2}$.
+\end{construction}
+
+The cleanup depends on no randomness.
+Theorem~\ref{thm:main} is equivalent to: the number of configurations whose cleaned graph has an independent set of size $k$ is strictly less than $|\Omega|$.
+
+\section{Binomial tail lemmas (counting form)}
+
+We use only the following elementary bounds on binomial coefficients.
+They replace Chernoff/Hoeffding; the proofs are the standard ones via $\bin{m}{t}\le(em/t)^{t}$ and $(1-x)\le e^{-x}$.
+
+\begin{lemma}[Upper tail]\label{lem:tail+}
+Let $0\le m\in\mathbb{Z}$, $0<\pi\le 1$, and $X$ a sum of $m$ indicator variables with average value $\mu=m\pi$ under uniform choice of a $\pi$-subset pattern
+(equivalently: the fraction of $m$-bit strings of density $\pi$ --- or the fraction of graphs in which a fixed set of $m$ potential edges is present with each edge included in exactly the $\pi$-proportion of graphs --- yielding mean $\mu$).
+More concretely, for the uniform distribution on graphs where each edge is present independently in the counting sense that a $\pi$-fraction of graphs contain any fixed edge:
+if $Z$ counts the number of edges of a fixed $m$-set that are present, then for every $t\ge 0$,
+\[
+  \frac{\#\{\text{graphs}: Z\ge\mu+t\}}{\#\{\text{graphs}\}}
+  \;\le\;
+  \exp\Bigl(-\frac{t^{2}}{2(\mu+t/3)}\Bigr).
+\]
+\end{lemma}
+
+\begin{lemma}[Lower tail]\label{lem:tail-}
+In the same setting, for $0\le t\le\mu$,
+\[
+  \frac{\#\{\text{graphs}: Z\le\mu-t\}}{\#\{\text{graphs}\}}
+  \;\le\;
+  \exp\Bigl(-\frac{t^{2}}{2(\mu-t/3)}\Bigr).
+\]
+\end{lemma}
+
+\begin{lemma}[Bounded-differences count]\label{lem:mcd}
+Suppose a function $Z$ on a product space $\prod_{i=1}^{m}\{0,1\}$ changes by at most $c_{i}$ when the $i$-th coordinate flips.
+Then for every $t>0$,
+\[
+  \frac{\#\{Z\ge\mathbb{E}Z+t\}}{2^{m}}
+  \;\le\;
+  \exp\Bigl(-\frac{t^{2}}{2\sum c_{i}^{2}}\Bigr),
+\]
+and likewise for the lower tail.
+\end{lemma}
+
+\begin{remark}
+These are exactly Chernoff and McDiarmid, stated as fraction-of-configurations bounds.
+No stochastic process is used.
+\end{remark}
+
+\section{Typical configurations}
+
+\begin{definition}[Degree/codegree defect]\label{def:D}
+A configuration is in $\cD$ if all of the following hold (with $C=3\sqrt{20}$):
+\begin{enumerate}
+  \item for every $v\in V_{R}\cup V_{B}$, the fibre size satisfies
+    $\bigl||F(v)|-\log^{2}n\bigr|\le\eps_{2}\log^{2}n$,
+    where $F(v)$ is the set of selected product-vertices with first (resp.\ second) coordinate $v$;
+  \item degrees in $G_{R}$ and $G_{B}$ are $(1\pm\eps_{2})pN$;
+  \item codegrees in $G_{R}$ and in $G_{B}$ are at most $C\log n$;
+  \item degrees into $G_{2}$ are $(1\pm\eps_{2})pn$;
+  \item codegrees into $G_{2}$ are at most $C\log^{3}n$;
+  \item projected codegrees across colours are at most $C\log^{3}n$.
+\end{enumerate}
+\end{definition}
+
+\begin{lemma}[Most configurations are typical]\label{lem:D}
+The fraction of configurations outside $\cD$ is $o(1)$.
+\end{lemma}
+
+\begin{proof}[Proof sketch]
+Each bullet is a degree or codegree count for a fixed vertex or pair.
+The mean values are as in~\cite{HHKP2025}: $\mathbb{E}|F(v)|=\log^{2}n$, $\mathbb{E}\deg(v)=pN$, etc.
+Lemmas~\ref{lem:tail+}--\ref{lem:tail-} bound the fraction of graphs violating any single constraint by $N^{-\Omega(1)}$.
+A union bound over $O(N^{2})$ vertices/pairs leaves an $o(1)$ fraction of bad configurations.
+(The passage between a binomial sampling model for $\varphi([n])$ and exact-$n$ injections costs an $N^{O(1)}$ factor absorbed by the same tails; cf.~\cite[Lemma~3.1]{HHKP2025}.)
+\end{proof}
+
+\section{Closed pairs inside a large set}
+
+Fix $I\subset[n]$ with $|I|=k$.
+For $v\in V_{R}\cup V_{B}$ write $X_{v}(I)=\varphi(I)\cap N_{G_{2}}(v)$.
+Partition $V_{R}\cup V_{B}$ by the size of $X_{v}(I)$:
+\begin{align*}
+  H_{I} &= \{v:|X_{v}(I)|>t_{1}\},
+  &
+  L_{I} &= \{v:t_{2}<|X_{v}(I)|\le t_{1}\},\\
+  M_{I} &= \{v:t_{3}<|X_{v}(I)|\le t_{2}\},
+  &
+  S_{I} &= \{v:|X_{v}(I)|\le t_{3}\},
+\end{align*}
+with cutoffs $t_{1}=\sqrt{n\log n}/\log\log n$, $t_{2}=n^{1/4+\eps}$, $t_{3}=n^{2\eps}$.
+
+A pair of vertices in $\varphi(I)$ is \emph{closed} if some common neighbour in $G_{2}$ witnesses it; otherwise \emph{open}.
+Open pairs are the only pairs that the cleanup is forced to treat as potential edges of $G$ inside $I$.
+
+\begin{lemma}[Small buckets contribute few closed pairs]\label{lem:buckets}
+The fraction of configurations for which there exists an $I$ of size $k$ with
+\[
+  \sum_{v\in L_{I}}\bin{|X_{v}(I)|}{2}
+  +
+  \sum_{v\in M_{I}}\bin{|X_{v}(I)|}{2}
+  +
+  \sum_{v\in S_{I}}\bin{|X_{v}(I)|}{2}
+  \;>\;
+  3\eps_{1}k^{2}
+\]
+is $o(1)$.
+\end{lemma}
+
+\begin{proof}[Proof sketch]
+On $\cD$, the $L_{I}$-sum is $o(k^{2})$ by a deterministic double count: codegrees $\le C\log^{3}n$ force $|L_{I}|$ small, hence $\sum|X_{v}|\le(1+o(1))k$ and each $|X_{v}|\le t_{1}=o(k)$.
+For $M_{I}$, an oversized sum produces a bipartite subgraph of $G_{R}\cup G_{B}$ denser than Lemma~\ref{lem:tail+} permits; the number of candidate $(B,I)$ pairs is $\exp(o(n^{3/4-2\eps}))$ while each dense fingerprint has fraction $\exp(-\Omega(n^{3/4-2\eps}))$.
+For $S_{I}$, apply Lemma~\ref{lem:mcd} to the bounded-differences function counting closed pairs from small stars; the fraction of bad $I$ is $o(\bin{n}{k}^{-1})$, and summing over $I$ leaves $o(1)$.
+\end{proof}
+
+\begin{lemma}[Heavy vertices]\label{lem:heavy}
+On $\cD$, for every $I$ of size $k$,
+\begin{align*}
+  \sum_{v\in H_{I}\cap V_{R}}\bin{|\pi_{B}(X_{v}(I))|}{2}
+  &\;\le\;
+  \min\Bigl\{\bin{k-|\pi_{R}(I)|}{2},\;
+  \bin{pn}{2}+\bin{k-|\pi_{R}(I)|-pn}{2}\Bigr\}+\eps_{1}k^{2},
+\end{align*}
+and symmetrically for blue.
+\end{lemma}
+
+\begin{proof}
+Deterministic convexity: the integer vector $(|X_{v}(I)|)_{v\in H_{I}\cap V_{R}}$ is majorized by a vector with entries in $\{0,pn\}$ of the same $\ell_{1}$-mass, up to $\eps_{2}$-errors from~$\cD$.
+Projecting to $\pi_{B}$ and using fibre bounds converts the sum of binomials into the displayed minimum.
+\end{proof}
+
+\section{Hitting open pairs}
+
+\begin{definition}
+For a configuration and a $k$-set $I$, let $\cR_{I}$ be the event that after revealing all edges of $G_{R},G_{B}$ incident to $\pi_{R}(I)\cup\pi_{B}(I)$ from outside, at least
+\[
+  f(\ell_{R},\ell_{B})-\eps_{1}k^{2}
+\]
+pairs inside $\pi_{R}(I)$ and $\pi_{B}(I)$ remain unrevealed (open), where $\ell_{R}=|\pi_{R}(I)|$, $\ell_{B}=|\pi_{B}(I)|$, and
+\[
+  f(\ell_{R},\ell_{B})
+  \;=\;
+  \bin{\ell_{R}}{2}+\bin{\ell_{B}}{2}
+  -\min\Bigl\{\bin{k-\ell_{R}}{2},\bin{pn}{2}+\bin{k-\ell_{R}-pn}{2}\Bigr\}
+  -\min\Bigl\{\bin{k-\ell_{B}}{2},\bin{pn}{2}+\bin{k-\ell_{B}-pn}{2}\Bigr\}.
+\]
+\end{definition}
+
+Lemmas~\ref{lem:D}--\ref{lem:heavy} yield: the fraction of configurations outside $\bigcap_{|I|=k}\cR_{I}$ is $o(1)$.
+
+\begin{lemma}[Open pairs kill independence]\label{lem:kill}
+Conditional on $\cR_{I}$ and on $|\pi_{R}(I)|=\ell_{R}$, $|\pi_{B}(I)|=\ell_{B}$, the fraction of extensions of the revealed data for which $I$ is independent in $\mathrm{Clean}(G_{R},G_{B},\varphi)$ is at most
+\[
+  (1-p)^{f(\ell_{R},\ell_{B})-\eps_{1}k^{2}}
+  \;\le\;
+  \exp\bigl(-p(f(\ell_{R},\ell_{B})-\eps_{1}k^{2})\bigr).
+\]
+\end{lemma}
+
+\begin{proof}
+Any surviving open red or blue pair, if present as an edge, forces a kept edge of $G$ inside $I$ under the lexicographic cleanup (the same case analysis as~\cite[Lemma~4.1]{HHKP2025}, which is deterministic given the reveal order).
+Hence $I$ independent requires all remaining open pairs to be non-edges.
+Each such pair is absent from a $(1-p)$-fraction of graphs on that colour, and the pairs are distinct potential edges, so the fraction is at most $(1-p)^{f-\eps_{1}k^{2}}$.
+\end{proof}
+
+\begin{lemma}[No large independent set]\label{lem:alpha}
+The fraction of configurations for which $\alpha(\mathrm{Clean}(G_{R},G_{B},\varphi))\ge k$ is $o(1)$.
+\end{lemma}
+
+\begin{proof}
+Write $x_{R}=\ell_{R}/k$, $x_{B}=\ell_{B}/k$.
+The fraction of injections with given $(\ell_{R},\ell_{B})$ is at most
+\[
+  \exp\Bigl(-\frac{2-x_{R}-x_{B}}{2}(1+o(1))\,k\log n\Bigr).
+\]
+Multiplying by Lemma~\ref{lem:kill} and by $\bin{n}{k}^{-1}$ in the union bound, the same three-case calculus as~\cite[Lemma~4.2]{HHKP2025} with $\beta=\tfrac12$ and $\kappa=1+\eps$ gives, in every case,
+\[
+  \frac{\#\{\text{configurations with $I$ independent}\}}{|\Omega|}
+  \;=\;
+  o\Bigl(\bin{n}{k}^{-1}\Bigr).
+\]
+Summing over at most $\bin{n}{k}$ choices of $I$ leaves an $o(1)$ fraction of bad configurations.
+\end{proof}
+
+\section{Proof of Theorem~\ref{thm:main}}
+
+\begin{proof}
+By Lemma~\ref{lem:alpha}, a positive fraction of configurations have $\alpha(\mathrm{Clean}(\cdot))<k$.
+Any such configuration yields a triangle-free $n$-vertex graph with independence number $<(1+\eps)\sqrt{n\log n}$.
+\end{proof}
+
+\section{What this derandomization achieves --- and what it does not}
+
+\begin{center}
+\begin{tabular}{lp{0.55\textwidth}}
+\hline
+Achieved & Not achieved \\
+\hline
+counting existence proof of~\eqref{eq:sota} & explicit / deterministic poly-time construction \\
+deterministic cleanup & removal of binomial tail bounds \\
+no DE method, no nibble, no martingales & seed length $o(\sqrt{n}\,(\log n)^{3/2})$ \\
+same constant $\tfrac12$ as~\cite{HHKP2025} & matching Alon-style fully explicit graphs at this density \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{Barrier to a fully explicit derandomization}
+
+An explicit family of $n$-vertex triangle-free graphs with $\alpha\le(1+\eps)\sqrt{n\log n}$ would be a landmark.
+The best explicit constructions remain at $\alpha=O(n^{2/3})$, i.e.\ $R(3,k)=\Omega(k^{3/2})$ (Alon; recent geometric variants).
+Spectral methods cannot break this via the Lov\'asz $\vartheta$-function: every triangle-free $n$-vertex graph has $\vartheta=\Omega(\sqrt{n})$, hence any proof that bounds $\alpha$ through $\vartheta$ is stuck at $\Omega(k^{3/2})$.
+
+The counting obstruction is the union bound over $\bin{n}{k}$ potential independent sets: any PRG or limited-independence generator that fools all of them needs seed length
+\[
+  \Omega\bigl(\log\bin{n}{k}\bigr)\;=\;\Omega\bigl(\sqrt{n}\,(\log n)^{3/2}\bigr),
+\]
+not $\mathrm{polylog}\,n$.
+
+\subsection{Partial explicit substitutes that fail at constant $\tfrac12$}
+
+\begin{itemize}
+  \item Replacing $G_{R},G_{B}$ by polarity graphs of projective planes gives degree $\asymp\sqrt{N}$, the wrong density by a $\sqrt{\log n}$ factor, and independence-number control after the product step is not known to reach $(1+\eps)\sqrt{n\log n}$.
+  \item Replacing the random injection $\varphi$ by an explicit extractor / expander walk leaves the two sparse graphs random; the union bound over $k$-sets still requires strong pseudorandomness.
+  \item Method of conditional probabilities, applied edge-by-edge, is in principle valid but needs an efficiently computable proxy for the number of surviving bad $k$-sets; no such proxy preserving the constant $\tfrac12$ is known.
+\end{itemize}
+
+\section{Conclusion}
+
+The SOTA lower bound admits a clean combinatorial counting proof: average over a finite configuration space, clean triangles deterministically, and bound the number of configurations that leave a $k$-set independent.
+This removes probabilistic \emph{language} and all process/DE machinery, while retaining binomial tail estimates as counting lemmas.
+
+A fully explicit derandomization to the same asymptotic constant remains a major open problem, separated from the present argument by the explicit-Ramsey barrier at $\Omega(k^{3/2})$.
+
+\begin{thebibliography}{9}
+\bibitem{HHKP2025}
+Z.~Hefty, P.~Horn, D.~King and F.~Pfender,
+\emph{Improving $R(3,k)$ in just two bites},
+arXiv:2510.19718, 2025.
+
+\bibitem{CJMS2025}
+M.~Campos, M.~Jenssen, M.~Michelen and J.~Sahasrabudhe,
+\emph{A new lower bound for the Ramsey numbers $R(3,k)$},
+arXiv:2505.13371, 2025.
+
+\bibitem{Alon1994}
+N.~Alon,
+\emph{Explicit Ramsey graphs and orthonormal labelings},
+Electron.\ J.\ Combin.\ \textbf{1} (1994), \#R12.
+
+\bibitem{Shearer1983}
+J.~B.~Shearer,
+\emph{A note on the independence number of triangle-free graphs},
+Discrete Math.\ \textbf{46} (1983), 83--87.
+\end{thebibliography}
+
+\end{document}

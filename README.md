@@ -1,35 +1,37 @@
-# Triangle-Free Process — combinatorial lower bound for $R(3,t)$
+# Triangle-Free Process / $R(3,t)$ lower bounds
 
-This repository supports a presentation of Bohman's *triangle-free process* paper, with a **combinatorial proof** of the Ramsey lower bound
+Materials for presenting lower bounds on $R(3,t)$, including a **counting derandomization** of the current SOTA.
+
+## SOTA (2025)
+
 \[
-R(3,t)\;\ge\; c\,\frac{t^2}{\log t}
+\Bigl(\tfrac12+o(1)\Bigr)\frac{k^2}{\log k}
+\;\le\;
+R(3,k)
+\;\le\;
+\bigl(1+o(1)\bigr)\frac{k^2}{\log k}.
 \]
-that avoids probabilistic process analysis and differential equations.
+
+- Lower: Hefty–Horn–King–Pfender, [arXiv:2510.19718](https://arxiv.org/abs/2510.19718) (“two bites”).
+- Upper: Shearer (1983).
 
 ## Files
 
-| File | Purpose |
-|------|---------|
-| [`PRESENTATION.md`](PRESENTATION.md) | Talk outline (~20 min), board summary, what to say |
-| [`combinatorial-proof.tex`](combinatorial-proof.tex) | Self-contained write-up of the combinatorial proof |
+| File | Contents |
+|------|----------|
+| [`DERANDOMIZATION.md`](DERANDOMIZATION.md) | **Start here** for the SOTA derandomization attempt |
+| [`sota-combinatorial.tex`](sota-combinatorial.tex) | Counting proof of the $\tfrac12$ bound (no prob language / no DE / no nibble) |
+| [`PRESENTATION.md`](PRESENTATION.md) | Talk outline for the Bohman-order combinatorial nibble |
+| [`combinatorial-proof.tex`](combinatorial-proof.tex) | Combinatorial nibble proof of $\Omega(t^2/\log t)$ (Bohman order) |
 
-## The idea in one paragraph
+## Derandomization status
 
-Bohman's differential equations predict that the density of open pairs after $t\,n^{3/2}$ steps is $\sim e^{-4t^2}$.
-We realize the same density schedule in discrete **nibbles** of $\Theta(\gamma n^{3/2})$ open edges per round, track four combinatorial invariants by induction (the open-pair density evolves by the elementary product $\theta\leftarrow\theta\,e^{-4\gamma}$), and finish with a counting argument: every set of size $C\sqrt{n\log n}$ retains so many open pairs that some nibble is forced to hit it.
-Averaging replaces martingales; a discrete product replaces the ODE.
+- **Counting existence proof of the SOTA $\tfrac12$ bound:** yes — see `sota-combinatorial.tex`.
+- **Fully explicit construction at $\tfrac12$:** no; best explicit remains $\Omega(k^{3/2})$ (Alon).
 
-## Theorem
-
-There exists an absolute constant $c>0$ such that for all large $t$,
-\[
-R(3,t)\;\ge\; c\,\frac{t^2}{\log t}.
-\]
-
-(The constant here is weaker than the $\tfrac14-o(1)$ of Bohman–Keevash / Fiz Pontiveros–Griffiths–Morris; the order of magnitude is optimal.)
-
-## Build the PDF
+## Build PDFs
 
 ```bash
+pdflatex sota-combinatorial.tex
 pdflatex combinatorial-proof.tex
 ```
