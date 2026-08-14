@@ -157,11 +157,10 @@ Let
   \qquad
   n \;=\; q^{2}\,\ell.
 \]
-For $i\in\{0,1,\dots,\ell-1\}$ define the invertible $\F_{q}$-affine map $A_{i}\colon\Gamma\to\Gamma$ by
-\[
-  A_{i}(x,y) \;=\; \bigl(x,\; y+ix\bigr)
-\]
-(the $i$-th horizontal shear; $\det=1$).
+Let $A_0,\dots,A_{\ell-1}$ be the first $\ell$ matrices in $\mathrm{GL}_2(\F_q)$ in colex order of entries
+(so each $A_i$ is an invertible linear map $\Gamma\to\Gamma$).
+Horizontal shears $A_i(x,y)=(x,y+ix)$ are \emph{not} used: they preserve $x$ and leave every vertical line $G_2$-independent of size $q\ell=\Theta(\sqrt{n}\log q)$, above the SOTA target.
+See \texttt{structured-cases.tex}.
 The vertex set of the sampled product is
 \[
   W_{q} \;=\; \bigl\{\,\bigl(r,\,A_{i}(r)\bigr):r\in\Gamma,\; 0\le i<\ell\,\bigr\}\;\subset\;\Gamma\times\Gamma.

@@ -36,6 +36,7 @@ python3 explicit_family.py 5
 | [`DERANDOMIZATION.md`](DERANDOMIZATION.md) | Status of derandomization + concrete families |
 | [`explicit-family.tex`](explicit-family.tex) | Family L (proved SOTA) and Family A (explicit) |
 | [`family-a-independence.tex`](family-a-independence.tex) | Reduction + remaining lemma for $\alpha(A_q)$ |
+| [`structured-cases.tex`](structured-cases.tex) | Structured seed sets and the shear fix |
 | [`explicit_family.py`](explicit_family.py) | Constructor for $A_q$ |
 | [`sota-combinatorial.tex`](sota-combinatorial.tex) | Counting proof of the $\tfrac12$ bound |
 | [`PRESENTATION.md`](PRESENTATION.md) | Talk outline for the Bohman-order combinatorial nibble |

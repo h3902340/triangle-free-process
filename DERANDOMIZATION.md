@@ -49,7 +49,9 @@ Implementation: `explicit_family.py`
 python3 explicit_family.py 7 --diagnose
 ```
 
-On $q=7$ the second bite already cuts the $x$-axis lift (527 blue edges) and the greedy independent set ($63$) sits below the SOTA target $\sqrt{n\log n}\approx 72$. Small $q$ is not a proof; the trend is the expected one.
+**Construction fix:** horizontal shears preserve $x$ and leave every vertical line $G_2$-independent of size $q\ell=\Theta(\sqrt{n}\log q)$, above the SOTA target. The sample now uses the first $\ell$ matrices in $\mathrm{GL}_2(\mathbb{F}_q)$ with all-nonzero entries preferred. After the fix, the $x$-axis lift has blue edges again (`--diagnose`).
+
+Structured seed independent sets (lines, function graphs, axis-aligned packings) are $O(q\log q)$; see `structured-cases.tex`.
 
 ```bash
 python3 explicit_family.py 3

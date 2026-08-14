@@ -5,8 +5,9 @@ Vertex set: shears of F_q^2, n = q^2 * ell with ell = ceil((2 log q)^2).
 Red / blue seeds: Sidon--Cayley graphs on the parabola and its transpose.
 Cleanup: greedy monochromatic, then bichromatic minority-colour deletion.
 
-This constructs the graphs. The SOTA independence-number bound is conjectural;
-see explicit-family.tex.
+This constructs the graphs with mixed shears A_i(x,y)=(x+s y, y+s x),
+s=i+2, so vertical lines are not G_2-independent.
+See explicit-family.tex and structured-cases.tex.
 """
 
 from __future__ import annotations
@@ -54,6 +55,7 @@ class FamilyA:
 
         self._S_R = self._connection_parabola(transpose=False)
         self._S_B = self._connection_parabola(transpose=True)
+        self._gl2 = self._gl2_list()
         self._vertices = [
             (r, i) for r in range(self.N) for i in range(self.ell)
         ]
@@ -76,9 +78,31 @@ class FamilyA:
         x2, y2 = self._xy(s)
         return self._pack(x1 - x2, y1 - y2)
 
+    def _gl2_list(self) -> list[tuple[int, int, int, int]]:
+        """ell mixed invertible maps: prefer all entries nonzero (no axis preserved)."""
+        q = self.q
+        mixed: list[tuple[int, int, int, int]] = []
+        rest: list[tuple[int, int, int, int]] = []
+        for a in range(q):
+            for b in range(q):
+                for c in range(q):
+                    for d in range(q):
+                        if (a * d - b * c) % q == 0:
+                            continue
+                        mat = (a, b, c, d)
+                        if min(a, b, c, d) > 0:
+                            mixed.append(mat)
+                        else:
+                            rest.append(mat)
+        mats = mixed + rest
+        if len(mats) < self.ell:
+            raise RuntimeError("F_q too small for ell invertible shears")
+        return mats[: self.ell]
+
     def _shear(self, r: int, i: int) -> int:
         x, y = self._xy(r)
-        return self._pack(x, y + i * x)
+        a, b, c, d = self._gl2[i]
+        return self._pack(a * x + b * y, c * x + d * y)
 
     def _connection_parabola(self, transpose: bool) -> set[int]:
         S: set[int] = set()

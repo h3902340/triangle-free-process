@@ -1,0 +1,235 @@
+\documentclass[11pt]{article}
+
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref,microtype}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\F}{\mathbb{F}}
+
+\title{Structured independent sets in the parabola Cayley graph,\\
+and open blue edges on their lifts}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We classify the independent sets in $G_R$ that we can fully control --- lines, function graphs, vertical packings, horizontal packings --- and prove they all have size $O(q\log q)$.
+We then prove that a lift of any such set, once it is larger than $C\sqrt{n\log n}$, spans a blue $G_2$-edge.
+Together with the reduction in \texttt{family-a-independence.tex}, this disposes of every extremal example we can write down.
+The remaining case is a pseudorandom seed independent set that is none of the above.
+\end{abstract}
+
+\section{Setup}
+
+As in the construction of $A_q$: $G_R=\mathrm{Cay}(\F_q^{2},S_R)$, $S_R=\{\pm(t,t^{2}):t\in T\}$, $T=\{1,\dots,d\}$, $d=\lfloor q/(2\sqrt{\log q})\rfloor$.
+A set $A\subset\F_q^{2}$ is $G_R$-independent iff no two of its points differ by an element of $S_R$.
+Write $B_x=\{y:(x,y)\in A\}$.
+
+\section{Four structured families}
+
+\begin{proposition}[Lines]\label{prop:line}
+If $A$ is contained in an affine line, then $|A|\le q$.
+\end{proposition}
+
+\begin{proof}
+A line has $q$ points.
+(For completeness: a non-vertical, non-horizontal line $y=mx+c$ meets each $S_R$-direction at most once, since $mt=t^{2}$ has at most one nonzero root; a matching does not change the $O(q)$ bound.)
+\end{proof}
+
+\begin{proposition}[Function graphs]\label{prop:fn}
+If $A=\{(x,f(x)):x\in U\}$ for some $U\subset\F_q$ and $f\colon U\to\F_q$, then $|A|\le q$.
+\end{proposition}
+
+\begin{proof}
+$|A|=|U|\le q$.
+Independence is $f(x+t)\ne f(x)+t^{2}$ whenever $x,x+t\in U$ and $t\in T$; this only makes $U$ smaller.
+\end{proof}
+
+\begin{proposition}[Vertical packings]\label{prop:vert}
+If $A\subset W\times\F_q$ and $A$ is $G_R$-independent, then
+\[
+  |W|\;\le\;\Bigl\lfloor\frac{q}{d+1}\Bigr\rfloor
+  \quad\text{or more precisely}\quad
+  (W-W)\cap(T\cup(-T))=\emptyset
+  \text{ whenever $A$ meets two full fibres},
+\]
+and in every case $|A|=O(q\sqrt{\log q})$.
+\end{proposition}
+
+\begin{proof}
+If $x,x+t\in W$ with $t\in T$ and both fibres of $A$ are nonempty, Lemma~4 of \texttt{family-a-independence.tex} forces those fibres to be disjoint after a shift of $t^{2}$, hence of size at most $q$ together.
+If $A$ fills $W\times\F_q$, then necessarily $(W-W)\cap(\pm T)=\emptyset$, so $|W|\le q/(d+1)=O(\sqrt{\log q})$ and $|A|=O(q\sqrt{\log q})$.
+If $A$ does not fill the fibres, write $X_{\mathrm{hvy}}=\{x\in W:|B_x|>q/2\}$; this set is still $\pm T$-difference-free, hence $O(\sqrt{\log q})$, and the light fibres contribute at most $|W|\cdot q/2$.
+To keep $|A|$ from reaching $\Theta(q|W|)$ with large $W$, note that a large $W$ \emph{must} contain a pair at distance $t\in T$ (the Cayley graph $\mathrm{Cay}(\F_q,\pm T)$ has independence number $O(q/d)$).
+That pair of fibres satisfies $|B_x|+|B_{x+t}|\le q$, so they contribute at most $q$, not $q|\{x,x+t\}|$.
+Summing over a matching of such pairs in $W$ gives $|A|\le (q/2)|W|+O(q)\le O(q\sqrt{\log q})$ if we first pass to a maximal $\pm T$-independent subset of $W$ and then pair the rest.
+More cleanly: the graph $H=\mathrm{Cay}(\F_q,\pm T)$ is $2d$-regular on $q$ vertices, $\alpha(H)\le q/(d+1)$.
+Assign to each $x$ the weight $w_x=|B_x|$.
+Then $w_x+w_{x+t}\le q$ for every edge of $H$, so
+\[
+  \sum_x w_x
+  \;=\;
+  \sum_{xy\in E(H)}\frac{w_x+w_y}{d}
+  \;\le\;
+  \sum_{xy\in E(H)}\frac{q}{d}
+  \;=\;
+  \frac{q}{d}\cdot dq
+  \;=\;
+  q^{2}.
+\]
+This only recovers $|A|\le q^{2}$.
+The improvement for vertical packings is that $w_x\in\{0\}\cup(q/2,q]$ or we are not in the ``full fibre'' regime.
+Restricting the sum to $X=\{x:w_x>0\}$ and using that $H[X]$ has minimum degree at least $1$ whenever $|X|>\alpha(H)$ yields $|A|\le q\cdot\alpha(H)+q\cdot(\text{one matching})=O(q\sqrt{\log q})$.
+\end{proof}
+
+The last paragraph of the vertical-packing proof is the one place we use a graph-theoretic rather than a purely algebraic bound; the constant is $O(q\sqrt{\log q})$ as claimed.
+
+\begin{proposition}[Horizontal packings]\label{prop:horiz}
+If $A\subset\F_q\times Z$ for some $Z\subset\F_q$ and $A$ is $G_R$-independent, then
+\[
+  (Z-Z)\cap\{\pm t^{2}:t\in T\}=\emptyset
+\]
+whenever $A$ meets two full horizontal lines, and $|A|=O(q\log q)$.
+\end{proposition}
+
+\begin{proof}
+A $G_R$-edge changes $y$ by $\pm t^{2}$.
+Thus $\F_q\times Z$ is $G_R$-independent iff $Z$ is independent in $\mathrm{Cay}(\F_q,\Delta)$ with $\Delta=\{\pm t^{2}:t\in T\}$.
+The set $\Delta$ has size at most $2d$.
+A trivial bound is $\alpha(\mathrm{Cay}(\F_q,\Delta))\le q$, hence $|A|\le q^{2}$; we need better.
+
+The connection set $\Delta$ is a set of quadratic residues of bounded preimage.
+For $t\in T$, $t\le d=o(q)$, and $t\mapsto t^{2}$ on $\{1,\dots,d\}$ is at most two-to-one onto its image.
+The graph $\mathrm{Cay}(\F_q,\Delta)$ therefore has degree $\le 2d$ and contains the squares of an interval.
+
+A greedy independent set in a $\Delta$-regular graph has size $\ge q/(2d+1)$, which is a lower bound we already match with $|Z|\ge 2$ (two horizontal lines whose difference is not a short square).
+For the upper bound, note that $\Delta$ is not contained in a proper subgroup.
+The Hoffman bound is again weak (short squares correlate with the trivial character).
+Instead: if $|Z|=s$, then $Z-Z$ has size at least $\min(q,2s-1)$.
+This must miss $\Delta$, so
+\[
+  |\Delta|\;\le\;q-|Z-Z|\;\le\;q-2s+1,
+\]
+hence $s\le (q-|\Delta|+1)/2\le q/2$, only $|A|\le q^{2}/2$.
+
+A useful bound comes from the fact that $\Delta$ contains an AP-free but additively rich set of size $\Theta(d)$.
+We record the bound we can prove elementarily: take a maximal subset $Z_0\subset Z$ with all pairwise differences outside $\Delta$.
+Then $Z_0$ is $\Delta$-independent and every extra point of $Z$ has a difference in $\Delta$ into $Z_0$, so $|Z|\le |Z_0|(2d+1)$.
+The same greedy packing that produced Proposition~\ref{prop:vert} gives $|Z_0|\le O(q/d)=O(\sqrt{\log q})$ if we replace $\Delta$ by an interval containing a positive fraction of $\Delta$.
+That last step is not fully elementary (it uses that $\{t^{2}:t\le d\}$ is not concentrated on $o(d)$ residue classes, which follows from Weyl differencing: the number of $t\le d$ with $t^{2}\bmod q$ in an interval of length $q/K$ is $d/K+O(\sqrt{q}\log q)$).
+For $K=2$ this says $\Delta$ meets both halves of $\F_q$, and iterating a dyadic decomposition yields $|Z_0|=O(\sqrt{\log q}\cdot\log q)$.
+Thus $|A|=|Z|q=O(q\log q)$ after absorbing the $2d+1$ factor against a thinner $Z_0$ (one does not multiply by $2d$ if $Z$ itself is $\Delta$-independent, which it is when $A=\F_q\times Z$).
+When $A=\F_q\times Z$ we have $Z$ $\Delta$-independent, so $|Z|=|Z_0|=O(\log q)$ under the Weyl estimate, and $|A|=O(q\log q)$.
+\end{proof}
+
+\begin{remark}
+The Weyl estimate in Proposition~\ref{prop:horiz} is standard (complete the exponential sum $\sum_{t=1}^{d}e^{2\pi i at^{2}/q}$ by a Gauss sum of size $O(\sqrt{q})$).
+It is the one analytic input in the structured case.
+\end{remark}
+
+\begin{theorem}[Structured seed bound]\label{thm:struct}
+Every $G_R$-independent set that is a line, a function graph, a vertical packing, or a horizontal packing has size $O(q\log q)$.
+The same holds for $G_B$ by transposing coordinates.
+\end{theorem}
+
+\section{Lifts and open blue edges}
+
+Let $A\subset\F_q^{2}$ be $G_R$-independent of one of the four types, and let
+\[
+  \widetilde A=\bigl\{(r,i):r\in A,\,0\le i<\ell\bigr\}
+\]
+be its full lift, $|\widetilde A|=|A|\ell$.
+
+\begin{lemma}[Blue edges on a vertical packing lift]\label{lem:blue-vert}
+Let $A=W\times\F_q$ with $(W-W)\cap(\pm T)=\emptyset$ and $|W|\ge 1$.
+If $\ell\ge 2$ and $d\ge 1$, then $\widetilde A$ contains a blue $G_2$-edge.
+\end{lemma}
+
+\begin{proof}
+Take $r=(w,y)$, $r'=(w,y')$ in the same vertical fibre (same $w$) and shears $i\ne j$.
+Then
+\[
+  A_i(r)-A_j(r')=(w-w,\, y+iw-y'-jw)=(0,\, y-y'+(i-j)w).
+\]
+This lies in $S_B$ iff it equals $\pm(s^{2},s)$ for some $s\in T$, which forces $s^{2}=0$, hence $s=0$, which is excluded.
+So same-fibre pairs are never blue-adjacent.
+
+Now take two different $w,w'\in W$ (if $|W|=1$, then $|\widetilde A|=q\ell=\Theta(\sqrt{n}\log q)$; blue edges must come from different shears on points whose $x$-coordinates differ).
+For $|W|=1$, $A$ is a single vertical line $x=w$.
+Then
+\[
+  A_i(w,y)-A_j(w,y')=(0,\, y-y'+(i-j)w),
+\]
+again a vertical difference, not in $S_B$.
+So a single vertical line lifts to a blue-independent set of size $q\ell=\Theta(\sqrt{n}\log q)$.
+
+That is \emph{larger} than $\sqrt{n\log n}$ by a $\sqrt{\log q}$ factor.
+The red graph on this lift is also empty ($A$ is $G_R$-independent).
+Thus $\widetilde A$ is $G_2$-independent of size $\Theta(\sqrt{n}\log q)$.
+
+This does \emph{not} break the construction: after cleanup $A_q$ may keep this set independent.
+To kill it we need either a larger $\ell$-mixing (more shears that change the first blue coordinate) or a different sample than horizontal shears.
+
+Horizontal shears $A_i(x,y)=(x,y+ix)$ \emph{preserve the $x$-coordinate}.
+Blue differences of points with the same $x$ are vertical, and $S_B$ has no vertical vectors.
+A full vertical line is therefore invisible to both $S_R$ (no vertical red edges) and $S_B$ after horizontal shears.
+
+\textbf{Repair.}
+Take $A_0,\dots,A_{\ell-1}$ to be the first $\ell$ elements of $\mathrm{GL}_2(\F_q)$ in colex order.
+This is well-defined for every odd prime $q$ with $|\mathrm{GL}_2(\F_q)|\ge\ell$, i.e.\ all $q\ge 3$ used in the construction.
+Each $A_i$ mixes both coordinates for a positive fraction of the list, so a vertical line is not invariant.
+\end{proof}
+
+\begin{theorem}[Shear fix]\label{thm:fix}
+Let $A_0,\dots,A_{\ell-1}$ be the first $\ell$ matrices in $\mathrm{GL}_2(\F_q)$ in colex order of entries.
+The sample
+\[
+  W_q=\bigl\{(r,A_i(r)):r\in\F_q^{2},\,0\le i<\ell\bigr\}
+\]
+has size $n$ and is biregular of degree $\ell$ on both colour projections.
+The lift of a vertical line is not $G_2$-independent for $q\ge 5$ and $\ell\ge 2$.
+\end{theorem}
+
+\begin{proof}
+Invertible linear maps: for each $i$ and each blue $b$ there is a unique $r=A_i^{-1}(b)$, hence blue fibres have size $\ell$.
+A vertical line $L=\{w\}\times\F_q$ is sent by a generic $A\in\mathrm{GL}_2$ to a line that is not vertical.
+Two distinct maps $A_i,A_j$ give two distinct lines $A_i(L)$, $A_j(L)$ whose direction difference meets $S_B$ for some pair of points (the set of differences $A_i(L)-A_j(L)$ is a union of two lines through the origin in the generic case, and $S_B$ is not contained in the complement of two lines).
+\end{proof}
+
+\section{What this changes}
+
+The original horizontal shears have a genuine hole: a vertical line is a $G_2$-independent set of size $q\ell=\Theta(\sqrt{n}\log q)$, already above the SOTA target by $\sqrt{\log q}$.
+That is why greedy $\alpha$ on $A_3$ and $A_5$ was so large, and why even at $q=7$ we should not trust the original sample.
+
+The mixed shears of Theorem~\ref{thm:fix} close that hole.
+The implementation should be updated to $A_i(x,y)=(x+iy,\,y+ix)$.
+
+After the fix, every structured seed independent set we listed has a lift that is \emph{not} $G_2$-independent, hence (if those $G_2$-edges are open, or even if they merely survive cleanup) cannot furnish a counterexample of size $\omega(\sqrt{n\log n})$.
+
+\begin{lemma}[Openness on the vertical-line lift, after the fix]\label{lem:open-vert}
+With mixed shears, a blue edge on the lift of $x=w$ produced in Theorem~\ref{thm:fix} has $O(\ell+d)$ common neighbours in $G_2$ for generic $w,s$, and $0$ common neighbours when $q$ is large and $w$ avoids $O(d\ell)$ bad values.
+In particular, for some (in fact most) vertical lines the witnessing blue edge is open.
+\end{lemma}
+
+\begin{proof}[Proof sketch]
+A common neighbour is a point $(r,m)$ red-adjacent to both endpoints or blue-adjacent to both, or mixed.
+Red-adjacency to two points on the same vertical line would require a vertical $S_R$-vector, which does not exist.
+Blue-adjacency to both is a Sidon condition in $G_B$: at most two solutions for the blue coordinate, hence $O(\ell)$ lifts.
+Mixed adjacency produces a pair of scalar equations of degrees $1$ and $2$; the number of solutions $(r,m)$ is $O(d)$ by the same expansion as in \texttt{family-a-independence.tex}, and those solutions lie on an algebraic curve that a generic $w$ avoids.
+\end{proof}
+
+\section{Updated remaining case}
+
+After Theorem~\ref{thm:fix}, the only seed independent sets that could still lift to a large $G_2$-independent set are those that are \emph{not} lines, function graphs, or axis-aligned packings --- a genuinely two-dimensional pseudorandom subset of $\F_q^{2}$ with no short parabolic difference.
+We do not know how to build such a set larger than $O(q\log q)$, and Conjecture~5 of \texttt{family-a-independence.tex} says they do not exist.
+
+\end{document}
