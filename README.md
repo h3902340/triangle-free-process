@@ -35,6 +35,7 @@ python3 explicit_family.py 7 --diagnose
 
 | File | Contents |
 |------|----------|
+| [`lean/`](lean/README.md) | Lean 4 + mathlib formalization of the **proved** Family A lemmas |
 | [`EXPLICIT-STATUS.md`](EXPLICIT-STATUS.md) | One-page proved / not-proved list |
 | [`DERANDOMIZATION.md`](DERANDOMIZATION.md) | Status of derandomization + concrete families |
 | [`explicit-family.tex`](explicit-family.tex) | Family L (proved SOTA) and Family A (explicit) |
@@ -48,10 +49,26 @@ python3 explicit_family.py 7 --diagnose
 | [`PRESENTATION.md`](PRESENTATION.md) | Talk outline for the Bohman-order combinatorial nibble |
 | [`combinatorial-proof.tex`](combinatorial-proof.tex) | Combinatorial nibble proof of $\Omega(t^2/\log t)$ |
 
+## Lean-verified core
+
+The lemmas that already have complete elementary proofs are formalized in
+[`lean/`](lean/README.md) (Lean 4.33 + mathlib, no `sorry`). This includes the
+fibre constraint, the corrected tight 4-interval (\(B=B+6\), hence empty or
+the whole field for \(q>3\)), heavy-fibre exclusion, cycle packing, the
+parabola Sidon property, the lift lemma, and open-edge cleanup monotonicity.
+
+It does **not** verify the conjectural SOTA bound for Family A.
+
+```bash
+./scripts/setup-lean.sh
+# or: cd lean && lake exe cache get && lake build
+```
+
 ## Derandomization status
 
 - **Counting existence proof of the SOTA $\tfrac12$ bound:** yes — see `sota-combinatorial.tex`.
 - **Fully explicit construction at $\tfrac12$:** no; best explicit remains $\Omega(k^{3/2})$ (Alon).
+- **Lean-verified Family A core:** yes — see [`lean/README.md`](lean/README.md). Not a SOTA proof.
 
 ## Build PDFs
 

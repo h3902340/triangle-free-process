@@ -66,7 +66,7 @@ Then~\eqref{eq:ind} forces the exact complement
 Suppose $d\ge 3$ (i.e.\ $q$ large enough that $T\supset\{1,2,3\}$) and the four pairs
 $(x,x+1)$, $(x+1,x+2)$, $(x+2,x+3)$, $(x,x+3)$
 are all tight.
-Then $6=0$ in $\F_q$, hence $q\mid 6$.
+Then $B_x=B_x+6$. For a prime $q>3$ one has $6\neq 0$ in $\F_q$, so $B_x$ is empty or all of $\F_q$.
 \end{lemma}
 
 \begin{proof}
@@ -84,11 +84,12 @@ Tightness at steps of length $1$ gives
 \end{align*}
 Tightness of $(x,x+3)$ gives the second expression
 $B_{x+3}=\F_q\setminus(B_x+9)$.
-Therefore $B_x+3=B_x+9$, so $6=0$ in $\F_q$.
+Therefore $B_x+3=B_x+9$, hence $B_x=B_x+6$.
+If $B_x$ is nonempty and proper and $6\neq 0$, translating by multiples of $6$ fills $\F_q$, a contradiction. For $q>3$ prime, $6\neq 0$.
 \end{proof}
 
 \begin{corollary}\label{cor:4int}
-For every odd prime $q>3$ with $d\ge 3$, no $G_R$-independent set has a tight 4-interval.
+For every odd prime $q>3$ with $d\ge 3$, no $G_R$-independent set has a tight 4-interval of proper nonempty fibres.
 In particular there is no independent set whose fibres all have size exactly $q/2$ on an interval of $x$-coordinates of length $4$.
 \end{corollary}
 

@@ -1,0 +1,11 @@
+name = "R3tBound"
+version = "0.1.0"
+defaultTargets = ["R3tBound"]
+
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+rev = "v4.33.0"
+
+[[lean_lib]]
+name = "R3tBound"

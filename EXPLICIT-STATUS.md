@@ -6,6 +6,20 @@
 | Family A (algebraic two bites) | SOTA $\tfrac12$ | **Conjectural.** Poly-time. |
 | Alon Dual-BCH | $\Omega(k^{3/2})$ | Theorem, poly-time. |
 
+## Lean-verified (see [`lean/`](lean/README.md))
+
+These statements compile in Lean 4.33 + mathlib with no `sorry`:
+
+- Fibre constraint: a seed-independent set cannot contain both \((x,y)\) and \((x+t,y+t^2)\).
+- Tight 4-interval: tightness forces \(B_x=B_x+6\); for \(q>3\) the fibre is empty or \(\mathbb{F}_q\).
+- Two fibres larger than \(q/2\) cannot be at a \(T\)-difference.
+- A \(\{\pm 1,\ldots,\pm d\}\)-difference-free subset of \(\mathbb{F}_q\) has size at most \(q/(d+1)\).
+- The parabola is a Sidon set in odd characteristic.
+- Lift: a red-independent product set projects to a seed-independent set and \(\lvert I\rvert\le \ell\cdot\lvert\pi_R(I)\rvert\).
+- Every-open-edge graphs are triangle-free; \(\alpha\) is antitone in the edge set.
+
+The SOTA independence-number bound for \(A_q\) is **not** Lean-verified.
+
 ## Proved for Family A
 
 - Triangle-free, degree $O(\sqrt{n\log n})$, constructible in $\mathrm{poly}(n)$.
