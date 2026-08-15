@@ -73,6 +73,9 @@ Moreover $|H_I|\le |I|\Delta/t_{1}=O\bigl(\log\log n\bigr)$ and
 Double count flags $(v,w)$ with $v\in I$ and $vw\in E(G_2)$.
 Each $v$ has at most $\Delta$ neighbours.
 A star larger than $t$ contributes at least $t$ to the sum, hence there are at most $|I|\Delta/t$ such stars.
+The same first-moment comparison on the seed graph is Lean
+(\texttt{seedDegree\_sum}, \texttt{seed\_heavy\_star\_count}):
+$\sum_u D(u)=|S_R||P|$ and $t\cdot\#\{u:t\le D(u)\}\le|S_R||P|$.
 \end{proof}
 
 \section{Light and medium stars close few pairs}
@@ -92,6 +95,11 @@ In particular, at the SOTA scale $|I|=\Theta(\sqrt{n\log n})$ we need $t_{3}$ sl
 
 \begin{proof}
 $\bin{d}{2}\le d\cdot t_{3}/2$ on $S_I$, and $\sum d_I(w)\le|I|\Delta$.
+The same comparison is Lean (\texttt{two\_mul\_sum\_choose\_two\_le},
+\texttt{light\_seed\_pairs}):
+$2\sum_{D\le t}\bin{D}{2}\le t|S_R||P|$.
+This is $o(|P|^{2})$ only when $t|S_R|\ll|P|$; at the SOTA scale
+$|P|\sim|S_R|$ that needs $t=o(1)$.
 \end{proof}
 
 At the SOTA scale the crude bound of Lemma~\ref{lem:light} is $|I|^{2}\cdot n^{2\eps}$, which is not $o(|I|^{2})$.
@@ -227,7 +235,8 @@ $\sum_u D(u)^{2}=O(d|P|+|P|^{2})$
 $|I|\sim\Delta=\Theta(\sqrt{n\log n})$:
 the main term $|P|^{2}$ saturates the target, and the $d|P|$ term is
 $|I|\cdot\Delta$ after the lift, the same first-moment count as
-Lemma~\ref{lem:med}.
+Lemma~\ref{lem:med} (Lean: \texttt{seedDegree\_sum},
+\texttt{light\_seed\_pairs}).
 A genuine saving would need either a smaller energy increment on $P$
 (the leftover) or a second-moment restriction on how $I$ sits over $P$.
 

@@ -10,6 +10,7 @@ import R3tBound.Incidences
 import R3tBound.Lift
 import R3tBound.Mixing
 import R3tBound.Sidon
+import R3tBound.Stars
 import R3tBound.TightInterval
 
 /-!
@@ -42,6 +43,13 @@ out-neighbourhoods, AP-poor spread-out neighbourhoods (Weyl), and
 average-only / `K = 2` discrepancy remain paper-only.
 The Sidon count `∑_u D(u)² ≤ |S_R| |P| + 6 |P|(|P|-1)` is Lean
 (`seedDegree_sq_sum`) and is not `o(|P|²)` at the SOTA scale.
+The first-moment star counts `∑ D = |S_R| |P|`,
+`t · #{u : t ≤ D(u)} ≤ |S_R| |P|`, and
+`2 ∑_{D≤t} binom(D,2) ≤ t |S_R| |P|` are Lean
+(`seedDegree_sum`, `seed_heavy_star_count`, `light_seed_pairs`).
+They are `o(|P|²)` only when `t |S_R| ≪ |P|`; at the SOTA scale
+that needs `t = o(1)`. The SOTA light-star second moment is not
+claimed.
 -/
 
 namespace R3tBound
@@ -283,5 +291,35 @@ alias quarter_in_star_pack := pack_quarter_in_star
 /-- **Quarter-close AP in-star packing.** The same size bound when
 the high neighbours contain `{t+step,…,t+L·step}`. -/
 alias quarter_in_star_ap_pack := pack_quarter_in_star_ap
+
+/-- **Choose-two identity.** `2 * n.choose 2 = n * (n-1)`. -/
+alias choose_two_double := two_mul_choose_two
+
+/-- **Light-pair first moment.** On `{w : d(w) ≤ t}`,
+`2 ∑ binom(d,2) ≤ t · ∑ d`. Paper `lem:light`, factor `1/2` kept. -/
+alias light_pairs_first_moment := two_mul_sum_choose_two_le
+
+/-- **Light-pair first moment, paper form.** `∑ binom(d,2) ≤ t · ∑ d`. -/
+alias light_pairs_first_moment_weak := sum_choose_two_le
+
+/-- **Star Markov.** `t · #{w : t ≤ d(w)} ≤ ∑ d`. Paper `lem:nstars`. -/
+alias star_markov := t_mul_card_le_sum
+
+/-- **Seed first moment.** `∑_u D(u) = |S_R| |P|`. -/
+alias seed_degree_sum := seedDegree_sum
+
+/-- **Seed first-moment bound.** `∑ D ≤ 2 |T| |P|`. -/
+alias seed_degree_sum_le := seedDegree_sum_le
+
+/-- **Seed heavy-star count.** `t · #{u : t ≤ D(u)} ≤ |S_R| |P|`. -/
+alias seed_heavy_stars := seed_heavy_star_count
+
+/-- **Seed light pairs.** `2 ∑_{D≤t} binom(D,2) ≤ t |S_R| |P|`.
+Not `o(|P|²)` at the SOTA scale unless `t = o(1)`. -/
+alias seed_light_pairs := light_seed_pairs
+
+/-- **Seed light pairs vs `|P|²`.** If `t |S_R| < |P|` then
+light pairs are `< |P|²`. At SOTA this needs `t = o(1)`. -/
+alias seed_light_pairs_lt_sq := light_seed_pairs_lt_sq
 
 end R3tBound

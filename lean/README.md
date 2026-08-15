@@ -67,12 +67,19 @@ Pinned toolchain: Lean 4.33.0 + mathlib `v4.33.0`. There are no `sorry`s.
 | Independence bounds the lower fibre by an affine shift | `low_fibre_affine_overlap` |
 | A `3/4`-close in-star on `{t+1,…,t+L}` packs | `quarter_in_star_pack` |
 | A `3/4`-close in-star along any AP of $T$-steps packs | `quarter_in_star_ap_pack` |
+| Light-pair first moment `2 ∑ binom(d,2) ≤ t · ∑ d` | `light_pairs_first_moment` |
+| Star Markov `t · #{w : t ≤ d(w)} ≤ ∑ d` | `star_markov` |
+| Seed first moment `∑ D = \|S_R\| \|P\|` | `seed_degree_sum` |
+| Seed heavy-star count `t · #{u : t ≤ D(u)} ≤ \|S_R\| \|P\|` | `seed_heavy_stars` |
+| Seed light pairs `2 ∑_{D≤t} binom(D,2) ≤ t \|S_R\| \|P\|` | `seed_light_pairs` |
 
 Not formalized (still paper-only / conjectural): the Weyl estimate for
 horizontal packings and for AP-poor below-random star autocorrelations,
 any second moment on high-vertex quadratic \(N^+\) lags, packing of
 average-only / \(K=2\) medium stars, a SOTA-scale saving on the Sidon
 count (the \(O(d|P|+|P|^2)\) bound is Lean and saturates),
+a SOTA-scale light-star second moment (the first-moment half of
+`lem:nstars` / `lem:light` is Lean and needs `t=o(1)` at `|P|∼|S_R|`),
 medium-star incidences, and the SOTA independence-number bound for
 \(A_q\).
 The \(\Omega(|T|^2)\) star-degree count is Lean (`many_heavy_pairs`);
