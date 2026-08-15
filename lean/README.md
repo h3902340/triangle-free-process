@@ -60,21 +60,28 @@ Pinned toolchain: Lean 4.33.0 + mathlib `v4.33.0`. There are no `sorry`s.
 | Sliding-window occupancy sums to `(L+1)|U|` | `window_first_moment` |
 | Window energy expands as a weighted lag sum | `window_energy` |
 | Window identity + CS + uniform lags pack | `window_pack` |
+| Independence bounds the lower fibre by an affine shift | `low_fibre_affine_overlap` |
+| A `3/4`-close in-star on `{t+1,…,t+L}` packs | `quarter_in_star_pack` |
 
 Not formalized (still paper-only / conjectural): the Weyl estimate for
 horizontal packings and for spread-out below-random star autocorrelations,
-packing of average-only / \(K=2\) medium stars, medium-star incidences,
+any second moment on high-vertex quadratic \(N^+\) lags, packing of
+average-only / \(K=2\) medium stars, medium-star incidences,
 and the SOTA independence-number bound for \(A_q\).
 The \(\Omega(|T|^2)\) star-degree count is Lean (`many_heavy_pairs`);
 it is a star, not a packing.
 The intermediate window is empty at mean fibre size `≥ q/3`; it remains
 open on `(q^{1/3}(\log q)^{-O(1)}, q/3)`. Medium aligned fibres all have
 a high-multiplicity core; that core is not packed unless the
-neighbourhood is a complete interval with a uniform lag bound.
-On a `T`-dense fibre the oriented star neighbourhood is interval-dense
-(item (2) of the packing path). A complete interval of uniformly
-below-random lags packs (`window_pack`); spread-out
-neighbourhoods still need Weyl.
+neighbourhood is a complete *affine* interval with a uniform lag bound
+(a `3/4`-close in-star on `{t+1,…,t+L}` is such an interval:
+`quarter_in_star_pack`).
+On a `T`-dense fibre some high-vertex out-neighbourhood is
+interval-dense (item (2) of the packing path); those lags are
+quadratic and are not an input to `window_pack`. A complete affine
+interval of uniformly below-random lags packs (`window_pack`);
+high-vertex $N^+$ and spread-out neighbourhoods still need Weyl
+or a different second moment.
 One heavy pair plus one almost-disjoint translate is not a packing.
 An \(\Omega(|T|^2)\) star of heavy pairs is still not a packing.
 A star with large intersections has below-random self-translates; that

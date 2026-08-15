@@ -30,7 +30,7 @@ Details: [`polytime-derandomization.tex`](polytime-derandomization.tex).
 
 **Proved:** triangle-free, degree \(O(\sqrt{n\log n})\), time \(\mathrm{poly}(n)\).
 
-**Not proved:** \(\alpha(G_n)=O(\sqrt{n\log n})\). Leftovers: intermediate-energy fibres of size in $(q^{1/3}(\log q)^{-O(1)},q/3)$ (including thin two-thirds-energy stars that are not exact, thin AP-poor two-clusters, and medium $1/2$-close stars that are average-only ($K=2$) or spread-out (Weyl); a complete interval of uniformly below-random lags packs; the window $[q/3,q/2]$ has no intermediate energy), medium-star incidences (these reduce to seed energy and do not open a third gap).
+**Not proved:** \(\alpha(G_n)=O(\sqrt{n\log n})\). Leftovers: intermediate-energy fibres of size in $(q^{1/3}(\log q)^{-O(1)},q/3)$ (including thin two-thirds-energy stars that are not exact, thin AP-poor two-clusters, and medium $1/2$-close stars that are average-only ($K=2$), high-vertex quadratic, or spread-out (Weyl); a complete affine interval of uniformly below-random lags packs, and a $3/4$-close in-star on $\{t+1,\dots,t+L\}$ is such an interval; a high-vertex $N^+$ does not pack this way; the window $[q/3,q/2]$ has no intermediate energy), medium-star incidences (these reduce to seed energy and do not open a third gap).
 
 ## Why not a PRG or conditional probabilities
 

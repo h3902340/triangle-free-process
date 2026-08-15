@@ -269,6 +269,20 @@ def autoCorr (U : Finset (ZMod q)) (σ : ZMod q) : ℕ :=
 lemma autoCorr_zero (U : Finset (ZMod q)) : autoCorr U 0 = #U := by
   simp [autoCorr]
 
+lemma autoCorr_eq_card_image (U : Finset (ZMod q)) (σ : ZMod q) :
+    autoCorr U σ = #(U ∩ U.image (fun y => y + σ)) := by
+  classical
+  unfold autoCorr
+  congr 1
+  ext y
+  simp only [mem_filter, mem_inter, mem_image]
+  constructor
+  · intro ⟨hyU, hyσ⟩
+    exact ⟨hyU, y - σ, hyσ, sub_add_cancel y σ⟩
+  · intro ⟨hyU, z, hzU, hz⟩
+    refine ⟨hyU, ?_⟩
+    simpa [← hz, add_sub_cancel_right] using hzU
+
 lemma autoCorr_neg (U : Finset (ZMod q)) (σ : ZMod q) :
     autoCorr U (-σ) = autoCorr U σ := by
   classical

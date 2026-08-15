@@ -27,13 +27,16 @@ exact cylinders, the two-thirds energy core, and the empty intermediate
 window at mean size `q/3`, and `|intervalT q d| = d` are verified.
 On a `T`-dense fibre the heavy-pair graph orients as `(max, min)`, so
 some out-neighbourhood is interval-dense (item (2) of the packing path;
-paper, using `card_intervalT`). Two-thirds energy on medium fibres
-forces `Ω(|T|²)` heavy pairs and a star of degree `|T|/9`
+paper, using `card_intervalT`). Those high-vertex lags are quadratic
+and are not an input to `pack_window`. Two-thirds energy on medium
+fibres forces `Ω(|T|²)` heavy pairs and a star of degree `|T|/9`
 (`card_heavy_pair_set`, `exists_heavy_star`); that is structure, not
-a size bound. A complete interval of uniformly below-random lags packs
-by the second-moment identity (`pack_window`). Spread-out
-neighbourhoods (Weyl) and average-only / `K = 2` discrepancy remain
-paper-only.
+a size bound. A complete *affine* interval of uniformly below-random
+lags packs by the second-moment identity (`pack_window`). A
+`3/4`-close *in-star* whose high neighbours contain `{t+1,…,t+L}`
+is such an interval (`pack_quarter_in_star`). High-vertex
+out-neighbourhoods, spread-out neighbourhoods (Weyl), and
+average-only / `K = 2` discrepancy remain paper-only.
 -/
 
 namespace R3tBound
@@ -237,5 +240,16 @@ alias window_pack := pack_window
 
 /-- **Two-thirds window packing.** The case `c = 2` of `pack_window`. -/
 alias window_pack_two_thirds := pack_window_two_thirds
+
+/-- **Low-fibre affine overlap.** Independence `s - t ∈ T` bounds the
+self-translate of the *lower* fibre by the affine shift `2t(s-t)`.
+This is the orientation that feeds interval packing. -/
+alias low_fibre_affine_overlap := shifted_close_overlap_low
+
+/-- **Quarter-close in-star packing.** A `3/4`-close in-star whose
+high neighbours contain `{t+1,…,t+L}` and whose base fibre has size
+at least `q/3` packs: `|A_t|(L+4) ≤ 4q`. High-vertex
+out-neighbourhoods produce quadratic lags and are not this lemma. -/
+alias quarter_in_star_pack := pack_quarter_in_star
 
 end R3tBound

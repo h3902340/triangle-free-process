@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 -/
 import Mathlib.Tactic.Abel
 import Mathlib.Tactic.Ring
+import R3tBound.Autocorr
 import R3tBound.Heavy
 import R3tBound.Mixing
 import R3tBound.Sidon
@@ -395,5 +396,99 @@ theorem exact_cylinder_pack
     simpa using hfib k hk
   · intro k hk1 hkd
     simpa using hT k hk1 hkd
+
+/-- Independence `s-t ∈ T` bounds the self-translate of the *lower*
+fibre `A_t` by the affine shift `2t(s-t)`. This is the orientation
+that feeds interval packing. -/
+lemma shifted_close_overlap_low {T : Finset (ZMod q)}
+    {A : Finset (ZMod q × ZMod q)} {x s t : ZMod q}
+    (hA : IsSeedIndependent T (A : Set (ZMod q × ZMod q)))
+    (hT0 : 0 ∉ T) (hdiff : s - t ∈ T) :
+    #(shiftedFibre A x t ∩
+        (shiftedFibre A x t).image (fun y => y + 2 * t * (s - t))) ≤
+      #(shiftedFibre A x t \ shiftedFibre A x s) := by
+  set F := shiftedFibre A x
+  have hdisj :=
+    shifted_independent (A := A) (x := x) (s := s) (t := t) hA hT0 hdiff
+  have hdisj' : Disjoint (F t)
+      ((F s).image (fun y => y + 2 * t * (s - t))) := by
+    refine disjoint_left.2 ?_
+    intro y hyt hys
+    rcases mem_image.1 hys with ⟨z, hzs, hz⟩
+    have hz' : z ∈ (F t).image (fun w => w + 2 * t * (t - s)) := by
+      refine mem_image.2 ⟨y, hyt, ?_⟩
+      calc
+        y + 2 * t * (t - s)
+            = z + 2 * t * (s - t) + 2 * t * (t - s) := by rw [← hz]
+        _ = z := by ring
+    exact disjoint_left.1 hdisj hzs hz'
+  exact close_sets_almost_disjoint_translates hdisj'
+
+/-- A `3/4`-close in-star at `t` whose high neighbours contain
+`{t+1,…,t+L}` packs by the affine second-moment identity.
+This is a size bound, but only for that complete in-interval.
+A high-vertex out-neighbourhood produces quadratic lags and is not
+this lemma. -/
+lemma pack_quarter_in_star {T : Finset (ZMod q)}
+    {A : Finset (ZMod q × ZMod q)} {x t : ZMod q} {L : ℕ}
+    (hA : IsSeedIndependent T (A : Set (ZMod q × ZMod q)))
+    (hT0 : 0 ∉ T)
+    (hmed : q ≤ 3 * #(shiftedFibre A x t))
+    (hN : ∀ k : ℕ, 0 < k → k ≤ L →
+      (k : ZMod q) ∈ T ∧ t + (k : ZMod q) ∈ T)
+    (hclose : ∀ k : ℕ, 0 < k → k ≤ L →
+      3 * #(shiftedFibre A x t) ≤
+        4 * #(shiftedFibre A x t ∩ shiftedFibre A x (t + (k : ZMod q)))) :
+    #(shiftedFibre A x t) * (L + 4) ≤ 4 * q := by
+  have : NeZero q := ⟨(Fact.out : Nat.Prime q).ne_zero⟩
+  set U := shiftedFibre A x t
+  set F := shiftedFibre A x
+  let a : ZMod q := 2 * t
+  have hr : ∀ k ∈ range L,
+      4 * q * autoCorr U (a * (k + 1 : ZMod q)) ≤ 3 * #U ^ 2 := by
+    intro k hk
+    have hkpos : 0 < k + 1 := Nat.succ_pos k
+    have hkL : k + 1 ≤ L := Nat.succ_le_of_lt (mem_range.1 hk)
+    have hcast : ((k + 1 : ℕ) : ZMod q) = (k + 1 : ZMod q) :=
+      Nat.cast_succ k
+    set s := t + ((k + 1 : ℕ) : ZMod q)
+    have hs' : s = t + (k + 1 : ZMod q) := by simp [s, hcast]
+    have hTk := hN (k + 1) hkpos hkL
+    have hdiff : s - t ∈ T := by
+      simpa [s, add_sub_cancel_left] using hTk.1
+    have hle :=
+      shifted_close_overlap_low (A := A) (x := x) (s := s) (t := t)
+        hA hT0 hdiff
+    have hσ : 2 * t * (s - t) = a * (k + 1 : ZMod q) := by
+      simp [a, s, hcast]
+    have hrU : autoCorr U (a * (k + 1 : ZMod q)) ≤ #(U \ F s) := by
+      have himg := autoCorr_eq_card_image U (a * (k + 1 : ZMod q))
+      rw [himg, ← hσ]
+      simpa [U, F, s] using hle
+    have h34 : 3 * #U ≤ 4 * #(U ∩ F s) := by
+      simpa [U, F, s, hs'] using hclose (k + 1) hkpos hkL
+    have hfr : 4 * #(U \ F s) ≤ #U := by
+      have hsdiff : #(U \ F s) = #U - #(U ∩ F s) :=
+        card_sdiff_eq_card_sub_inter U (F s)
+      have hsub : 4 * #(U \ F s) = 4 * #U - 4 * #(U ∩ F s) := by
+        rw [hsdiff, Nat.mul_sub_left_distrib]
+      have hgoal : 4 * #U - 4 * #(U ∩ F s) ≤ #U :=
+        (Nat.sub_le_iff_le_add).2 <| by
+          calc
+            4 * #U = 3 * #U + #U := by ring
+            _ ≤ 4 * #(U ∩ F s) + #U := Nat.add_le_add_right h34 _
+            _ = #U + 4 * #(U ∩ F s) := Nat.add_comm _ _
+      exact hsub.trans_le hgoal
+    have hr4 : 4 * autoCorr U (a * (k + 1 : ZMod q)) ≤ #U :=
+      (Nat.mul_le_mul_left 4 hrU).trans hfr
+    have hUq : q * #U ≤ 3 * #U ^ 2 := by
+      have := Nat.mul_le_mul_right #U hmed
+      simpa [pow_two, mul_comm, mul_left_comm, mul_assoc] using this
+    calc
+      4 * q * autoCorr U (a * (k + 1 : ZMod q))
+          = q * (4 * autoCorr U (a * (k + 1 : ZMod q))) := by ring
+      _ ≤ q * #U := Nat.mul_le_mul_left q hr4
+      _ ≤ 3 * #U ^ 2 := hUq
+  exact pack_window (U := U) (a := a) (L := L) (c := 3) hr
 
 end R3tBound
