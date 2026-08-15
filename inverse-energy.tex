@@ -88,8 +88,11 @@ The identity $E_x=\sum_{t,t'}|A_t\cap A_{t'}|$ and the existence of
 whenever $E_x>W_x+B\,|T_x|(|T_x|-1)$ are Lean
 \texttt{familyEnergy\_eq\_pairwise} and
 \texttt{exists\_heavy\_off\_diag\_pair}.
-The $\Omega(|T_x|^{2})$ edge count, and therefore the star of degree
-$|T_x|/9$, remain paper-only.
+The $\Omega(|T_x|^{2})$ edge count and the star of degree $|T_x|/9$
+are Lean \texttt{card\_heavy\_pair\_set} and
+\texttt{exists\_heavy\_star} (and
+\texttt{aligned\_medium\_has\_star} on medium aligned fibres).
+That is a star, not a packing.
 On Family~A the connection set is the interval $T=\{1,\dots,d\}$ with
 $2d\le q$, so any two distinct labels in $T_x\subseteq T$ differ by an
 element of $\pm T$ (Lean: \texttt{intervalT\_pair\_diff}).
@@ -607,17 +610,23 @@ second-moment identity.
 \texttt{pack\_of\_second\_moment\_two\_thirds},
 \texttt{window\_second\_moment},
 \texttt{pack\_window},
+\texttt{card\_heavy\_pair\_set},
+\texttt{exists\_heavy\_star},
+\texttt{aligned\_medium\_has\_star},
 \texttt{affine\_diffFree\_card\_le}, and \texttt{parabola\_codegree}
 compile with no \texttt{sorry}.
 One heavy pair and one almost-disjoint translate are Lean; on
 $T=\{1,\dots,d\}$ they compose.
+Two-thirds energy on medium fibres forces $\Omega(|T|^{2})$ heavy
+pairs and a star of degree $|T|/9$
+(Lean: \texttt{card\_heavy\_pair\_set}, \texttt{exists\_heavy\_star});
+that is structure, not a size bound.
 The out-neighbourhood of $s=i+1$ in $T$ is exactly $\{1,\dots,i\}$
 (Lean: \texttt{intervalT\_out\_mem}), so item (2) of the packing path
 is a theorem on every $T$-dense fibre.
 A complete interval of uniformly below-random lags packs
 (Lean: \texttt{pack\_window}, including the window expansion).
-The $\Omega(|T|^{2})$ star-degree count and Weyl on a spread-out
-neighbourhood remain paper-only.
+Weyl on a spread-out neighbourhood remains paper-only.
 Medium packing via half-intersection plus Weyl is not a theorem,
 and $K=2$ / average-only discrepancy does not feed
 Lemma~\ref{lem:2ndmoment}.

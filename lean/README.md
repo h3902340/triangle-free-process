@@ -34,6 +34,9 @@ Pinned toolchain: Lean 4.33.0 + mathlib `v4.33.0`. There are no `sorry`s.
 | Energy is the sum of pairwise intersections | `family_energy_pairwise` |
 | Energy is mass plus off-diagonal intersections | `family_energy_off_diag` |
 | Energy above `W+B·#T·(#T-1)` forces one heavy pair | `exists_heavy_pair` |
+| Two-thirds energy on medium fibres ⇒ `#T²/9` heavy pairs | `many_heavy_pairs` |
+| A vertex of heavy-pair degree `#T/9` | `exists_heavy_star_vertex` |
+| Medium aligned fibres have a heavy star | `medium_aligned_star` |
 | `A` misses `B+σ` \(\Rightarrow\) `|A∩(A+σ)|≤|A\B|` | `close_fibres_almost_disjoint` |
 | Neighbouring independence bounds one self-translate | `shifted_close_pair` |
 | Maximal energy makes every nonempty fibre equal | `maximal_energy_is_exact` |
@@ -60,9 +63,10 @@ Pinned toolchain: Lean 4.33.0 + mathlib `v4.33.0`. There are no `sorry`s.
 
 Not formalized (still paper-only / conjectural): the Weyl estimate for
 horizontal packings and for spread-out below-random star autocorrelations,
-the \(\Omega(|T|^2)\) star-degree count, packing of average-only / \(K=2\)
-medium stars, medium-star incidences, and the SOTA independence-number bound
-for \(A_q\).
+packing of average-only / \(K=2\) medium stars, medium-star incidences,
+and the SOTA independence-number bound for \(A_q\).
+The \(\Omega(|T|^2)\) star-degree count is Lean (`many_heavy_pairs`);
+it is a star, not a packing.
 The intermediate window is empty at mean fibre size `≥ q/3`; it remains
 open on `(q^{1/3}(\log q)^{-O(1)}, q/3)`. Medium aligned fibres all have
 a high-multiplicity core; that core is not packed unless the
@@ -72,6 +76,7 @@ On a `T`-dense fibre the oriented star neighbourhood is interval-dense
 below-random lags packs (`window_pack`); spread-out
 neighbourhoods still need Weyl.
 One heavy pair plus one almost-disjoint translate is not a packing.
+An \(\Omega(|T|^2)\) star of heavy pairs is still not a packing.
 A star with large intersections has below-random self-translates; that
 is a discrepancy, not a packing.
 See [`inverse-energy.tex`](../inverse-energy.tex).

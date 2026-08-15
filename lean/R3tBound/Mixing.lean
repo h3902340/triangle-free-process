@@ -12,7 +12,9 @@ import R3tBound.TightInterval
 Energy is defined as the second moment of fibre multiplicity, equivalently
 the sum of pairwise shifted-fibre intersections. A strictly mixing fibre
 is empty once the neighbouring mass is at least `q`. High energy forces
-a heavy pair; an `Ω(|T|²)` star of such pairs remains paper-only.
+a heavy pair. Two-thirds energy on medium fibres forces
+`Ω(|T|²)` heavy pairs and therefore a star; that is structure, not a
+size bound.
 -/
 
 namespace R3tBound
@@ -826,5 +828,250 @@ lemma half_fibre_energy_exact_cylinder
         exact this ▸ h2)
     exact Nat.eq_of_mul_eq_mul_right hq this
   exact maximal_energy_exact_cylinder A T x hEW hs ht
+
+/-- Ordered pairs whose intersection is at least half the mean fibre
+size: `W ≤ 2 · #T · |A_t ∩ A_{t'}|`. -/
+def heavyPairSet (A : Finset (ZMod q × ZMod q)) (T : Finset (ZMod q))
+    (x : ZMod q) : Finset (ZMod q × ZMod q) :=
+  (T ×ˢ T).filter fun p =>
+    coverageMass A T x ≤
+      2 * #T * #(shiftedFibre A x p.1 ∩ shiftedFibre A x p.2)
+
+lemma mem_heavyPairSet {A : Finset (ZMod q × ZMod q)}
+    {T : Finset (ZMod q)} {x : ZMod q} {p : ZMod q × ZMod q} :
+    p ∈ heavyPairSet A T x ↔
+      p.1 ∈ T ∧ p.2 ∈ T ∧
+        coverageMass A T x ≤
+          2 * #T * #(shiftedFibre A x p.1 ∩ shiftedFibre A x p.2) := by
+  constructor
+  · intro hp
+    rcases mem_filter.1 hp with ⟨hpT, hW⟩
+    rcases mem_product.1 hpT with ⟨h1, h2⟩
+    exact ⟨h1, h2, hW⟩
+  · intro ⟨h1, h2, hW⟩
+    exact mem_filter.2 ⟨mem_product.2 ⟨h1, h2⟩, hW⟩
+
+lemma familyEnergy_eq_sum_product (A : Finset (ZMod q × ZMod q))
+    (T : Finset (ZMod q)) (x : ZMod q) :
+    familyEnergy A T x =
+      ∑ p ∈ T ×ˢ T,
+        #(shiftedFibre A x p.1 ∩ shiftedFibre A x p.2) := by
+  rw [familyEnergy_eq_pairwise, sum_product]
+
+lemma card_heavyPairSet_row_sum (A : Finset (ZMod q × ZMod q))
+    (T : Finset (ZMod q)) (x : ZMod q) :
+    #(heavyPairSet A T x) =
+      ∑ s ∈ T, #{t ∈ T | (s, t) ∈ heavyPairSet A T x} := by
+  classical
+  unfold heavyPairSet
+  rw [card_eq_sum_ones, sum_filter, sum_product]
+  refine sum_congr rfl fun s hs => ?_
+  rw [sum_boole]
+  refine congrArg card ?_
+  ext t
+  simp [mem_filter, mem_product, hs]
+
+/-- Intersections are at most `q/2` once every fibre has size `≤ q/2`. -/
+lemma inter_le_half_field (A : Finset (ZMod q × ZMod q))
+    (T : Finset (ZMod q)) (x : ZMod q)
+    (h : ∀ t ∈ T, 2 * #(shiftedFibre A x t) ≤ q) :
+    ∀ t ∈ T, ∀ t' ∈ T,
+      2 * #(shiftedFibre A x t ∩ shiftedFibre A x t') ≤ q := by
+  intro t ht t' ht'
+  have hle : #(shiftedFibre A x t ∩ shiftedFibre A x t') ≤
+      #(shiftedFibre A x t) :=
+    card_le_card inter_subset_left
+  exact (Nat.mul_le_mul_left 2 hle).trans (h t ht)
+
+/-- Two-thirds energy on mean size `≥ q/3`, with fibres at most `q/2`,
+forces `#T² / 9` heavy ordered pairs. Paper `lem:heavypairs`. -/
+lemma card_heavy_pair_set (A : Finset (ZMod q × ZMod q))
+    (T : Finset (ZMod q)) (x : ZMod q)
+    (hmin : #T * q ≤ 3 * coverageMass A T x)
+    (hmax : ∀ t ∈ T, ∀ t' ∈ T,
+      2 * #(shiftedFibre A x t ∩ shiftedFibre A x t') ≤ q)
+    (hE : 2 * #T * coverageMass A T x ≤ 3 * familyEnergy A T x) :
+    #T ^ 2 ≤ 9 * #(heavyPairSet A T x) := by
+  classical
+  set F := shiftedFibre A x
+  set W := coverageMass A T x
+  set E := familyEnergy A T x
+  set n := #T
+  set H := heavyPairSet A T x
+  set L := (T ×ˢ T).filter fun p => p ∉ H
+  have hq : 0 < q := (Fact.out : Nat.Prime q).pos
+  by_cases hn : n = 0
+  · simp [hn]
+  have hnpos : 0 < n := Nat.pos_of_ne_zero hn
+  have hW : 0 < W := by
+    have : 0 < n * q := Nat.mul_pos hnpos hq
+    exact Nat.pos_of_ne_zero fun hW0 => by
+      have : n * q ≤ 0 := by simpa [W, hW0] using hmin
+      exact (Nat.not_lt.2 this) (Nat.mul_pos hnpos hq)
+  have hinter :
+      E = ∑ p ∈ T ×ˢ T, #(F p.1 ∩ F p.2) := by
+    simpa [E, F] using familyEnergy_eq_sum_product A T x
+  have hpart :=
+    (sum_filter_add_sum_filter_not (T ×ˢ T)
+      (fun p => p ∈ H) (fun p => #(F p.1 ∩ F p.2))).symm
+  have hHsub : H ⊆ T ×ˢ T := filter_subset _ _
+  have hHeq : (T ×ˢ T).filter (fun p => p ∈ H) = H := by
+    ext p
+    constructor
+    · intro hp
+      exact (mem_filter.1 hp).2
+    · intro hp
+      exact mem_filter.2 ⟨hHsub hp, hp⟩
+  have hEsplit : E =
+      ∑ p ∈ H, #(F p.1 ∩ F p.2) + ∑ p ∈ L, #(F p.1 ∩ F p.2) := by
+    rw [hinter, hpart, hHeq]
+  have hHbd : ∀ p ∈ H, 2 * #(F p.1 ∩ F p.2) ≤ q := fun p hp => by
+    have hp' := (mem_heavyPairSet (A := A) (T := T) (x := x) (p := p)).1
+      (by simpa [H] using hp)
+    exact hmax p.1 hp'.1 p.2 hp'.2.1
+  have hHsum : 2 * ∑ p ∈ H, #(F p.1 ∩ F p.2) ≤ #H * q := by
+    calc
+      2 * ∑ p ∈ H, #(F p.1 ∩ F p.2)
+          = ∑ p ∈ H, 2 * #(F p.1 ∩ F p.2) := by
+            rw [mul_sum]
+      _ ≤ ∑ p ∈ H, q := sum_le_sum hHbd
+      _ = #H * q := by simp [sum_const, smul_eq_mul, mul_comm]
+  have hLbd : ∀ p ∈ L, 2 * n * #(F p.1 ∩ F p.2) ≤ W := fun p hp => by
+    have hpL : p ∉ H := (mem_filter.1 hp).2
+    have hpT : p ∈ T ×ˢ T := (mem_filter.1 hp).1
+    have hs : p.1 ∈ T := (mem_product.1 hpT).1
+    have ht : p.2 ∈ T := (mem_product.1 hpT).2
+    have : ¬(W ≤ 2 * n * #(F p.1 ∩ F p.2)) := by
+      intro hle
+      have : p ∈ H :=
+        (mem_heavyPairSet (A := A) (T := T) (x := x) (p := p)).2
+          ⟨hs, ht, by simpa [W, n, F] using hle⟩
+      exact hpL this
+    exact Nat.le_of_lt (Nat.not_le.1 this)
+  have hLsum : 2 * n * ∑ p ∈ L, #(F p.1 ∩ F p.2) ≤ n ^ 2 * W := by
+    have hcard : #L ≤ n ^ 2 := by
+      have : L ⊆ T ×ˢ T := filter_subset _ _
+      have := card_le_card this
+      simpa [n, card_product, pow_two] using this
+    calc
+      2 * n * ∑ p ∈ L, #(F p.1 ∩ F p.2)
+          = ∑ p ∈ L, 2 * n * #(F p.1 ∩ F p.2) := by
+            rw [mul_sum]
+      _ ≤ ∑ p ∈ L, W := sum_le_sum hLbd
+      _ = #L * W := by simp [sum_const, smul_eq_mul, mul_comm]
+      _ ≤ n ^ 2 * W := Nat.mul_le_mul_right W hcard
+  have hLsum' : 2 * ∑ p ∈ L, #(F p.1 ∩ F p.2) ≤ n * W :=
+    Nat.le_of_mul_le_mul_left (by
+      calc
+        n * (2 * ∑ p ∈ L, #(F p.1 ∩ F p.2))
+            = 2 * n * ∑ p ∈ L, #(F p.1 ∩ F p.2) := by ring
+        _ ≤ n ^ 2 * W := hLsum
+        _ = n * (n * W) := by ring) hnpos
+  have h2E : 2 * E ≤ #H * q + n * W := by
+    calc
+      2 * E
+          = 2 * (∑ p ∈ H, #(F p.1 ∩ F p.2) +
+              ∑ p ∈ L, #(F p.1 ∩ F p.2)) := by rw [hEsplit]
+      _ = 2 * ∑ p ∈ H, #(F p.1 ∩ F p.2) +
+            2 * ∑ p ∈ L, #(F p.1 ∩ F p.2) := by ring
+      _ ≤ #H * q + n * W := add_le_add hHsum hLsum'
+  have hnW : n * W ≤ 2 * E := by
+    have : 2 * n * W ≤ 4 * E :=
+      hE.trans (Nat.mul_le_mul_right E (by decide : 3 ≤ 4))
+    have h2 : 2 * (n * W) ≤ 2 * (2 * E) := by
+      convert this using 1 <;> ring
+    exact Nat.le_of_mul_le_mul_left h2 (by decide : 0 < 2)
+  have hHq : 2 * E - n * W ≤ #H * q :=
+    Nat.sub_le_iff_le_add.2 h2E
+  have hdouble : E ≤ 2 * (2 * E - n * W) := by
+    have hsub : 2 * (2 * E - n * W) = 4 * E - 2 * n * W := by
+      have h := Nat.mul_sub_left_distrib 2 (2 * E) (n * W)
+      have h1 : 2 * (2 * E) = 4 * E := by ring
+      have h2 : 2 * (n * W) = 2 * n * W := by ring
+      rw [h, h1, h2]
+    have h43 : 4 * E - 3 * E = E := by
+      have : 3 * E ≤ 4 * E := Nat.mul_le_mul_right E (by decide : 3 ≤ 4)
+      omega
+    have hmono : 4 * E - 3 * E ≤ 4 * E - 2 * n * W :=
+      Nat.sub_le_sub_left hE (4 * E)
+    have : E ≤ 4 * E - 2 * n * W := by
+      calc
+        E = 4 * E - 3 * E := h43.symm
+        _ ≤ 4 * E - 2 * n * W := hmono
+    rwa [hsub]
+  have hEH : E ≤ 2 * #H * q := by
+    have := Nat.mul_le_mul_left 2 hHq
+    exact hdouble.trans (this.trans_eq (by ring))
+  have hWE : 2 * n ^ 2 * q ≤ 9 * E := by
+    have hmul : 2 * n ^ 2 * q * W ≤ 9 * E * W := by
+      calc
+        2 * n ^ 2 * q * W
+            = 2 * n * W * (n * q) := by ring
+        _ ≤ 3 * E * (3 * W) := Nat.mul_le_mul hE hmin
+        _ = 9 * E * W := by ring
+    exact Nat.le_of_mul_le_mul_right hmul hW
+  have : 2 * n ^ 2 * q ≤ 18 * #H * q := by
+    have := Nat.mul_le_mul_left 9 hEH
+    have h9 : 9 * E ≤ 18 * #H * q := by
+      convert this using 1; ring
+    exact hWE.trans h9
+  have hnn : 2 * n ^ 2 ≤ 18 * #H :=
+    Nat.le_of_mul_le_mul_right this hq
+  have : n ^ 2 ≤ 9 * #H := by
+    have h2 : 2 * n ^ 2 ≤ 2 * (9 * #H) := by
+      convert hnn using 1; ring
+    exact Nat.le_of_mul_le_mul_left h2 (by decide : 0 < 2)
+  simpa [n, H] using this
+
+/-- A vertex of heavy-pair degree at least `#T / 9`. Paper `lem:star`. -/
+lemma exists_heavy_star (A : Finset (ZMod q × ZMod q))
+    (T : Finset (ZMod q)) (x : ZMod q)
+    (hn : 0 < #T)
+    (hcard : #T ^ 2 ≤ 9 * #(heavyPairSet A T x)) :
+    ∃ s ∈ T, #T ≤ 9 * #{t ∈ T | (s, t) ∈ heavyPairSet A T x} := by
+  classical
+  set n := #T
+  set H := heavyPairSet A T x
+  by_contra h
+  simp only [not_exists, not_and, not_le] at h
+  have hdeg : ∀ s ∈ T, 9 * #{t ∈ T | (s, t) ∈ H} ≤ n - 1 :=
+    fun s hs => Nat.le_pred_of_lt (h s hs)
+  have hsum := card_heavyPairSet_row_sum A T x
+  have h9 : 9 * #H ≤ n * (n - 1) := by
+    calc
+      9 * #H
+          = 9 * ∑ s ∈ T, #{t ∈ T | (s, t) ∈ H} := by rw [hsum]
+      _ = ∑ s ∈ T, 9 * #{t ∈ T | (s, t) ∈ H} := by rw [mul_sum]
+      _ ≤ ∑ s ∈ T, (n - 1) := sum_le_sum hdeg
+      _ = n * (n - 1) := by simp [sum_const, smul_eq_mul, n]
+  have hlt : n * (n - 1) < n * n :=
+    Nat.mul_lt_mul_of_pos_left (Nat.sub_lt hn (by decide : 0 < 1)) hn
+  have : n ^ 2 < n ^ 2 :=
+    (hcard.trans h9).trans_lt (by simpa [pow_two] using hlt)
+  exact (lt_irrefl _ this)
+
+/-- Medium aligned fibres have a heavy star of degree `#T / 9`.
+Structure, not a size bound. -/
+lemma aligned_medium_has_star (A : Finset (ZMod q × ZMod q))
+    (T : Finset (ZMod q)) (x : ZMod q)
+    (hn : 0 < #T)
+    (hmin : ∀ t ∈ T, q ≤ 3 * #(shiftedFibre A x t))
+    (hmax : ∀ t ∈ T, 2 * #(shiftedFibre A x t) ≤ q)
+    (hE : 2 * (coverageMass A T x) ^ 2 < familyEnergy A T x * q) :
+    ∃ s ∈ T, #T ≤ 9 * #{t ∈ T | (s, t) ∈ heavyPairSet A T x} := by
+  set W := coverageMass A T x
+  set n := #T
+  have hWmin : n * q ≤ 3 * W := by
+    calc
+      n * q = ∑ t ∈ T, q := by simp [sum_const, smul_eq_mul, mul_comm, n]
+      _ ≤ ∑ t ∈ T, 3 * #(shiftedFibre A x t) := sum_le_sum hmin
+      _ = 3 * ∑ t ∈ T, #(shiftedFibre A x t) := by simp [mul_sum]
+      _ = 3 * W := by
+        dsimp [W]
+        rw [coverageMass_eq_sum]
+  have hinter := inter_le_half_field A T x hmax
+  have h23 : 2 * n * W ≤ 3 * familyEnergy A T x :=
+    aligned_implies_two_thirds A T x hWmin hE
+  exact exists_heavy_star A T x hn (card_heavy_pair_set A T x hWmin hinter h23)
 
 end R3tBound

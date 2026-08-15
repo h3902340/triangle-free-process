@@ -27,9 +27,11 @@ exact cylinders, the two-thirds energy core, and the empty intermediate
 window at mean size `q/3`, and `|intervalT q d| = d` are verified.
 On a `T`-dense fibre the heavy-pair graph orients as `(max, min)`, so
 some out-neighbourhood is interval-dense (item (2) of the packing path;
-paper, using `card_intervalT`). A complete interval of uniformly
-below-random lags packs by the second-moment identity
-(`pack_window`, including the window expansion). Spread-out
+paper, using `card_intervalT`). Two-thirds energy on medium fibres
+forces `Ω(|T|²)` heavy pairs and a star of degree `|T|/9`
+(`card_heavy_pair_set`, `exists_heavy_star`); that is structure, not
+a size bound. A complete interval of uniformly below-random lags packs
+by the second-moment identity (`pack_window`). Spread-out
 neighbourhoods (Weyl) and average-only / `K = 2` discrepancy remain
 paper-only.
 -/
@@ -120,8 +122,20 @@ intersections. -/
 alias family_energy_off_diag := familyEnergy_off_diag
 
 /-- **One heavy pair.** Energy above `W + B·#T·(#T-1)` forces an
-off-diagonal intersection larger than `B`. Not an `Ω(|T|²)` star count. -/
+off-diagonal intersection larger than `B`. -/
 alias exists_heavy_pair := exists_heavy_off_diag_pair
+
+/-- **Many heavy pairs.** Two-thirds energy on mean size `≥ q/3` with
+fibres at most `q/2` forces `#T² / 9` heavy ordered pairs. Structure,
+not a size bound. -/
+alias many_heavy_pairs := card_heavy_pair_set
+
+/-- **Heavy star.** A vertex of heavy-pair degree at least `#T / 9`. -/
+alias exists_heavy_star_vertex := exists_heavy_star
+
+/-- **Medium aligned star.** Medium aligned fibres have a heavy star.
+Structure, not a size bound. -/
+alias medium_aligned_star := aligned_medium_has_star
 
 /-- **Close fibres.** If `A` misses `B+σ` then `|A ∩ (A+σ)| ≤ |A \ B|`. -/
 alias close_fibres_almost_disjoint := close_sets_almost_disjoint_translates

@@ -27,7 +27,8 @@ These statements compile in Lean 4.33 + mathlib with no `sorry`:
 - An exact cylinder over an arithmetic progression of `T`-steps packs the same way.
 - A nonzero difference has at most one unsigned-parabola representation.
 - Energy equals the sum of pairwise shifted-fibre intersections; off-diagonal energy is the remainder after neighbouring mass.
-- Energy above \(W + B\cdot|T|\cdot(|T|-1)\) forces one off-diagonal intersection larger than \(B\). This is not an \(\Omega(|T|^2)\) star.
+- Energy above \(W + B\cdot|T|\cdot(|T|-1)\) forces one off-diagonal intersection larger than \(B\).
+- Two-thirds energy on mean size \(\ge q/3\) with fibres at most \(q/2\) forces \(|T|^2/9\) heavy ordered pairs and a star of degree \(|T|/9\) (Lean: `card_heavy_pair_set`, `exists_heavy_star`). Structure, not a size bound.
 - If \(A\) misses \(B+\sigma\), then \(|A\cap(A+\sigma)|\le|A\setminus B|\). Neighbouring independence therefore bounds one self-translate by the fringe.
 - Maximal energy makes every nonempty shifted fibre equal. Fibres of size \(\ge q/2\) cannot be strictly aligned; twice-random equality on those fibres is an exact cylinder.
 - Two-thirds of maximal energy produces the same high-multiplicity core as three-quarters.
