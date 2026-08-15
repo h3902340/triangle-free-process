@@ -29,8 +29,9 @@ On a `T`-dense fibre the heavy-pair graph orients as `(max, min)`, so
 some out-neighbourhood is interval-dense (item (2) of the packing path;
 paper, using `card_intervalT`). A complete interval of uniformly
 below-random lags packs by the second-moment identity
-(`pack_of_second_moment`). Spread-out neighbourhoods (Weyl) and
-average-only / `K = 2` discrepancy remain paper-only.
+(`pack_window`, including the window expansion). Spread-out
+neighbourhoods (Weyl) and average-only / `K = 2` discrepancy remain
+paper-only.
 -/
 
 namespace R3tBound
@@ -207,5 +208,20 @@ alias second_moment_pack := pack_of_second_moment
 /-- **Two-thirds second-moment packing.** The case `c = 2`:
 `r ≤ (2/3) |U|²/q` on every lag yields `|U|(L+3) ≤ 3q`. -/
 alias second_moment_pack_two_thirds := pack_of_second_moment_two_thirds
+
+/-- **Window first moment.** Occupancy sums to `(L+1)|U|`. -/
+alias window_first_moment := sum_windowCount
+
+/-- **Window second moment.** Occupancy energy expands as a weighted
+lag sum of autocorrelations. -/
+alias window_energy := window_second_moment
+
+/-- **Window packing.** Uniformly below-random lags on a complete
+interval give `|U|(L+c+1) ≤ (c+1)q`, from the window identity and
+Cauchy--Schwarz. -/
+alias window_pack := pack_window
+
+/-- **Two-thirds window packing.** The case `c = 2` of `pack_window`. -/
+alias window_pack_two_thirds := pack_window_two_thirds
 
 end R3tBound

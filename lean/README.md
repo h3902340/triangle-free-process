@@ -54,6 +54,9 @@ Pinned toolchain: Lean 4.33.0 + mathlib `v4.33.0`. There are no `sorry`s.
 | Weighted lag sum `2 ∑_{t<L}(L-t)=L(L+1)` | `weighted_lag_sum` |
 | Uniform below-random lags on a complete interval pack | `second_moment_pack` |
 | The case `c=2`: `r ≤ (2/3)|U|²/q` yields `|U|(L+3)≤3q` | `second_moment_pack_two_thirds` |
+| Sliding-window occupancy sums to `(L+1)|U|` | `window_first_moment` |
+| Window energy expands as a weighted lag sum | `window_energy` |
+| Window identity + CS + uniform lags pack | `window_pack` |
 
 Not formalized (still paper-only / conjectural): the Weyl estimate for
 horizontal packings and for spread-out below-random star autocorrelations,
@@ -66,7 +69,7 @@ a high-multiplicity core; that core is not packed unless the
 neighbourhood is a complete interval with a uniform lag bound.
 On a `T`-dense fibre the oriented star neighbourhood is interval-dense
 (item (2) of the packing path). A complete interval of uniformly
-below-random lags packs (`second_moment_pack`); spread-out
+below-random lags packs (`window_pack`); spread-out
 neighbourhoods still need Weyl.
 One heavy pair plus one almost-disjoint translate is not a packing.
 A star with large intersections has below-random self-translates; that

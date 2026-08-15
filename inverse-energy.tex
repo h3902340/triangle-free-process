@@ -262,8 +262,9 @@ then
 \[
   |U|\cdot(L+c+1)\;\le\;(c+1)q
 \]
-(Lean: \texttt{pack\_of\_second\_moment}; the window expansion is the
-standard pairing by $\delta=j-k$ and is not Lean).
+(Lean: \texttt{pack\_window}, including the window expansion
+\texttt{window\_second\_moment} and the packing arithmetic
+\texttt{pack\_of\_second\_moment}).
 The case $c=0$ is complete miss and recovers the interval packing
 $|U|(L+1)\le q$.
 The case $c=2$ is a definite $\eta=1/3$ below-random bound
@@ -604,6 +605,8 @@ second-moment identity.
 \texttt{card\_intervalT\_out},
 \texttt{pack\_of\_second\_moment},
 \texttt{pack\_of\_second\_moment\_two\_thirds},
+\texttt{window\_second\_moment},
+\texttt{pack\_window},
 \texttt{affine\_diffFree\_card\_le}, and \texttt{parabola\_codegree}
 compile with no \texttt{sorry}.
 One heavy pair and one almost-disjoint translate are Lean; on
@@ -612,8 +615,7 @@ The out-neighbourhood of $s=i+1$ in $T$ is exactly $\{1,\dots,i\}$
 (Lean: \texttt{intervalT\_out\_mem}), so item (2) of the packing path
 is a theorem on every $T$-dense fibre.
 A complete interval of uniformly below-random lags packs
-(Lean: \texttt{pack\_of\_second\_moment}); the window expansion is
-paper-only.
+(Lean: \texttt{pack\_window}, including the window expansion).
 The $\Omega(|T|^{2})$ star-degree count and Weyl on a spread-out
 neighbourhood remain paper-only.
 Medium packing via half-intersection plus Weyl is not a theorem,
