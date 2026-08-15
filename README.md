@@ -2,6 +2,8 @@
 
 Materials for presenting lower bounds on $R(3,t)$, including a **counting derandomization** of the current SOTA.
 
+A beginner-friendly walkthrough of the SOTA paper (definitions, the two-bites construction, and the independence-number proof) is [`SOTA-GUIDE.md`](SOTA-GUIDE.md).
+
 ## SOTA (2025)
 
 \[
@@ -36,6 +38,7 @@ python3 explicit_family.py 7 --diagnose
 
 | File | Contents |
 |------|----------|
+| [`SOTA-GUIDE.md`](SOTA-GUIDE.md) | Pedagogical guide to HHKP: definitions and the \(\tfrac12\) proof |
 | [`lean/`](lean/README.md) | Lean 4 + mathlib formalization of the **proved** Family A lemmas |
 | [`EXPLICIT-STATUS.md`](EXPLICIT-STATUS.md) | One-page proved / not-proved list |
 | [`DERANDOMIZATION.md`](DERANDOMIZATION.md) | Status of derandomization + concrete families |
