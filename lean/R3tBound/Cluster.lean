@@ -424,26 +424,26 @@ lemma shifted_close_overlap_low {T : Finset (ZMod q)}
     exact disjoint_left.1 hdisj hzs hz'
   exact close_sets_almost_disjoint_translates hdisj'
 
-/-- A `3/4`-close in-star at `t` whose high neighbours contain
-`{t+1,…,t+L}` packs by the affine second-moment identity.
-This is a size bound, but only for that complete in-interval.
-A high-vertex out-neighbourhood produces quadratic lags and is not
-this lemma. -/
-lemma pack_quarter_in_star {T : Finset (ZMod q)}
-    {A : Finset (ZMod q × ZMod q)} {x t : ZMod q} {L : ℕ}
+/-- A `3/4`-close in-star at `t` whose high neighbours contain the
+AP `{t+step,…,t+L·step}` packs by the affine second-moment identity.
+This is a size bound for that complete AP of lags. A high-vertex
+out-neighbourhood produces quadratic lags and is not this lemma. -/
+lemma pack_quarter_in_star_ap {T : Finset (ZMod q)}
+    {A : Finset (ZMod q × ZMod q)} {x t step : ZMod q} {L : ℕ}
     (hA : IsSeedIndependent T (A : Set (ZMod q × ZMod q)))
     (hT0 : 0 ∉ T)
     (hmed : q ≤ 3 * #(shiftedFibre A x t))
     (hN : ∀ k : ℕ, 0 < k → k ≤ L →
-      (k : ZMod q) ∈ T ∧ t + (k : ZMod q) ∈ T)
+      step * (k : ZMod q) ∈ T ∧ t + step * (k : ZMod q) ∈ T)
     (hclose : ∀ k : ℕ, 0 < k → k ≤ L →
       3 * #(shiftedFibre A x t) ≤
-        4 * #(shiftedFibre A x t ∩ shiftedFibre A x (t + (k : ZMod q)))) :
+        4 * #(shiftedFibre A x t ∩
+          shiftedFibre A x (t + step * (k : ZMod q)))) :
     #(shiftedFibre A x t) * (L + 4) ≤ 4 * q := by
   have : NeZero q := ⟨(Fact.out : Nat.Prime q).ne_zero⟩
   set U := shiftedFibre A x t
   set F := shiftedFibre A x
-  let a : ZMod q := 2 * t
+  let a : ZMod q := 2 * t * step
   have hr : ∀ k ∈ range L,
       4 * q * autoCorr U (a * (k + 1 : ZMod q)) ≤ 3 * #U ^ 2 := by
     intro k hk
@@ -451,8 +451,8 @@ lemma pack_quarter_in_star {T : Finset (ZMod q)}
     have hkL : k + 1 ≤ L := Nat.succ_le_of_lt (mem_range.1 hk)
     have hcast : ((k + 1 : ℕ) : ZMod q) = (k + 1 : ZMod q) :=
       Nat.cast_succ k
-    set s := t + ((k + 1 : ℕ) : ZMod q)
-    have hs' : s = t + (k + 1 : ZMod q) := by simp [s, hcast]
+    set s := t + step * ((k + 1 : ℕ) : ZMod q)
+    have hs' : s = t + step * (k + 1 : ZMod q) := by simp [s, hcast]
     have hTk := hN (k + 1) hkpos hkL
     have hdiff : s - t ∈ T := by
       simpa [s, add_sub_cancel_left] using hTk.1
@@ -460,7 +460,7 @@ lemma pack_quarter_in_star {T : Finset (ZMod q)}
       shifted_close_overlap_low (A := A) (x := x) (s := s) (t := t)
         hA hT0 hdiff
     have hσ : 2 * t * (s - t) = a * (k + 1 : ZMod q) := by
-      simp [a, s, hcast]
+      simp [a, s, hcast, mul_assoc, mul_left_comm]
     have hrU : autoCorr U (a * (k + 1 : ZMod q)) ≤ #(U \ F s) := by
       have himg := autoCorr_eq_card_image U (a * (k + 1 : ZMod q))
       rw [himg, ← hσ]
@@ -490,5 +490,23 @@ lemma pack_quarter_in_star {T : Finset (ZMod q)}
       _ ≤ q * #U := Nat.mul_le_mul_left q hr4
       _ ≤ 3 * #U ^ 2 := hUq
   exact pack_window (U := U) (a := a) (L := L) (c := 3) hr
+
+/-- Special case: common difference `1`. -/
+lemma pack_quarter_in_star {T : Finset (ZMod q)}
+    {A : Finset (ZMod q × ZMod q)} {x t : ZMod q} {L : ℕ}
+    (hA : IsSeedIndependent T (A : Set (ZMod q × ZMod q)))
+    (hT0 : 0 ∉ T)
+    (hmed : q ≤ 3 * #(shiftedFibre A x t))
+    (hN : ∀ k : ℕ, 0 < k → k ≤ L →
+      (k : ZMod q) ∈ T ∧ t + (k : ZMod q) ∈ T)
+    (hclose : ∀ k : ℕ, 0 < k → k ≤ L →
+      3 * #(shiftedFibre A x t) ≤
+        4 * #(shiftedFibre A x t ∩ shiftedFibre A x (t + (k : ZMod q)))) :
+    #(shiftedFibre A x t) * (L + 4) ≤ 4 * q := by
+  refine pack_quarter_in_star_ap (step := (1 : ZMod q)) hA hT0 hmed ?_ ?_
+  · intro k hk0 hkL
+    simpa using hN k hk0 hkL
+  · intro k hk0 hkL
+    simpa using hclose k hk0 hkL
 
 end R3tBound

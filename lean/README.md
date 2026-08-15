@@ -54,6 +54,8 @@ Pinned toolchain: Lean 4.33.0 + mathlib `v4.33.0`. There are no `sorry`s.
 | Family A's `T = {1,…,d}` has size `d` | `interval_T_card` |
 | Out-neighbours of `s = i+1` are `{1,…,i}` | `interval_T_out` |
 | An out-neighbourhood of `s = i+1` has size `≤ i` | `interval_T_out_card_le` |
+| In-neighbours of `t = i+1` are `{i+2,…,d}` | `interval_T_in` |
+| An in-neighbourhood of `t = i+1` has size `≤ d-i-1` | `interval_T_in_card_le` |
 | Weighted lag sum `2 ∑_{t<L}(L-t)=L(L+1)` | `weighted_lag_sum` |
 | Uniform below-random lags on a complete interval pack | `second_moment_pack` |
 | The case `c=2`: `r ≤ (2/3)|U|²/q` yields `|U|(L+3)≤3q` | `second_moment_pack_two_thirds` |
@@ -62,9 +64,10 @@ Pinned toolchain: Lean 4.33.0 + mathlib `v4.33.0`. There are no `sorry`s.
 | Window identity + CS + uniform lags pack | `window_pack` |
 | Independence bounds the lower fibre by an affine shift | `low_fibre_affine_overlap` |
 | A `3/4`-close in-star on `{t+1,…,t+L}` packs | `quarter_in_star_pack` |
+| A `3/4`-close in-star along any AP of $T$-steps packs | `quarter_in_star_ap_pack` |
 
 Not formalized (still paper-only / conjectural): the Weyl estimate for
-horizontal packings and for spread-out below-random star autocorrelations,
+horizontal packings and for AP-poor below-random star autocorrelations,
 any second moment on high-vertex quadratic \(N^+\) lags, packing of
 average-only / \(K=2\) medium stars, medium-star incidences,
 and the SOTA independence-number bound for \(A_q\).
@@ -73,15 +76,15 @@ it is a star, not a packing.
 The intermediate window is empty at mean fibre size `≥ q/3`; it remains
 open on `(q^{1/3}(\log q)^{-O(1)}, q/3)`. Medium aligned fibres all have
 a high-multiplicity core; that core is not packed unless the
-neighbourhood is a complete *affine* interval with a uniform lag bound
-(a `3/4`-close in-star on `{t+1,…,t+L}` is such an interval:
-`quarter_in_star_pack`).
-On a `T`-dense fibre some high-vertex out-neighbourhood is
-interval-dense (item (2) of the packing path); those lags are
-quadratic and are not an input to `window_pack`. A complete affine
-interval of uniformly below-random lags packs (`window_pack`);
-high-vertex $N^+$ and spread-out neighbourhoods still need Weyl
-or a different second moment.
+neighbourhood is a complete *affine* AP with a uniform lag bound
+(a `3/4`-close in-star along any common difference is such an AP:
+`quarter_in_star_ap_pack`).
+On a `T`-dense fibre some high-vertex out-neighbourhood and some
+in-neighbourhood are interval-dense (item (2); `interval_T_in`);
+high-vertex lags are quadratic and are not an input to `window_pack`.
+A complete affine AP of uniformly below-random lags packs
+(`window_pack`); high-vertex $N^+$ and AP-poor neighbourhoods still
+need Weyl or a different second moment.
 One heavy pair plus one almost-disjoint translate is not a packing.
 An \(\Omega(|T|^2)\) star of heavy pairs is still not a packing.
 A star with large intersections has below-random self-translates; that

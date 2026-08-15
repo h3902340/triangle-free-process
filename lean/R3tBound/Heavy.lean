@@ -242,6 +242,75 @@ lemma card_le_intervalT_out {d : ℕ} {s : ZMod q} {i : ℕ} {N : Finset (ZMod q
     exact mem_filter.2 (hN t ht)
   exact (card_le_card hsub).trans_eq (card_intervalT_out hdq hq hi hs)
 
+/-- In-neighbours of `t = i+1` in `{1,…,d}` are exactly `{i+2,…,d}`.
+A graph neighbourhood inside that set is therefore a subset of an
+interval of length `d-i-1`. This is the orientation that feeds
+affine second-moment packing. -/
+lemma intervalT_in_mem {d : ℕ} {s t : ZMod q} {i : ℕ}
+    (hdq : 2 * d ≤ q) (hq : 0 < q)
+    (hi : i < d) (ht : t = (i + 1 : ZMod q)) :
+    s ∈ intervalT d ∧ s - t ∈ intervalT d ↔
+      ∃ j, i < j ∧ j < d ∧ s = (j + 1 : ZMod q) := by
+  have hdlt := intervalT_lt_of_double hdq hq
+  have : NeZero q := ⟨ne_of_gt hq⟩
+  have htT : t ∈ intervalT d := mem_intervalT.2 ⟨i, hi, ht⟩
+  constructor
+  · intro ⟨hs, hst⟩
+    rcases mem_intervalT.1 hs with ⟨j, hj, hsj⟩
+    rcases (intervalT_out_mem (t := t) hdq hq hj hsj).1 ⟨htT, hst⟩ with
+      ⟨k, hk, htk⟩
+    have hki : k = i := by
+      have heq : (k : ZMod q) = (i : ZMod q) :=
+        add_right_cancel (htk.symm.trans ht)
+      have hkq : k < q := hk.trans (hj.trans hdlt)
+      have hiq : i < q := hi.trans hdlt
+      have hmod := (ZMod.natCast_eq_natCast_iff' k i q).1 heq
+      rwa [Nat.mod_eq_of_lt hkq, Nat.mod_eq_of_lt hiq] at hmod
+    subst hki
+    exact ⟨j, hk, hj, hsj⟩
+  · intro ⟨j, hij, hj, hsj⟩
+    have hst := (intervalT_out_mem (t := t) hdq hq hj hsj).2 ⟨i, hij, ht⟩
+    exact ⟨mem_intervalT.2 ⟨j, hj, hsj⟩, hst.2⟩
+
+lemma card_intervalT_in {d : ℕ} {t : ZMod q} {i : ℕ}
+    (hdq : 2 * d ≤ q) (hq : 0 < q)
+    (hi : i < d) (ht : t = (i + 1 : ZMod q)) :
+    #{s ∈ intervalT d | s - t ∈ intervalT d} = d - (i + 1) := by
+  have hdlt := intervalT_lt_of_double hdq hq
+  have : NeZero q := ⟨ne_of_gt hq⟩
+  let N := (Ico (i + 1) d).image fun j : ℕ => (j + 1 : ZMod q)
+  have hN : N = (intervalT d).filter fun s => s - t ∈ intervalT d := by
+    ext s
+    simp only [N, mem_image, mem_Ico, mem_filter]
+    constructor
+    · intro ⟨j, hj, hsj⟩
+      have := (intervalT_in_mem (s := s) hdq hq hi ht).2
+        ⟨j, hj.1, hj.2, hsj.symm⟩
+      exact ⟨this.1, this.2⟩
+    · intro hs
+      rcases (intervalT_in_mem (s := s) hdq hq hi ht).1 hs with
+        ⟨j, hij, hj, rfl⟩
+      exact ⟨j, ⟨hij, hj⟩, rfl⟩
+  have hcard : #N = d - (i + 1) := by
+    rw [card_image_iff.mpr ?_, Nat.card_Ico]
+    intro a ha b hb h
+    have hab : (a : ZMod q) = (b : ZMod q) := add_right_cancel h
+    have ha' : a < q := (mem_Ico.mp ha).2.trans hdlt
+    have hb' : b < q := (mem_Ico.mp hb).2.trans hdlt
+    have : a % q = b % q := (ZMod.natCast_eq_natCast_iff' a b q).1 hab
+    rwa [Nat.mod_eq_of_lt ha', Nat.mod_eq_of_lt hb'] at this
+  simpa [hN] using hcard
+
+lemma card_le_intervalT_in {d : ℕ} {t : ZMod q} {i : ℕ} {N : Finset (ZMod q)}
+    (hdq : 2 * d ≤ q) (hq : 0 < q)
+    (hi : i < d) (ht : t = (i + 1 : ZMod q))
+    (hN : ∀ s ∈ N, s ∈ intervalT d ∧ s - t ∈ intervalT d) :
+    #N ≤ d - (i + 1) := by
+  have hsub : N ⊆ (intervalT d).filter fun s => s - t ∈ intervalT d := by
+    intro s hs
+    exact mem_filter.2 (hN s hs)
+  exact (card_le_card hsub).trans_eq (card_intervalT_in hdq hq hi ht)
+
 /-- Consecutive block of length `d+1` starting at `x`. -/
 def block (d : ℕ) (x : ZMod q) : Finset (ZMod q) :=
   (range (d + 1)).image (fun i : ℕ => x + (i : ZMod q))

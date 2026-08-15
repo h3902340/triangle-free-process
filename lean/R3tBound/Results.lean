@@ -33,9 +33,12 @@ fibres forces `Ω(|T|²)` heavy pairs and a star of degree `|T|/9`
 (`card_heavy_pair_set`, `exists_heavy_star`); that is structure, not
 a size bound. A complete *affine* interval of uniformly below-random
 lags packs by the second-moment identity (`pack_window`). A
-`3/4`-close *in-star* whose high neighbours contain `{t+1,…,t+L}`
-is such an interval (`pack_quarter_in_star`). High-vertex
-out-neighbourhoods, spread-out neighbourhoods (Weyl), and
+`3/4`-close *in-star* whose high neighbours contain an AP of
+`T`-steps of length `L` is such an interval
+(`pack_quarter_in_star_ap`; difference `1` is
+`pack_quarter_in_star`). In-neighbours of `t = i+1` in `{1,…,d}`
+are exactly `{i+2,…,d}` (`intervalT_in_mem`). High-vertex
+out-neighbourhoods, AP-poor spread-out neighbourhoods (Weyl), and
 average-only / `K = 2` discrepancy remain paper-only.
 -/
 
@@ -214,6 +217,18 @@ alias interval_T_out_card := card_intervalT_out
 size at most `i`. -/
 alias interval_T_out_card_le := card_le_intervalT_out
 
+/-- **Oriented in-neighbourhood.** In-neighbours of `t = i+1` in
+`{1,…,d}` are exactly `{i+2,…,d}`. -/
+alias interval_T_in := intervalT_in_mem
+
+/-- **Oriented in-star sits in an interval.** A set of in-neighbours
+of `t = i+1` has size at most `d-i-1`. -/
+alias interval_T_in_card := card_intervalT_in
+
+/-- **Oriented in-star bound.** Any in-neighbourhood of `t = i+1`
+has size at most `d-i-1`. -/
+alias interval_T_in_card_le := card_le_intervalT_in
+
 /-- **Weighted lag sum.** `2 ∑_{t<L} (L-t) = L(L+1)`. -/
 alias weighted_lag_sum := sum_range_weighted
 
@@ -251,5 +266,9 @@ high neighbours contain `{t+1,…,t+L}` and whose base fibre has size
 at least `q/3` packs: `|A_t|(L+4) ≤ 4q`. High-vertex
 out-neighbourhoods produce quadratic lags and are not this lemma. -/
 alias quarter_in_star_pack := pack_quarter_in_star
+
+/-- **Quarter-close AP in-star packing.** The same size bound when
+the high neighbours contain `{t+step,…,t+L·step}`. -/
+alias quarter_in_star_ap_pack := pack_quarter_in_star_ap
 
 end R3tBound

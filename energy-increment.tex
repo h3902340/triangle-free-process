@@ -279,11 +279,10 @@ A single common core is not forced (two clusters of size $q/8$ already exceed tw
 Medium fibres of size at least $q/3$ \emph{do} produce a $\tfrac12$-close star:
 see Lemma~5 of \texttt{inverse-energy.tex}.
 That star is not packed by half-intersection plus Weyl.
-A complete affine interval of uniformly below-random lags does pack
+A complete affine AP of uniformly below-random lags does pack
 (\texttt{inverse-energy.tex}, Lemma~2ndmoment; Lean
-\texttt{pack\_window}); a $\tfrac34$-close in-star on
-$\{t+1,\dots,t+L\}$ is such an interval (Lean
-\texttt{pack\_quarter\_in\_star}).
+\texttt{pack\_window}); a $\tfrac34$-close in-star along any common
+difference is such an AP (Lean \texttt{pack\_quarter\_in\_star\_ap}).
 A high-vertex out-neighbourhood produces quadratic lags and does not.
 Exact cylinders, including those whose support is an arithmetic progression
 of any common difference, pack by the interval lemma, without Weyl
@@ -319,20 +318,20 @@ Then $A$ is a union of
         including thin two-thirds-energy stars that are not exact,
         thin AP-poor two-clusters ($|T_i|=o(d)$),
         and medium $\tfrac12$-close stars that are average-only
-        ($K=2$), have a high-vertex quadratic $N^+$, or have a
-        spread-out in-neighbourhood (Weyl).
-        A complete affine interval of uniformly below-random lags packs
+        ($K=2$), have a high-vertex quadratic $N^+$, or have an
+        AP-poor in-neighbourhood (Weyl).
+        A complete affine AP of uniformly below-random lags packs
         (\texttt{inverse-energy.tex}, Lemma~2ndmoment; Lean
-        \texttt{pack\_window}); a $\tfrac34$-close in-star on
-        $\{t+1,\dots,t+L\}$ is such an interval (Lean
-        \texttt{pack\_quarter\_in\_star}).
+        \texttt{pack\_window}); a $\tfrac34$-close in-star along any
+        common difference is such an AP (Lean
+        \texttt{pack\_quarter\_in\_star\_ap}).
         Medium aligned fibres have two-thirds energy
         and a high-multiplicity core; that is structure, not a size
-        bound, except for that in-star case.
+        bound, except for that in-AP case.
 \end{enumerate}
 Items (1)--(4) are theorems (no Weyl).
 Item (5) is a structure theorem, not a size bound, except for a
-$\tfrac34$-close in-interval of uniformly below-random lags:
+$\tfrac34$-close in-AP of uniformly below-random lags:
 half-intersection does not beat the random overlap on non-heavy cores,
 a high-vertex $N^+$ produces quadratic lags, and the
 horizontal-packing Weyl estimate does not apply to $K=2$ stars.
