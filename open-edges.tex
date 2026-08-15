@@ -159,8 +159,15 @@ For every $I\subset W$ with $|I|\le C\sqrt{n\log n}$,
 \end{conjecture}
 
 This is a statement about points versus short parabolic chords in the $\mathrm{GL}_2$ lift, of the same flavour as \texttt{incidences.tex}.
-The unsigned seed codegree is now Lean-verified (\texttt{parabola\_codegree}): a nonzero $\delta\in\F_q^{2}$ has at most one representation as a difference of unsigned parabola points.
-That identity is the input to a Cauchy--Schwarz count $\sum_u|P\cap(u+S_R)|^{2}=O(d|P|+|P|^{2})$, which is not yet $o(|I|^{2})$ at the SOTA scale (see the parameter discussion in the remark after Lemma~\ref{lem:light}).
+The unsigned seed codegree is Lean-verified (\texttt{parabola\_codegree}): a nonzero $\delta\in\F_q^{2}$ has at most one representation as a difference of unsigned parabola points.
+The signed connection set has codegree at most $6$
+(Lean: \texttt{signedParabola\_codegree}), and the Cauchy--Schwarz count
+\[
+  \sum_u D(u)^{2}\;\le\;|S_R|\,|P|+6|P|(|P|-1)
+\]
+is Lean (\texttt{seedDegree\_sq\_sum}).
+That is $O(d|P|+|P|^{2})$, which is not $o(|I|^{2})$ at the SOTA scale
+(see the parameter discussion in the remark after Lemma~\ref{lem:light}).
 
 \section{Medium stars reduce to seed energy}
 
@@ -215,7 +222,8 @@ isolated. It does not close Conjecture~\ref{conj:med}.
 \end{proposition}
 
 The Sidon Cauchy--Schwarz bound
-$\sum_u D(u)^{2}=O(d|P|+|P|^{2})$ is still not $o(|I|^{2})$ at
+$\sum_u D(u)^{2}=O(d|P|+|P|^{2})$
+(Lean: \texttt{seedDegree\_sq\_sum}) is still not $o(|I|^{2})$ at
 $|I|\sim\Delta=\Theta(\sqrt{n\log n})$:
 the main term $|P|^{2}$ saturates the target, and the $d|P|$ term is
 $|I|\cdot\Delta$ after the lift, the same first-moment count as

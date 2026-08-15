@@ -40,6 +40,8 @@ lags packs by the second-moment identity (`pack_window`). A
 are exactly `{i+2,…,d}` (`intervalT_in_mem`). High-vertex
 out-neighbourhoods, AP-poor spread-out neighbourhoods (Weyl), and
 average-only / `K = 2` discrepancy remain paper-only.
+The Sidon count `∑_u D(u)² ≤ |S_R| |P| + 6 |P|(|P|-1)` is Lean
+(`seedDegree_sq_sum`) and is not `o(|P|²)` at the SOTA scale.
 -/
 
 namespace R3tBound
@@ -84,6 +86,17 @@ alias shifted_fibres_disjoint := shifted_independent
 /-- **Unsigned codegree.** A nonzero difference has at most one
 representation as a difference of unsigned parabola points. -/
 alias parabola_diff_unique := parabola_codegree
+
+/-- **Signed codegree.** A nonzero difference has at most six
+representations as a difference of signed parabola points. -/
+alias signed_parabola_codegree := signedParabola_codegree
+
+/-- **Sidon second moment.** `∑_u D(u)² ≤ |S_R| |P| + 6 |P|(|P|-1)`.
+This is `O(d|P|+|P|²)`, not `o(|P|²)` at the SOTA scale. -/
+alias seed_sidon_second_moment := seedDegree_sq_sum
+
+/-- **Signed connection set size.** `|S_R| ≤ 2|T|`. -/
+alias signed_parabola_card_le := card_signedParabola_le
 
 /-- **Popular core.** The high-multiplicity set carries at least half
 the fibre energy. -/

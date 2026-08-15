@@ -22,6 +22,8 @@ Pinned toolchain: Lean 4.33.0 + mathlib `v4.33.0`. There are no `sorry`s.
 | Strict mixing empties a fibre | `strictly_mixing_fibre` |
 | Shifted fibres are disjoint after \(2t(t-s)\) | `shifted_fibres_disjoint` |
 | Unsigned parabola codegree \(\le 1\) | `parabola_diff_unique` |
+| Signed parabola codegree \(\le 6\) | `signed_parabola_codegree` |
+| Sidon CS: \(\sum_u D(u)^2\le|S_R||P|+6|P|(|P|-1)\) | `seed_sidon_second_moment` |
 | Popular core carries half the energy | `popular_core_half_energy` |
 | Affine image of `{1,…,d}` packs like the interval | `affine_interval_pack` |
 | Three-quarters energy sits on multiplicity `#T/2` | `three_quarters_energy` |
@@ -69,8 +71,10 @@ Pinned toolchain: Lean 4.33.0 + mathlib `v4.33.0`. There are no `sorry`s.
 Not formalized (still paper-only / conjectural): the Weyl estimate for
 horizontal packings and for AP-poor below-random star autocorrelations,
 any second moment on high-vertex quadratic \(N^+\) lags, packing of
-average-only / \(K=2\) medium stars, medium-star incidences,
-and the SOTA independence-number bound for \(A_q\).
+average-only / \(K=2\) medium stars, a SOTA-scale saving on the Sidon
+count (the \(O(d|P|+|P|^2)\) bound is Lean and saturates),
+medium-star incidences, and the SOTA independence-number bound for
+\(A_q\).
 The \(\Omega(|T|^2)\) star-degree count is Lean (`many_heavy_pairs`);
 it is a star, not a packing.
 The intermediate window is empty at mean fibre size `≥ q/3`; it remains
