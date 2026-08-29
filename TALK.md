@@ -1,6 +1,6 @@
 # Talk transcript — *Improving R(3,k) in just two bites*
 
-**Paper:** Zion Hefty, Paul Horn, Dylan King, Florian Pfender, *Improving R(3,k) in just two bites*, arXiv:2510.19718 (October 2025).
+**Paper:** Zion Hefty, Paul Horn, Dylan King, Florian Pfender, *Improving R(3,k) in just two bites*, arXiv:2510.19718 (v1 October 2025; v3 of 20 February 2026 is the version this transcript follows).
 **Slot:** 2026‑09‑01, 14:00–16:00 (with a 10‑minute break at ~15:08).
 **Audience:** no prior knowledge assumed. Whiteboard available.
 
@@ -8,17 +8,13 @@
 
 ## ⚠️ Read this first (author's note)
 
-I could **not** open the arXiv PDF while writing this (network egress to arxiv.org was blocked in my environment). Everything here was reconstructed from:
+This transcript has been **checked line by line against the paper** (v3, 20 Feb 2026). The construction in Part 6, the parameters, the deletion rules, the quotes and the history are all as the authors state them.
 
-* the abstract and seminar announcements (verified by search),
-* Robert Morris's survey *Some recent results in Ramsey theory* (arXiv:2601.05221), which describes the construction as **"the union of two blow‑ups of a random graph, placed randomly on top of one another"**, and
-* my own re‑derivation of every calculation from scratch (all the arithmetic in this transcript I did and checked myself; one factual claim — the density at which the triangle‑free process stops — I verified by writing and running a simulation, see Appendix C).
+Three places where I deliberately simplify for a two‑hour general audience, so you know what you're standing on:
 
-The **history, the statements of results, and the "master calculation" that organises the whole talk are solid.** The parts you should double‑check against the actual PDF before you speak are flagged in the text with **[CHECK]**. They are mostly: the exact choice of parameters (cluster size *s*, base density *q*), how the authors phrase the deletion lemma, and whether they state their result for general *H*‑free settings beyond triangles.
-
-Everything else you can deliver as written.
-
----
+* **The "master picture" of Part 4** (the dial *c*, `A(c) = max(c, 1/c)`, the table of constants) is my organising device, not the paper's notation. It is faithful — the authors state its punchline themselves, and I quote them doing so in §6.6 — but don't attribute the diagram to them.
+* **The exponent calculation in §6.5** is the honest skeleton of the paper's Section 4 with the correction terms dropped. The paper's function *f* carries those corrections; I say so out loud in the talk.
+* **Sections 3 and 4 are 8 pages of careful work** and I compress them into one slide's worth. §6.5's last block says what's actually hard. If someone in the room is a combinatorialist, that's the block they'll ask about.
 
 ## Practical notes
 
@@ -36,7 +32,7 @@ Everything else you can deliver as written.
 | 15:33 | 6 | **The paper: two bites** |
 | 15:55 | 7 | Where things stand, open problems, questions |
 
-**If you are running late**, cut in this order: (1) the Petersen graph digression in Part 1, (2) the derivation of α(G(n,p)) in Part 2 — just state it, (3) Part 5's differential‑equation discussion — say "it takes 200 pages" and move on. **Never** cut Part 4; it is the spine of the talk.
+**If you are running late**, cut in this order: (1) the Petersen graph digression in Part 1, (2) the derivation of α(G(n,p)) in Part 2 — just state it, (3) Part 5's differential‑equation discussion — say "it takes 200 pages" and move on, (4) the "what's actually hard" block at the end of §6.5. **Never** cut Part 4 (the spine of the talk) or §6.4 (the one‑lemma heart of the paper).
 
 **Board plan.** You will want four board areas. Reserve them at the start and *do not erase them*:
 
@@ -45,7 +41,7 @@ Everything else you can deliver as written.
 * **Board B (top right, keep all talk):** the two forces
   `α ≥ Δ ≈ d` and `α ≈ 2n·log d / d`
 * **Board C (main, centre):** the master calculation of Part 4 — the dial *c*, the function `A(c) = max(c, 1/c)`, and the results table. Keep this from 14:55 to the end.
-* **Board D (scratch):** everything else; erase freely.
+* **Board D (scratch):** everything else; erase freely. You will need it clear twice in Part 6 — once for the construction, once for the m × m grid picture.
 
 **Notation you will use all talk** (write it once, at 14:25, and leave it up):
 `n` = number of vertices, `p` = edge probability/density, `d` = pn = average degree, `α(G)` = size of the largest independent set, `Δ` = max degree, `log` = natural log.
@@ -345,10 +341,16 @@ Shearer 1983:   R(3,k) ≤ (1 + o(1))·k²/log k
 > There's a whole logarithm between them, and the question — *which end is the truth?* — was open. Erdős offered money for it. In 1995 Jeong Han Kim answered it: **the upper bound is the truth, up to the constant.**
 
 ```
-Kim 1995:   R(3,k) ≥ c·k²/log k     (with c = 1/162, a small explicit constant)
+Kim 1995:   R(3,k) ≥ c·k²/log k     (with c ≈ 1/160, a small explicit constant)
 ```
 
-> So the *order of magnitude* is k²/log k, settled thirty years ago. Since then, the entire game — and this paper — has been about **the constant in front**. And by our boxed formula, the constant in front is nothing but the number **A**: how small can you make the independent sets, measured in units of √(n log n)?
+> So the *order of magnitude* is k²/log k, settled thirty years ago. Since then, the entire game — and this paper — has been about **the constant in front**. Here is Joel Spencer, writing a survey chapter in 2011:
+
+**[WB — or just read it, slowly]**
+
+> *"The value of a constant c so that R(3,k) ∼ c·k²/log k remains open to this day, but this problem seems beyond our reach."*
+
+> Hold that thought for an hour. And by our boxed formula, the constant in front is nothing but the number **A**: how small can you make the independent sets, measured in units of √(n log n)?
 
 *(Timing check: it should be about 14:55. Take a sip of water. The next 13 minutes are the heart of the talk.)*
 
@@ -424,12 +426,14 @@ Kim 1995:   R(3,k) ≥ c·k²/log k     (with c = 1/162, a small explicit consta
 CONJECTURE:  R(3,k) = (1/2 + o(1))·k²/log k
 ```
 
-> and equivalently, on the upper bound side:
+> This is **Conjecture 1.1 of Campos, Jenssen, Michelen and Sahasrabudhe**, quoted as such in today's paper. Equivalently, on the upper bound side:
 
 ```
 CONJECTURE:  every triangle-free graph has α ≥ (1 − o(1))·√(n log n)
              — i.e. Shearer's bound can be improved by a factor of 2.
 ```
+
+> And that upper bound is not orphaned either: a conjecture of **Davies, Jenssen, Perkins and Roberts**, relating the maximum and the average size of an independent set in a triangle‑free graph, would imply it. So both halves of the conjecture have a named route; today we're doing the half that got done.
 
 > That's the factor of 2 I asked you to remember: greedy versus optimal in a random graph. Shearer's theorem proves the *greedy* value for all triangle‑free graphs; the conjecture is that the *true* random‑graph value holds for all of them. And after this paper, we know that if that conjecture is true, it is **sharp** — because there's now a construction sitting exactly on it.
 >
@@ -511,7 +515,7 @@ THE TRIANGLE-FREE PROCESS
 
 ## 2025: the first crack
 
-> In May 2025, **Campos, Jenssen, Michelen and Sahasrabudhe** disproved it. Their idea, in our language: don't start the process from the empty graph. **Start it from a cleverly chosen "seed" graph**, then run the process (or a nibble) to fill in the rest. The seed was a **blow‑up of a random graph** — I'll define that in two minutes, because it's exactly the object the new paper uses.
+> In May 2025, **Campos, Jenssen, Michelen and Sahasrabudhe** disproved it. Their idea, in our language: don't start from the empty graph. **Start from a cleverly chosen "seed" graph**, then run a tailored nibble to fill in the rest. The seed was a **blow‑up of a random graph** — I'll define that in two minutes, because it's exactly the object the new paper uses. The seed supplies density c ≈ 0.408; the nibble then roughly *doubles* it and destroys the structure the blow‑up introduced.
 >
 > Result: c = √(2/3) ≈ 0.816, so A = √(3/2), so
 
@@ -529,7 +533,7 @@ Campos–Jenssen–Michelen–Sahasrabudhe 2025:  R(3,k) ≥ (1/3 + o(1))·k²/l
 
 > Here is the plan for the last twenty minutes. I'll define **blow‑ups**; show you why one blow‑up is a brilliant idea that fails catastrophically; show you why **two** of them fix each other; and then do the two calculations that make the whole thing work. There's no 200‑page analysis coming. It's a construction and two estimates.
 
-## 6.1 Blow‑ups
+## 6.1 Blow‑ups, and why they beat the deletion threshold
 
 **[WB — Board D, drawing]** Draw a small graph *H* with 4–5 vertices; then draw each vertex as a blob containing 3 dots; join two blobs by *all* edges when the base vertices are adjacent.
 
@@ -541,30 +545,34 @@ Campos–Jenssen–Michelen–Sahasrabudhe 2025:  R(3,k) ≥ (1/3 + o(1))·k²/l
 >
 > Why? A triangle in the blow‑up uses three vertices; two in the same cluster are never adjacent, so the three lie in three distinct clusters, which then form a triangle in *H*. Contradiction. Note it's an *exact* statement — no "with high probability", no error terms. That's why this object is so useful.
 >
-> Second: **densities are preserved.** If *H* has density *q*, the blow‑up has density ≈ q as well, and every vertex has degree (degree in H)·s.
+> Second: **densities are preserved.** If *H* has density *p*, the blow‑up has density ≈ p as well.
 >
-> Now here's the point that I think is the real idea of the paper. Remember our obstruction: in G(n,p) at the density we want, every edge lies in about log n triangles, so alteration is hopeless. Look at what a blow‑up does to that problem.
+> Now here's the point that I think is the real idea of the paper. The paper says it in one sentence in the introduction, so let me put it the way they do. For any forbidden graph *H* there's an **edge deletion threshold** p_H: the density at which the random graph G(n,p) has about as many copies of *H* as it has edges. Below that threshold, "sample and delete" works — you lose only a o(1) fraction of your edges. Above it, you drown. For triangles:
 
 **[WB — Board D]**
 
 ```
-Base graph H = G(m,q),  clusters of size s,  n = ms.
-Triangles per edge in the BASE:   ≈ m·q²
-
-We will want the blow-up to have density p = √(log n / n) and m = n/s, q ≈ p/2:
-
-     m·q²  ≈  (n/s)·(log n / n)/4  =  log n / (4s)   →  0   if  s ≫ log n
+edge deletion threshold for triangles:   p_K3 = √(1/n)     ← Erdős's ceiling, 1961
 ```
 
-> **That's the trick.** By using a base graph on only m = n/s vertices, the density that's hard to achieve on *n* vertices becomes easy on *m* vertices: the base is so far below *its* triangle threshold that it's essentially triangle‑free already — you delete a o(1) fraction of its edges and you're done. Then you blow it up, and blowing up is *free*: it multiplies the number of vertices by *s* and keeps the density, and triangle‑freeness is exact.
->
-> So: **blow‑ups give you a triangle‑free graph of any density you like.** The ceiling p ≤ 1/√n that killed Erdős is gone.
+> That ceiling is what has capped the random method for sixty‑five years. **A blow‑up walks straight past it.** Watch:
+
+```
+Base graph on only  m = n/s  vertices, with density p.
+Its own deletion threshold is √(1/m) = √(s/n)  —  a factor √s HIGHER.
+
+So pick  p  well below √(1/m)  but well ABOVE √(1/n),
+delete the few triangles in the base, blow up by s:
+  ⟹ a triangle-free graph on n vertices with density p ≫ p_K3.
+```
+
+> That's the whole trick, and it is worth saying slowly: **the density that is impossible on n vertices is easy on n/s vertices, and blowing up carries it back for free.** The base is far below *its* threshold, so it costs almost nothing to make it triangle‑free, and then blow‑up preserves triangle‑freeness exactly.
 >
 > There has to be a catch, and there is.
 
 ## 6.2 Why one blow‑up fails
 
-**[WB]** On your blow‑up drawing, shade one blob, then shade a second non‑adjacent blob, then a third.
+**[WB]** On your blow‑up drawing, shade one blob, then a second non‑adjacent blob, then a third.
 
 > A blow‑up is full of enormous independent sets. Take *any* independent set in the base *H* and blow it up: every vertex of it, in every cluster, all pairwise non‑adjacent. So
 
@@ -572,149 +580,204 @@ We will want the blow-up to have density p = √(log n / n) and m = n/s, q ≈ p
 α(blow-up)  =  s · α(H)
 ```
 
-> With our parameters that's about **2s·√(n log n)** — we wanted √(n log n). We are off by a factor of 2s, and s is large. Catastrophe.
+> The blow‑up operation inflates independent sets by exactly the factor it gains you in density. Catastrophe — and you can't fix it by choosing *H* more cleverly, because the problem is *structural*. Any single blow‑up is transparent in this way.
 >
-> And you can't fix it by choosing *H* more cleverly, because the problem is *structural*: the blow‑up has a rigid geometry, and independent sets exploit geometry. Any single blow‑up is transparent in this way.
+> **[Pause. Ask the room:] So what would you do?**
 >
-> **[Pause here. Ask the room:] So what would you do?**
+> This is exactly where Campos, Jenssen, Michelen and Sahasrabudhe were last May. Their answer: use the blow‑up as a **seed** for the density, then run a tailored nibble on top to destroy the structure. In numbers:
+
+**[WB — Board D]**
+
+```
+CJMS 2025:  m = n/log²n,  p = √(log n / 6n),  blow up by log²n
+            → a triangle-free graph of density (1/√6)·√(log n/n)  = 0.408 · c-units
+            then the nibble roughly DOUBLES the density and kills the
+            structured independent sets
+            → density (1+o(1))√(2 log n/3n) = 0.816 = √(2/3)     ⟹  1/3
+```
+
+> Look at what the nibble is being paid to do there. **Its job is to double the density.** Fifty pages of differential equations, to multiply by two.
 >
-> The answer in the previous paper (Campos–Jenssen–Michelen–Sahasrabudhe) was: use the blow‑up as a *seed*, giving you the density, and then run a nibble/process on top to destroy the structure. That works, painfully, and gives 1/3.
->
-> The answer in this paper is: **use a second blow‑up.**
+> And the new paper's question is: *is there something cheaper that doubles the density?*
 
 ## 6.3 The construction
+
+> Yes. **Do the blow‑up again.**
 
 **[WB — Board D, clean space. Write this out in full; it is the paper.]**
 
 ```
-THE CONSTRUCTION  (Hefty–Horn–King–Pfender)
+THE CONSTRUCTION  (Hefty–Horn–King–Pfender, Section 2)
 
-Parameters:  n vertices.   Cluster size s with   log n ≪ s ≪ √(n/log n).
-             m = n/s clusters.   q = ½·√(log n / n).
+Parameters:   s = log²n,   m = n/s,   p = β·√(log n / n)  with β = ½,
+              and we aim for  k = κ·√(n log n)  with κ = 1+ε.
 
-BITE 1:  • take a random partition π₁ of the n vertices into m clusters of size s
-         • take a random base graph H₁ = G(m, q); delete an edge from each of its
-           (few) triangles
-         • B₁ := the blow-up:  u ~ v  iff  π₁(u) π₁(v) ∈ H₁
+1.  Sample TWO independent random graphs  G_R, G_B ~ G(m,p),
+    on vertex sets  V_R = {r₁,…,r_m}  and  V_B = {b₁,…,b_m}.
+    Call them the RED graph and the BLUE graph.
 
-BITE 2:  • do it again, completely independently: π₂, H₂, B₂
+2.  Take n vertices v₁,…,v_n and choose an INJECTIVE map
+        π : V(G) → V_R × V_B
+    uniformly at random.  So each vertex gets a red coordinate π_R(v)
+    and a blue coordinate π_B(v).
 
-OVERLAY: G₀ := B₁ ∪ B₂        (take all the edges of both)
+3.  Join v and w   if  π_R(v)π_R(w) ∈ G_R   (a RED edge)
+                    or  π_B(v)π_B(w) ∈ G_B   (a BLUE edge).
+    (If both, keep both — we work with the multigraph; α is the same.)
 
-CLEAN-UP: delete one edge from each triangle of G₀  ⟶  G,  which is triangle-free.
+4.  Delete edges to kill every triangle (four explicit rules, below).
 ```
 
-> Say it in words: **two random blow‑ups, laid randomly on top of one another.** Each one is dense and triangle‑free but structurally transparent; and the point is that
+> **Warning, and I want to be emphatic about this:** these reds and blues have *nothing* to do with the red/blue Ramsey colouring from the first hour. That colouring is long gone; we are building one graph *G*. Red and blue here just name the two bites.
 
-> **each blow‑up destroys the large independent sets of the other.**
+**[WB — the picture that makes it click. Draw an m × m grid of cells; scatter n dots, at most one per cell.]**
 
-**[WB]** Draw two overlapping cluster partitions of the same vertex set — e.g. a set of dots grouped into rows (partition 1) and separately into columns (partition 2). This picture sells the whole idea.
+> Here's the geometry. A vertex is a **cell in an m × m grid**: its row is its red coordinate, its column is its blue coordinate. The n vertices are n cells chosen at random — and note the grid has m² ≈ n²/log⁴n cells, so it's *very* sparsely occupied. Two vertices are adjacent if their **rows** are adjacent in the red graph, **or** their **columns** are adjacent in the blue graph.
+>
+> Combinatorialists have a name for this: *G* is a random induced subgraph of the **co‑normal product** of G_R and G_B. And the two blow‑ups are hiding in the picture: all the vertices in one row form a **fiber** — an independent set in red of size about s = log²n — and likewise for columns. Rows are the red clusters; columns are the blue clusters; and because π is random, **the rows and columns are completely unrelated to each other.** That is the entire source of the pseudorandomness.
 
-> Why? Take one of those catastrophic independent sets of B₁ — a union of B₁‑clusters. With respect to B₂'s partition it is a **completely random** set of vertices, because π₂ was chosen independently. Random sets of that size are certainly *not* independent in B₂; B₂ has an edge inside it, easily. So it dies.
->
-> The two structures are, so to speak, incompatible geometries on the same vertex set. Neither one's symmetries help you inside the other.
->
-> Now there are exactly two things to check, and they are the two things that could go wrong.
->
-> 1. **The union has triangles.** We must remove them without wrecking the graph.
-> 2. **The union must have small independent sets.** We need α ≈ √(n log n).
+> **[If asked:]** the paper notes that the precise choice in step 2 barely matters — you can allow repetitions, or condition on exactly s vertices per row and column (which is literally two random balanced blow‑ups), or even use an algebraic incidence structure like a projective plane. Three different follow‑up papers make three different choices.
 
 ## 6.4 The triangles come in bunches — this is the key lemma
 
-> Let's count the damage. In G₀, density p = 2q = √(log n/n), a typical edge lies in about n·p² = **log n** triangles. Same as the random graph. If those triangles were spread out, we'd have to delete a log n fraction of the edges — everything — and we'd be right back where Erdős was in 1961.
+> Now the two things that could go wrong. First: **the union has triangles.**
 >
-> **They are not spread out.** Here's the structure.
+> At density 2p = √(log n/n), a typical edge lies in about n·(2p)² = **log n** triangles. If they were spread out we'd have to delete a log n fraction of the edges — everything — and we'd be back in 1961.
+>
+> **They are not spread out.** Here is the structure. Take any triangle. Each edge is red or blue. Neither the red graph nor the blue graph has a triangle *by accident of density* — and in any case, count colours: two of the three edges share a colour, and they meet at a vertex. Call it the **apex**.
 
-**[WB — Board D. Draw this carefully; it's the heart of the proof.]**
-
-> Take any triangle *u, v, w* in G₀ = B₁ ∪ B₂. Each of its three edges comes from B₁ or from B₂. Neither B₁ nor B₂ contains a triangle on its own, so the three edges are not all from the same one. So two of them come from the same graph — say the edges *wu* and *wv* are both in B₂ — and they meet at a vertex; call *w* the **apex**.
+**[WB — Board D. Draw this carefully; it is the heart of the proof.]**
 
 ```
-        w   ← apex;  both edges wu, wv come from the SAME blow-up (say B₂)
+        w   ← apex; the two edges wu, wv have the SAME colour (say blue)
        / \
-      u---v   ← the "base" edge, from the other blow-up
+      u---v   ← the third edge
 ```
 
-> Now the observation. In B₂, adjacency depends **only on which cluster you are in**. So if *w* is adjacent to both *u* and *v*, then **every one of the s vertices in w's cluster is adjacent to both u and v.**
+> Adjacency in blue depends **only on the column**. So if *w* is blue‑adjacent to both *u* and *v*, then **every vertex in w's column is blue‑adjacent to both u and v.** There are about s of them.
 
-**[WB]** Shade *w*'s whole cluster and draw the fan of triangles onto the same edge *uv*.
+**[WB]** Shade *w*'s whole column and draw the fan of triangles onto the same edge *uv*.
 
-> So triangles do not come one at a time. **They come in bunches of s, all sharing the same base edge uv.** And therefore:
+> Triangles do not come one at a time. **They come in bunches of ≈ s, all sharing the edge uv.** So:
 
 ```
    delete the single edge uv   ⟹   kill all s triangles at once.
 ```
 
-> Count the cost. Per edge *uv*, how many *bunches* are there? One for each cluster that is adjacent (in the appropriate base graph) to both of *u*'s and *v*'s clusters — that's the number of common neighbours in **cluster space**, which is about log n / s. So:
+> The paper's own sentence: *"every edge removal destroys at least (1+o(1))s triangles in this process. This factor s represents exactly the gain in efficiency of this construction when compared with the typical edge deletion method."*
+>
+> Count the cost: about log n triangles per edge, in bunches of s = log²n, so
 
 **[WB — box this]**
 
 ```
-  fraction of edges we must delete  ≈  log n / s   =   o(1)     since s ≫ log n
+  fraction of edges deleted  ≈  (log n)/s  =  1/log n  =  o(1)      ✓
 ```
 
-> **That's the paper.** Everything else is bookkeeping. The blow‑up structure concentrates the triangles into bunches of size *s*, so the alteration method — the 1961 idea that could only reach p = 1/√n — suddenly works at p = √(log n / n), which is √(log n) times denser. The whole gain comes from the fact that the same log n triangles per edge are *sitting on top of each other* instead of being spread out.
+> **That's the paper.** The blow‑up structure stacks the triangles, so the 1961 deletion method works at a density it could never reach before.
 >
-> And notice: **this is where the "two bites" beats the nibble.** The nibble adds edges in many tiny rounds precisely because it must avoid making triangles it can't afford. Here we make a huge number of triangles on purpose, and then delete them almost for free, because they're stacked.
+> And there's a trade‑off in *s* that's worth stating, because it's the design decision of the whole construction: *"A larger value of s yields a larger gain, but the resulting graph is also further from a random graph."* Bigger s = cheaper deletions, but longer rows and columns, i.e. more structure for independent sets to exploit. **s = log²n** is the sweet spot.
+>
+> For completeness, the deletion is done by four explicit deterministic rules — you order the pairs of V_R and of V_B lexicographically, and from each triangle you delete a designated edge:
+
+```
+   (a) red–red–red     (c) red–red + blue    ← delete the blue edge
+   (b) blue–blue–blue  (d) blue–blue + red   ← delete the red edge
+```
+
+> The tie‑breaking looks fussy; it's there so that the deleted set is a *deterministic function* of G_R, G_B and π, which is what lets you control it in the analysis. Note also that the paper does **not** pre‑clean the base graphs — red‑red‑red triangles do occur (rarely, since p = o(1/√m)) and are handled by rule (a) in the same sweep.
 
 ## 6.5 The independent sets
 
-> Second thing to check. We need α(G) ≈ √(n log n). Let's do the first moment, exactly as we did for G(n,p) an hour ago.
->
-> Take a set *I* of *a* vertices, with a ≈ √(n log n). Since s ≪ √(n/log n), we have a ≪ m, so *I* lands in *a* distinct clusters in each partition, with room to spare.
->
-> For *I* to be independent it must be independent **in B₁ and in B₂** — two independent conditions:
+> Second thing. We need α(G) < k = (1+ε)√(n log n). Here is the one observation everything rests on:
 
-**[WB — Board D]**
+**[WB]**
 
 ```
-P(I independent)  ≈  (1-q)^{a²/2} · (1-q)^{a²/2}  =  (1-q)^{a²}  ≈ (1-p)^{a²/2}
-
-  ← exactly the probability for the random graph G(n,p) with p = 2q !
+   I is independent in G   ⟺   π_R(I) is independent in G_R
+                           AND  π_B(I) is independent in G_B
+                                            (ignoring the deleted edges)
 ```
 
-> That's the beautiful part: the two independent constraints multiply, and the product is *precisely* the random‑graph answer at the union's density. The construction is structured, but the first‑moment calculation cannot tell it apart from G(n,p). So we get the same threshold as before:
+> — because a red edge inside *I* is exactly a red edge between two rows that *I* meets. So a k‑set has to survive **two independent random graphs at once.** And now there's a genuine tension, which is the crux of Section 4:
+
+**[WB — Board D, side by side]**
 
 ```
-   union bound:  C(n,a)·(1-p)^{a²/2} < 1   ⟺   a ≳ log n / p  =  (1/c)·√(n log n)
+   projections SMALL (I crowds into few rows/columns)
+        → few pairs to avoid → MORE likely independent
+        → but such sets are RARE
+
+   projections LARGE (I spreads out over k rows and k columns)
+        → k²/2 pairs to avoid in each colour → very unlikely independent
+        → but such sets are COMMON
 ```
 
-> — and with c = 1, **α ≈ √(n log n)**, which is what we wanted.
+> Let me do the balance, because it comes out exactly. Write |π_R(I)| = x_R·k and |π_B(I)| = x_B·k. Two exponents, both in units of k·log n:
+
+```
+  how many k-sets have projections this small?
+        exp( (x_R + x_B − 1)/2 · k log n )
+
+  probability such a set is independent?
+        exp( −p·(x_R² + x_B²)k²/2 )  =  exp( −(κ/4)(x_R² + x_B²)·k log n )   [β=½]
+```
+
+**[WB — put the sum up and maximise it]**
+
+```
+  g(x_R,x_B) = (x_R + x_B − 1)/2  −  (κ/4)(x_R² + x_B²)
+
+  ∂/∂x_R = ½ − (κ/2)x_R = 0   ⟹   x_R = x_B = 1/κ
+  and then      g  =  (2/κ − 1)/2 − (κ/4)(2/κ²)  =  1/κ − 1/2 − 1/(2κ)
+                   =  (1 − κ) / (2κ)     ⟹  ZERO exactly at κ = 1,
+                                             NEGATIVE for κ = 1+ε.  ✓
+```
+
+> Read that off: at **κ = 1** the two exponents cancel *identically*. That is why the answer is √(n log n) and not anything else, and why κ = 1+ε works and κ = 1−ε would not. The construction is sitting precisely on the first‑moment threshold of the random graph of the same density — which is exactly what the master picture demanded of it.
 >
-> Two honest caveats, which is where the real (still short) work in the paper goes:
+> Notice also the first case falls out for free: if x_R + x_B < 1, the *count* exponent is already negative — **there simply are no k‑sets whose projections are that small.** You don't even need them to be non‑independent.
 >
-> * Sets *I* that are lopsided — that concentrate in a few clusters of one partition — need to be handled separately. That's exactly the "each blow‑up kills the other's structure" argument, done as a union bound over the possible shapes. **[CHECK against the paper for how they organise this.]**
-> * We deleted edges in the clean‑up, and deleting edges can only *create* independent sets. So you don't prove "every a‑set contains an edge", you prove "every a‑set contains **many** edges" — far more than the number of edges you deleted inside it. That's a routine strengthening of the same first‑moment computation. **[CHECK.]**
+> **What's actually hard?** Two things, and this is the honest content of Sections 3 and 4. *(Cut this subsection if you are past 15:50.)*
+>
+> * **The deleted edges.** We deleted a o(1) fraction of edges — but they're not deleted at random, they sit exactly where triangles were, and a devious independent set might hide behind them. Every deleted edge joins the two endpoints of a monochromatic path of length 2, i.e. lies **inside some neighbourhood N_v**. So the paper classifies every vertex *v* of V_R ∪ V_B by how much of *I* sits in its neighbourhood, into **huge / large / medium / small**, and shows that all but the "huge" class contribute only o(k²) unusable pairs. And the huge class is tiny: at most **2 log log n** vertices. Those few neighbourhoods are the only real correction — they're the `min(…)` terms in the paper's function f. Chernoff and McDiarmid do the work.
+> * **The middle window** x_R + x_B ≈ 1, where neither the counting nor the probability wins on its own and you have to use the neighbourhood bound as well. That's the third case of Lemma 4.2, and it's where the ε's are earned.
+>
+> The vocabulary is borrowed, charmingly, from the process: pairs inside a common neighbourhood are called **closed**, the rest **open** — the paper has a footnote saying so.
 
 ## 6.6 Cashing it in
 
-> Set the dial to **c = 1**: p = √(log n/n). Then
+> Put it together. Density 2p = √(log n/n) — that's the dial at **c = 1**:
 
 **[WB — Board C, complete the master picture]**
 
 ```
-   degree                d = √(n log n)
-   independence number   α = √(n log n)     ← they are EQUAL. Both forces balance.
-   so  A = 1,   and    R(3,k) ≥ (1/(2·1²) + o(1))·k²/log k
+   average degree        d ≈ 2pn = √(n log n)
+   independence number   α  <  (1+ε)√(n log n)     ← Theorem 1.3
+                              they are EQUAL. Both forces balance.
 
-                 R(3,k) ≥ (1/2 + o(1))·k²/log k
+   so A = 1  and  R(3,k) ≥ (1/2 + o(1))·k²/log k         ← Theorem 1.2
 ```
 
-> And we're done. Up from 1/3, up from 1/4, and — by the V‑shaped diagram — at the exact bottom of what any pseudorandom construction can give.
+> Up from 1/3, up from 1/4, and — by the V‑shaped diagram — at the exact bottom of what any pseudorandom construction can give. In the authors' own words:
+
+**[WB, or just read it out]**
+
+> *"In our construction, independence number and average vertex degree asymptotically agree, and they are the same as a random graph of the same density. Any construction improving on the constant 1/2 would have to have lower density, and at the same time independence number smaller than the random graph of that density."*
+
+> That's our V, stated by the people who built it. (And as a check on the picture: they note the CJMS construction has independent sets exactly **3/2 times** its average degree — which is what c = √(2/3) predicts, since 1/c ÷ c = 3/2.)
 >
-> Let me flag the three sentences worth remembering:
+> Three sentences worth remembering:
 >
-> 1. **Blow‑ups make triangle‑freeness free**, because triangle‑freeness of a blow‑up is exactly triangle‑freeness of a much smaller, much sparser base graph.
-> 2. **Blow‑ups make triangles collapse into bunches**, so the 1961 deletion method suddenly works at a density it could never reach before.
-> 3. **Two independent blow‑ups are pseudorandom**, because each one's structure is invisible to the other's, and their first moments multiply to exactly the random‑graph answer.
+> 1. **Blow‑ups beat the edge deletion threshold**, because the density that's impossible on n vertices is easy on n/s vertices, and blowing up carries it back exactly.
+> 2. **Blow‑ups make triangles come in bunches of s**, so deletion costs a factor s less — that factor is precisely the gain over the classical method.
+> 3. **Two independent blow‑ups are pseudorandom**, because each one's rows are invisible to the other's columns, and a k‑set must now survive two random graphs at once — which is exactly the first moment of a single random graph at the doubled density.
 
 ## 6.7 Two questions you should be asking
 
-> **"Why exactly two? Why not three, or ten?"** The first‑moment calculation only sees the *total* density, so extra blow‑ups buy you nothing there. One blow‑up is structurally broken; two is already enough to break the structure. Two is the answer because two is the first number bigger than one.
+> **"Why exactly two? Why not three, or ten?"** The first moment only sees the *total* density, so extra bites buy nothing there. One blow‑up is structurally broken; two already break each other's structure. Two is the answer because two is the first number bigger than one.
 >
-> **"Why not push c above 1 and get an even better constant?"** Because past c = 1 the *other* force takes over: the graph's own neighbourhoods are independent sets of size c√(n log n), and they get worse as you densify. The V goes back up. c = 1 is where a triangle‑free graph is as dense as it can be before it starts building large independent sets by hand. **This is a limit of the universe, not of the method.**
->
-> **[If asked about general H:]** The authors state the construction as a general tool: for suitable graphs *H* it produces *H*‑free graphs denser than the *H*‑free process, with the pseudorandomness preserved. Triangles are the headline application. **[CHECK how far they push the general statement.]**
+> **"Why not push c above 1 and get a better constant?"** Because past c = 1 the *other* force takes over: neighbourhoods are independent sets of size c√(n log n) and they grow. The V goes back up. **This is a limit of the universe, not of the method** — as the authors say, to beat 1/2 you would need a construction that is *sparser* and has independent sets *smaller than a random graph of that density*. Nobody knows such an object for any problem of this type.
 
 ---
 
@@ -728,13 +791,29 @@ P(I independent)  ≈  (1-q)^{a²/2} · (1-q)^{a²/2}  =  (1-q)^{a²}  ≈ (1-p)
         Pfender 2025
 ```
 
-> Sixty‑five years of work on this problem, and the gap is now **a factor of two.** And we know exactly what that factor of two *is*: it is greedy versus optimal in a random graph. Shearer's theorem gives every triangle‑free graph the greedy value n·log d/d; the conjecture is that the truth is the random value, twice that. If someone proves it, this problem is closed, and this paper's construction is the reason we'd know the answer is sharp.
+> Sixty‑five years of work on this problem, and the gap is now **a factor of two.** And we know exactly what that factor of two *is*: it is greedy versus optimal in a random graph. Shearer's theorem gives every triangle‑free graph the greedy value n·log d/d; the conjecture is that the truth is the random value, twice that. If someone proves it — the Davies–Jenssen–Perkins–Roberts conjecture is the identified route — this problem is closed, and this paper's construction is the reason we'd know the answer is sharp.
+>
+> **And the method has already left the building.** In the five months after it was posted, three groups used this construction for other things:
+>
+> * the same authors, in Section 5, get the star hypergraph Ramsey number R(S₄⁽³⁾, S_k⁽³⁾) ≥ (1/2 − o(1))k²/log k — a suggestion of Mubayi's, improving a nibble argument of Mubayi and Spanier;
+> * Campos, Jenssen, Michelen and Sahasrabudhe together with Pfender got the first **polynomial** improvements over the edge deletion threshold for the cycle‑complete Ramsey numbers r(C_ℓ, K_k), for every odd ℓ ≥ 9;
+> * Kühn, Sauermann, Steiner and Wigderson used it to **disprove the odd Hadwiger conjecture** — a completely different corner of graph theory, where what they need from the construction is not "no large independent set" but another pseudorandom property entirely.
+>
+> When a construction gets picked up three times in five months, the object was the point, not the theorem.
 >
 > Three closing thoughts.
 >
-> **First, on the shape of progress.** For thirty years the best constructions were *processes* — algorithms you run and then spend a hundred pages proving they behave. This paper is a *construction*: you write it down in five lines, and the analysis is two estimates a graduate student can check. The authors say it explicitly — no nibble, significantly less technical. When a field's best result gets simpler, something has been understood.
+> **First, on the shape of progress.** For thirty years the best constructions were *processes* — algorithms you run and then spend a hundred pages proving they behave. This paper is a *construction*: you write it down in five lines, and the analysis is two estimates a graduate student can check. The authors say it explicitly — no nibble, significantly less technical.
 >
-> **Second, on where the idea came from.** It came from noticing what was doing the work in someone else's proof. Campos–Jenssen–Michelen–Sahasrabudhe used a blow‑up as a seed and then a nibble; the natural question was "how much of the gain is the seed?" The answer was "all of it — do it twice and drop the nibble."
+> And here is the payoff of that Spencer quote I left hanging. In the same 2011 chapter where he called the constant beyond our reach, he wrote:
+
+**[WB — read it out]**
+
+> *"Is the story of R(3,k) over? I think not. I think there is plenty of room for a consolidation of the results. My dream is a ten‑page paper which gives R(3,k) = Θ(k²/log k)."*
+
+> This paper answers him directly. It's fifteen pages, and it does more than the dream asked for — and the authors point out that if you only wanted the *order of magnitude*, you could combine a weakened version of their construction with Shearer's one‑page upper bound and hand Spencer his ten pages exactly. When a field's best result gets simpler, something has been understood.
+>
+> **Second, on where the idea came from.** It came from noticing what was doing the work in someone else's proof. Campos–Jenssen–Michelen–Sahasrabudhe used a blow‑up as a seed and a nibble to double its density; the natural question was "what else could double it?" The answer was "another blow‑up — and it's free." The authors also credit an older precedent: **Alon and Rödl** stacked triangle‑free graphs on top of one another to shrink independence numbers, for multicolour Ramsey numbers R(3,…,3,k). What's new here is having to cope with the triangles that the stacking creates — and the discovery that they're cheap to remove.
 >
 > **Third, the one‑sentence version**, if you remember nothing else: *randomness gives you triangle‑free graphs that are too sparse; blow‑ups give you graphs that are dense but too structured; overlay two blow‑ups and the structures cancel while the density survives.*
 >
@@ -763,18 +842,27 @@ THE DIAL
 
 TABLE
    c = 1/√log n → 0      A → ∞        k²/log²k     Erdős 1961
-   c small               —            (1/162)      Kim 1995
+   c small               —            (≈1/160)     Kim 1995
    c = 1/√2 ≈ 0.707      A = √2       1/4          Bohman–Keevash / FGM (~2013–20)
    c = √(2/3) ≈ 0.816    A = √(3/2)   1/3          CJMS, May 2025
    c = 1                 A = 1        1/2          Hefty–Horn–King–Pfender, Oct 2025
    upper bound                        1            Shearer 1983
 
-CONSTRUCTION PARAMETERS
-   clusters: m = n/s,   cluster size  log n ≪ s ≪ √(n/log n)
-   base density q = ½√(log n/n);   union density p = 2q = √(log n/n)
-   base triangles per edge  ≈ mq² = log n/(4s) = o(1)
-   triangles per edge in the union ≈ log n, in bunches of size s
-   ⟹ delete a  (log n)/s = o(1)  fraction of edges
+CONSTRUCTION PARAMETERS  (the paper's own notation)
+   s = log²n,   m = n/s,   p = β√(log n/n) with β = ½,   k = κ√(n log n) with κ = 1+ε
+   G_R, G_B ~ G(m,p) independent;  π : V(G) → V_R × V_B injective, uniform
+   v~w  iff  π_R(v)π_R(w) ∈ G_R  or  π_B(v)π_B(w) ∈ G_B      (co-normal product)
+   final density (2+o(1))p = √(log n/n)  ⟹  c = 1;  avg degree ≈ √(n log n)
+   fibers (rows/columns) have size ≈ s = log²n
+   p = o(1/√m), so the base graphs are below THEIR deletion threshold
+   triangles per edge ≈ log n, in bunches of ≈ s  ⟹  delete ≈ 1/log n of the edges
+   CJMS for comparison: m = n/log²n, p = √(log n/6n), blow up by log²n
+        → c = 1/√6 ≈ 0.408, nibble doubles it to √(2/3) ≈ 0.816
+
+THE EXPONENT BALANCE  (skeleton of §4;  ℓ_R = x_R k, ℓ_B = x_B k)
+   # k-sets with those projections ≈ exp( (x_R+x_B−1)/2 · k log n )
+   P(independent)                  ≈ exp( −(κ/4)(x_R²+x_B²) · k log n )
+   max of the sum = (1−κ)/(2κ)  at  x_R = x_B = 1/κ   ⟹  0 at κ=1, <0 at κ=1+ε
 
 SMALL VALUES
    R(3,3)=6, R(3,4)=9, R(3,5)=14, R(3,6)=18, R(3,7)=23, R(3,8)=28,
@@ -802,32 +890,49 @@ First moment only sees total density, so more blow‑ups don't help. A blow‑up
 Only if a large set were held together by a few edges. It isn't — the first moment shows every set of size ≈ √(n log n) spans many edges, far more than could be deleted inside it. This is why one proves a robust version of the counting.
 
 **"Is 1/2 conjectured to be the truth, and by whom?"**
-Yes — it's stated in this paper's abstract that multiple groups have conjectured 1/2 is asymptotically tight, and the construction now matches it. Equivalently: Shearer's bound should be improvable by a factor of 2 for triangle‑free graphs. **[CHECK who exactly, if you want to name names.]**
+Yes. It is Conjecture 1.1 in this paper, attributed to Campos, Jenssen, Michelen and Sahasrabudhe. The missing half is the upper bound — equivalently, Shearer's bound improved by a factor of 2 — and a conjecture of Davies, Jenssen, Perkins and Roberts on the maximum versus average size of independent sets in triangle‑free graphs would imply it.
 
-**"What about R(4,k), R(5,k)?"**
-Much worse understood — the order of magnitude of R(4,k) was only pinned down recently (k³/log⁴k‑ish, Mattheus–Verstraëte 2023 for the lower bound, using an algebraic rather than random construction). The methods here are stated to be flexible for other *H*; how far they reach is a natural question. **[CHECK the paper's own remarks.]**
+**"What about other Ramsey numbers?"**
+The construction is explicitly a general tool, and it has already travelled: star hypergraph Ramsey numbers (Section 5 of the paper), cycle‑complete numbers r(C_ℓ,K_k) for odd ℓ ≥ 9 (CJMS + Pfender), and the disproof of the odd Hadwiger conjecture (Kühn–Sauermann–Steiner–Wigderson). For R(4,k) the order of magnitude was pinned down separately and recently by Mattheus and Verstraëte, with an algebraic rather than random construction.
+
+**"Why is π injective into V_R × V_B rather than two random partitions?"**
+Convenience. The paper says the variants — allow repeats, or condition on exactly s vertices per fiber (which is literally two random balanced blow‑ups) — have only marginal effects and are interchangeable; the three follow‑up papers each pick a different one. What matters is that π has expansion: the rows must be unrelated to the columns.
+
+**"Does the red/blue here mean the Ramsey colouring?"**
+No, and it's the one genuine notation trap in the talk. Say it twice.
 
 **"How hard is the paper?"**
-Short. That's its selling point: previous constructions of this quality were 50–125 pages of differential‑equation tracking; this is a construction plus two first‑moment estimates.
+Fifteen pages. That's its selling point: previous constructions of this quality were 50–125 pages of differential‑equation tracking. Section 2 is the construction (2 pages), Section 3 controls the deleted edges (5 pages of Chernoff/McDiarmid bookkeeping), Section 4 is the first‑moment argument (3 pages), Section 5 is the hypergraph application.
 
 **"Can I see the triangle‑free process?"**
 Yes — `sim/triangle_free_process.c` in the repo, ~60 lines. Compile with `gcc -O2`, run `./tfp 4000`. It runs the process to maximality and prints the final density and a greedy independent set.
 
-# Appendix C — What I verified, and how
+# Appendix C — Provenance, and the simulation
 
-* **The master calculation** (`A(c) = max(c,1/c)`, the conversion `1/(2A²)`, the table of constants 1/4, 1/3, 1/2, and Shearer ⇒ 1) — derived from scratch, and every row of the table is consistent with the published constants. This is the part you can lean on hardest.
-* **The density of the triangle‑free process.** I simulated it to maximality (exact, not approximate) for n = 500…8000. Final average degree over √(n log n): 0.847, 0.843, 0.835, 0.828, 0.822 — decreasing towards 1/√2 = 0.707, and the corresponding edge‑count constant decreasing towards 1/(2√2) = 0.354, matching the Fiz Pontiveros–Griffiths–Morris / Bohman–Keevash constants. Greedy independent sets came out at ≈ 0.78·√(n log n), consistent with the true α = √2·√(n log n) (greedy finds about half of α in random‑like graphs). This confirms that the new construction (c = 1) really is **strictly denser** than the process, which is what the paper's abstract claims.
-* **Not verified against the source** (arXiv was unreachable from my sandbox): the authors' exact parameter choices, the precise statement of their deletion lemma, how they organise the union bound over "shapes" of candidate independent sets, and how general their *H*‑free statement is. These are the **[CHECK]** marks in the text. The *mechanism* is not in doubt — Morris's survey describes the construction as "the union of two blow‑ups of the random graph, placed randomly on top of one another", and every number above is forced by that description — but the presentation details may differ.
+**Checked against the paper (v3, 20 Feb 2026):** the construction and all its parameters, the four deletion rules, the "bunches of s" gain, the statement of Theorems 1.2 and 1.3, Conjecture 1.1 and its attribution, the CJMS parameters and their 3/2 ratio, Kim's constant, both Spencer quotes, and the three follow‑up applications. Everything in Part 6 is the paper's.
+
+**Mine, not the paper's** (faithful, but don't attribute):
+
+* the "master picture" of Part 4 — the dial *c* and `A(c) = max(c, 1/c)`. The authors state its conclusion in prose (quoted in §6.6); the diagram is my packaging.
+* the exponent balance in §6.5 — the paper's Lemma 4.2 with the correction terms dropped. It reproduces the sharp threshold κ = 1 exactly, which is why it's worth showing, but the corrections are what Section 3 exists to control.
+
+**The simulation.** I ran the triangle‑free process to maximality (exact, not approximate) for n = 500…8000. Final average degree over √(n log n): 0.847, 0.843, 0.835, 0.828, 0.822 — decreasing towards 1/√2 = 0.707, with the edge‑count constant heading for 1/(2√2) = 0.354, matching Bohman–Keevash and Fiz Pontiveros–Griffiths–Morris. Greedy independent sets came out at ≈ 0.78·√(n log n), consistent with the true α = √2·√(n log n) (greedy finds about half of α in random‑like graphs). Convergence is slow — the error terms are of order log log n/log n, still ≈ 0.25 at n = 8000. Worth putting on the board in Part 5: it makes concrete that the process really does stop *below* c = 1, which is the whole reason there was room left to improve.
+
+Code: `sim/triangle_free_process.c`; numbers: `sim/RESULTS.md`.
 
 # Appendix D — References to have on the last slide / board
 
-* Hefty, Horn, King, Pfender, *Improving R(3,k) in just two bites*, arXiv:2510.19718 (2025).
-* Campos, Jenssen, Michelen, Sahasrabudhe, *A new lower bound for the Ramsey numbers R(3,k)*, arXiv:2505.13371 (2025).
+* Hefty, Horn, King, Pfender, *Improving R(3,k) in just two bites*, arXiv:2510.19718 (v3, Feb 2026).
+* Campos, Jenssen, Michelen, Sahasrabudhe, *A new lower bound for the Ramsey numbers R(3,k)*, arXiv:2505.13371 (2025) — the 1/3 bound and Conjecture 1.1.
 * Fiz Pontiveros, Griffiths, Morris, *The triangle‑free process and the Ramsey number R(3,k)*, Memoirs AMS 263 (2020); arXiv:1302.6279.
-* Bohman, Keevash, *Dynamic concentration of the triangle‑free process*, Random Structures & Algorithms (2021).
-* Bohman, *The triangle‑free process*, Adv. Math. (2009); arXiv:0806.4375.
+* Bohman, Keevash, *Dynamic concentration of the triangle‑free process*, Random Structures & Algorithms (2021); Bohman, *The triangle‑free process*, Adv. Math. (2009).
 * Kim, *The Ramsey number R(3,t) has order of magnitude t²/log t* (1995).
-* Shearer, *A note on the independence number of triangle‑free graphs* (1983); Ajtai, Komlós, Szemerédi (1980).
+* Shearer, *A note on the independence number of triangle‑free graphs* (1983); Ajtai, Komlós, Szemerédi (1980–81).
 * Erdős, *Graph theory and probability II* (1961).
-* Morris, *Some recent results in Ramsey theory*, arXiv:2601.05221 — the survey; good for context.
+* Davies, Jenssen, Perkins, Roberts — the conjecture on maximum vs average independent set size that would give the matching upper bound.
+* Alon, Rödl — stacking Ramsey graphs for multicolour R(3,…,3,k); the precedent the authors credit.
+* Spencer, chapter in *Ramsey Theory* (2011) — the source of both quotes.
+* Kühn, Sauermann, Steiner, Wigderson — disproof of the odd Hadwiger conjecture using this construction.
+* Mubayi, Spanier — the star hypergraph Ramsey bound that Section 5 improves.
 * Radziszowski, *Small Ramsey Numbers*, Electron. J. Combin., Dynamic Survey DS1 — the table of exact values.
+* Morris, *Some recent results in Ramsey theory*, arXiv:2601.05221 — survey, good for context.
