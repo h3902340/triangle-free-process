@@ -317,7 +317,20 @@ GOAL:  triangle-free, but as random-like and as dense as possible.
 
 **[WB — Board B, right under the greedy bound]**
 
-> Do you see what that is? It's the greedy bound `n/d` multiplied by **log d**. Why should a logarithm appear? Intuition: run the greedy algorithm, but *cleverly*. In a triangle‑free graph, when you pick a vertex *v* you learn a lot — all of *N(v)* is independent, so you should sometimes prefer to descend into a neighbourhood rather than take *v* itself. Shearer's proof is a beautiful induction with a carefully chosen weighting; it's about a page and I'm happy to sketch it in questions.
+> Do you see what that is? It's the greedy bound `n/d` multiplied by **log d**. Why should a logarithm appear? Intuition: run the greedy algorithm, but *cleverly*. In a triangle‑free graph, when you pick a vertex *v* you learn a lot — all of *N(v)* is independent, so you should sometimes prefer to descend into a neighbourhood rather than take *v* itself. Shearer's proof is a short induction with a carefully chosen weighting — it's a two‑page paper from 1983, and Appendix D has as much of it as you'd want at a whiteboard.
+>
+> But here's the meaning of the number, which is better than the proof for our purposes. Take a random graph of average degree d and run the plain greedy algorithm on it — process the vertices in random order, take each one if none of its neighbours is already taken. That returns about **n·log d / d** vertices. I checked this on a computer: at n = 80,000 and d = 50, greedy returns 6,282 and n·log d/d predicts 6,259.
+>
+> So Shearer's theorem says exactly this:
+
+**[WB — Board B, boxed]**
+
+```
+   No triangle-free graph is worse — as far as greedy can see —
+   than a random graph of the same density.
+```
+
+> Random graphs are the *worst case*. Hold on to that, because in an hour it's going to be the thing standing between us and the end of this problem.
 >
 > Now redo the balancing act with the improved bound. We need
 
@@ -953,7 +966,32 @@ Yes — `sim/triangle_free_process.c` in the repo, ~60 lines. Compile with `gcc 
 
 Code: `sim/triangle_free_process.c`; numbers: `sim/RESULTS.md`.
 
-# Appendix D — References to have on the last slide / board
+# Appendix D — If someone asks about Shearer's proof
+
+You promised a sketch in Part 3. Here is what to say, and where to stop.
+
+**The exact statement.** Shearer proves α(G) ≥ n·f(d) for triangle‑free G of average degree d, where
+
+```
+f(d) = (d·log d − d + 1) / (d − 1)²        f(0)=1, f(1)=1/2
+```
+
+and f(d) ~ log d / d. (It approaches it slowly from below — at d = 1000 the ratio is still only 0.86 — which is where the (1+o(1)) in the talk comes from.)
+
+**Why that number — the answer to give first.** It is exactly what plain greedy achieves on a random graph of the same average degree: process vertices in a random order, take one if no neighbour is taken already. That yields ≈ n·log d/d. So the theorem reads: *no triangle-free graph is worse than a random graph of that density, as far as greedy can see.* This is the honest, illuminating answer, and it is the one that connects to the rest of the talk.
+
+**The mechanism, if they push.** Induction on the number of vertices. At each step you have two moves available, and triangle‑freeness is what gives you the second:
+
+* take a vertex v — that is 1 vertex, and it costs you the 1 + d(v) vertices of N[v];
+* take **all of N(v)** at once — that is d(v) vertices in one go, and it is legal precisely because G is triangle‑free, so N(v) is independent.
+
+Taking v is better when v has few neighbours; descending into N(v) is better when v has many. The function f is exactly the optimal trade‑off between the two, and the induction closes because f is convex — Jensen converts the individual degrees d(v) into the single average degree d.
+
+**Where to stop.** That is the whole idea. If they want it line by line, say it's two pages (Shearer, *A note on the independence number of triangle-free graphs*, 1983) and offer to send it. **Do not attempt the induction at the board** — the weighting is fiddly and it is not what your audience came for.
+
+**The follow-up worth being ready for:** *"if greedy gets n·log d/d, and the true independence number of a random graph is twice that, why can't we prove the factor 2?"* That is precisely the open problem — Conjecture 1.1's upper half, and the Davies–Jenssen–Perkins–Roberts route. Say so; it is a good question and the honest answer is "nobody knows."
+
+# Appendix E — References to have on the last slide / board
 
 * Hefty, Horn, King, Pfender, *Improving R(3,k) in just two bites*, arXiv:2510.19718 (v3, Feb 2026).
 * Campos, Jenssen, Michelen, Sahasrabudhe, *A new lower bound for the Ramsey numbers R(3,k)*, arXiv:2505.13371 (2025) — the 1/3 bound and Conjecture 1.1.

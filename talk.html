@@ -409,7 +409,16 @@ UPPER BOUND  = a theorem about all graphs
 </code></pre>
 <p class="wb"><span class="wb-tag">Whiteboard</span><strong>Board B, right under the greedy bound</strong></p>
 <blockquote>
-<p>Do you see what that is? It's the greedy bound <code>n/d</code> multiplied by <strong>log d</strong>. Why should a logarithm appear? Intuition: run the greedy algorithm, but <em>cleverly</em>. In a triangle‑free graph, when you pick a vertex <em>v</em> you learn a lot — all of <em>N(v)</em> is independent, so you should sometimes prefer to descend into a neighbourhood rather than take <em>v</em> itself. Shearer's proof is a beautiful induction with a carefully chosen weighting; it's about a page and I'm happy to sketch it in questions.</p>
+<p>Do you see what that is? It's the greedy bound <code>n/d</code> multiplied by <strong>log d</strong>. Why should a logarithm appear? Intuition: run the greedy algorithm, but <em>cleverly</em>. In a triangle‑free graph, when you pick a vertex <em>v</em> you learn a lot — all of <em>N(v)</em> is independent, so you should sometimes prefer to descend into a neighbourhood rather than take <em>v</em> itself. Shearer's proof is a short induction with a carefully chosen weighting — it's a two‑page paper from 1983, and Appendix D has as much of it as you'd want at a whiteboard.</p>
+<p>But here's the meaning of the number, which is better than the proof for our purposes. Take a random graph of average degree d and run the plain greedy algorithm on it — process the vertices in random order, take each one if none of its neighbours is already taken. That returns about <strong>n·log d / d</strong> vertices. I checked this on a computer: at n = 80,000 and d = 50, greedy returns 6,282 and n·log d/d predicts 6,259.</p>
+<p>So Shearer's theorem says exactly this:</p>
+</blockquote>
+<p class="wb"><span class="wb-tag">Whiteboard</span><strong>Board B, boxed</strong></p>
+<pre class="board"><code>   No triangle-free graph is worse — as far as greedy can see —
+   than a random graph of the same density.
+</code></pre>
+<blockquote>
+<p>Random graphs are the <em>worst case</em>. Hold on to that, because in an hour it's going to be the thing standing between us and the end of this problem.</p>
 <p>Now redo the balancing act with the improved bound. We need</p>
 </blockquote>
 <pre class="board"><code>α ≥ max( d ,  n log d / d )
@@ -913,7 +922,22 @@ Yes — <code>sim/triangle_free_process.c</code> in the repo, ~60 lines. Compile
 </ul>
 <p><strong>The simulation.</strong> I ran the triangle‑free process to maximality (exact, not approximate) for n = 500…8000. Final average degree over √(n log n): 0.847, 0.843, 0.835, 0.828, 0.822 — decreasing towards 1/√2 = 0.707, with the edge‑count constant heading for 1/(2√2) = 0.354, matching Bohman–Keevash and Fiz Pontiveros–Griffiths–Morris. Greedy independent sets came out at ≈ 0.78·√(n log n), consistent with the true α = √2·√(n log n) (greedy finds about half of α in random‑like graphs). Convergence is slow — the error terms are of order log log n/log n, still ≈ 0.25 at n = 8000. Worth putting on the board in Part 5: it makes concrete that the process really does stop <em>below</em> c = 1, which is the whole reason there was room left to improve.</p>
 <p>Code: <code>sim/triangle_free_process.c</code>; numbers: <code>sim/RESULTS.md</code>.</p>
-<header class="part" id="appendix-d-references-to"><h1><span class="pnum">Appendix D</span>References to have on the last slide / board</h1></header>
+<header class="part" id="appendix-d-if-someone-as"><h1><span class="pnum">Appendix D</span>If someone asks about Shearer's proof</h1></header>
+<p>You promised a sketch in Part 3. Here is what to say, and where to stop.</p>
+<p><strong>The exact statement.</strong> Shearer proves α(G) ≥ n·f(d) for triangle‑free G of average degree d, where</p>
+<pre class="board"><code>f(d) = (d·log d − d + 1) / (d − 1)²        f(0)=1, f(1)=1/2
+</code></pre>
+<p>and f(d) ~ log d / d. (It approaches it slowly from below — at d = 1000 the ratio is still only 0.86 — which is where the (1+o(1)) in the talk comes from.)</p>
+<p><strong>Why that number — the answer to give first.</strong> It is exactly what plain greedy achieves on a random graph of the same average degree: process vertices in a random order, take one if no neighbour is taken already. That yields ≈ n·log d/d. So the theorem reads: <em>no triangle-free graph is worse than a random graph of that density, as far as greedy can see.</em> This is the honest, illuminating answer, and it is the one that connects to the rest of the talk.</p>
+<p><strong>The mechanism, if they push.</strong> Induction on the number of vertices. At each step you have two moves available, and triangle‑freeness is what gives you the second:</p>
+<ul>
+<li>take a vertex v — that is 1 vertex, and it costs you the 1 + d(v) vertices of N[v];</li>
+<li>take <strong>all of N(v)</strong> at once — that is d(v) vertices in one go, and it is legal precisely because G is triangle‑free, so N(v) is independent.</li>
+</ul>
+<p>Taking v is better when v has few neighbours; descending into N(v) is better when v has many. The function f is exactly the optimal trade‑off between the two, and the induction closes because f is convex — Jensen converts the individual degrees d(v) into the single average degree d.</p>
+<p><strong>Where to stop.</strong> That is the whole idea. If they want it line by line, say it's two pages (Shearer, <em>A note on the independence number of triangle-free graphs</em>, 1983) and offer to send it. <strong>Do not attempt the induction at the board</strong> — the weighting is fiddly and it is not what your audience came for.</p>
+<p><strong>The follow-up worth being ready for:</strong> <em>"if greedy gets n·log d/d, and the true independence number of a random graph is twice that, why can't we prove the factor 2?"</em> That is precisely the open problem — Conjecture 1.1's upper half, and the Davies–Jenssen–Perkins–Roberts route. Say so; it is a good question and the honest answer is "nobody knows."</p>
+<header class="part" id="appendix-e-references-to"><h1><span class="pnum">Appendix E</span>References to have on the last slide / board</h1></header>
 <ul>
 <li>Hefty, Horn, King, Pfender, <em>Improving R(3,k) in just two bites</em>, arXiv:2510.19718 (v3, Feb 2026).</li>
 <li>Campos, Jenssen, Michelen, Sahasrabudhe, <em>A new lower bound for the Ramsey numbers R(3,k)</em>, arXiv:2505.13371 (2025) — the 1/3 bound and Conjecture 1.1.</li>
