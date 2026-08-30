@@ -317,7 +317,7 @@ GOAL:  triangle-free, but as random-like and as dense as possible.
 
 **[WB — Board B, right under the greedy bound]**
 
-> Do you see what that is? It's the greedy bound `n/d` multiplied by **log d**. Why should a logarithm appear? Intuition: run the greedy algorithm, but *cleverly*. In a triangle‑free graph, when you pick a vertex *v* you learn a lot — all of *N(v)* is independent, so you should sometimes prefer to descend into a neighbourhood rather than take *v* itself. Shearer's proof is a short induction with a carefully chosen weighting — it's a two‑page paper from 1983, and Appendix D has as much of it as you'd want at a whiteboard.
+> Do you see what that is? It's the greedy bound `n/d` multiplied by **log d**. Why should a logarithm appear? Here is the honest one‑sentence reason. Pick a random vertex *v*, take it, and throw away *v* together with all its neighbours. Because the graph is triangle‑free, *N(v)* is an independent set — there are no edges inside it — and that means throwing it away destroys **every edge it touches, with nothing counted twice**. In a graph with triangles you'd be double‑counting and destroying fewer. So triangle‑freeness makes each greedy step maximally destructive, the leftover graph gets sparser faster than you'd expect, and iterating that gain is exactly where the logarithm comes from. Shearer's proof is a short induction with a carefully chosen weighting — it's a two‑page paper from 1983, and Appendix D has as much of it as you'd want at a whiteboard.
 >
 > But here's the meaning of the number, which is better than the proof for our purposes. Take a random graph of average degree d and run the plain greedy algorithm on it — process the vertices in random order, take each one if none of its neighbours is already taken. That returns about **n·log d / d** vertices. I checked this on a computer: at n = 80,000 and d = 50, greedy returns 6,282 and n·log d/d predicts 6,259.
 >
@@ -980,14 +980,15 @@ and f(d) ~ log d / d. (It approaches it slowly from below — at d = 1000 the ra
 
 **Why that number — the answer to give first.** It is exactly what plain greedy achieves on a random graph of the same average degree: process vertices in a random order, take one if no neighbour is taken already. That yields ≈ n·log d/d. So the theorem reads: *no triangle-free graph is worse than a random graph of that density, as far as greedy can see.* This is the honest, illuminating answer, and it is the one that connects to the rest of the talk.
 
-**The mechanism, if they push.** Induction on the number of vertices. At each step you have two moves available, and triangle‑freeness is what gives you the second:
+**The mechanism, if they push.** It is an induction on the number of vertices, and it is a single move, not a clever choice between moves:
 
-* take a vertex v — that is 1 vertex, and it costs you the 1 + d(v) vertices of N[v];
-* take **all of N(v)** at once — that is d(v) vertices in one go, and it is legal precisely because G is triangle‑free, so N(v) is independent.
+1. Pick a vertex **v uniformly at random**. Put v in the independent set and delete its closed neighbourhood N[v] — that is 1 + d(v) vertices. Let G' be what's left.
+2. Then α(G) ≥ 1 + α(G'), and by induction α(G') ≥ |V(G')|·f(d(G')), where d(G') is the average degree of G'.
+3. Take the expectation over the random v. What has to be shown is E[1 + |V(G')|·f(d(G'))] ≥ n·f(d).
+4. **This is the only place triangle‑freeness is used, and it is the whole ballgame.** N(v) is an independent set — no edges inside it — so deleting N[v] destroys every edge touching N(v) with *nothing counted twice*. In a graph with triangles, edges inside N(v) get double‑counted and you destroy strictly fewer. So triangle‑freeness makes each step maximally destructive: the leftover graph is sparser than it has any right to be, and iterating that surplus is where the log d comes from.
+5. f is then chosen as the solution of the differential equation that falls out of step 3, which Shearer solves in closed form as the f above. Convexity plus Jensen handles the passage from the individual degrees to the single average degree.
 
-Taking v is better when v has few neighbours; descending into N(v) is better when v has many. The function f is exactly the optimal trade‑off between the two, and the induction closes because f is convex — Jensen converts the individual degrees d(v) into the single average degree d.
-
-**Where to stop.** That is the whole idea. If they want it line by line, say it's two pages (Shearer, *A note on the independence number of triangle-free graphs*, 1983) and offer to send it. **Do not attempt the induction at the board** — the weighting is fiddly and it is not what your audience came for.
+**Where to stop.** That is the idea. If they want it line by line, say it is two pages (Shearer, *A note on the independence number of triangle-free graphs*, Discrete Math. 46 (1983) 83–87) and offer to send it. **Do not attempt the induction at the board** — the differential equation is not what your audience came for. There is also a modern proof, via the "occupancy method", by Davies, Jenssen, Perkins and Roberts — the same four people whose conjecture would close this problem.
 
 **The follow-up worth being ready for:** *"if greedy gets n·log d/d, and the true independence number of a random graph is twice that, why can't we prove the factor 2?"* That is precisely the open problem — Conjecture 1.1's upper half, and the Davies–Jenssen–Perkins–Roberts route. Say so; it is a good question and the honest answer is "nobody knows."
 
