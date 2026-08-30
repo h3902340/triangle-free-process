@@ -6,6 +6,9 @@ Talk preparation for **Hefty, Horn, King, Pfender — *Improving R(3,k) in just 
   audience with no prior background, with whiteboard cues, timing map, cheat sheet and expected questions.
 * [`listen.html`](listen.html) — teleprompter: reads the spoken lines aloud in the browser (Web Speech API),
   scrolls itself, and shows a pacing table of speaking time against each part's slot.
+* [`script-spoken.txt`](script-spoken.txt) — the spoken lines only, with the maths normalised into words
+  ("root n log n", "k squared over log k"), ready to feed to a neural TTS:
+  `say -v "Ava (Premium)" -f script-spoken.txt -o talk.aiff`
 * [`sim/triangle_free_process.c`](sim/triangle_free_process.c) — exact simulation of the triangle-free
   process, run to maximality; used to check the density constant quoted in the talk.
 * [`sim/RESULTS.md`](sim/RESULTS.md) — the measured numbers.
