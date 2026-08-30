@@ -251,13 +251,28 @@ E[# independent sets of size a] = C(n,a) · (1-p)^{C(a,2)}
 (#triangles)/(#edges) ≈ n p²  = (average degree) × p
 ```
 
-> **Attempt 1 fails**, obviously: G(n,p) has triangles. But there's a classic repair, due to Erdős.
+> **Attempt 1 fails** — but let's be precise about why, because the reason is not that there are *many* triangles. It's that there are *any*. Our witness has to be triangle‑free, full stop; a single triangle disqualifies it.
+>
+> Now, the obvious response from the floor: *"then just take p small enough that there are no triangles at all."* Let me kill that right now, because it's exactly why this subject is hard.
+
+**[WB]**
+
+```
+G(n,p) is honestly triangle-free only when   p = O(1/n)   (average degree O(1))
+  → the graph is mostly isolated vertices and little trees
+  → α is a CONSTANT FRACTION of n
+  → k ≈ cn, so n ≈ k/c, so this proves only  R(3,k) ≳ k     ✗ worthless
+```
+
+> Avoiding triangles honestly costs you everything. The graph you get is so thin that it's almost all independent set.
+>
+> So you have no choice: **build denser than the triangle threshold, and repair the damage afterwards.** And now the ratio we just computed earns its place — it isn't an obituary for Attempt 1, it's the **repair bill**: np² is the number of triangles sitting on each edge. Here's the repair, due to Erdős.
 
 ## The alteration trick, and the first real theorem
 
 > **Alteration**: take G(n,p), then **delete one edge from every triangle**. What's left is triangle‑free. And deleting edges can only *increase* α, but if we delete only a small fraction of edges, α shouldn't change much.
 >
-> For this to work we need the triangles to be fewer than the edges: from the ratio above, we need **np² ≲ 1**, i.e.
+> So the repair is affordable exactly when the bill is small — when there are fewer triangles than edges, so that deleting one edge per triangle doesn't consume the graph. From the ratio, that means **np² ≲ 1**, i.e.
 
 ```
 p ≈ 1/√n

@@ -54,9 +54,11 @@ Two things we need to know about it. (a) How big are its independent sets? Fix a
 
 So with high probability alpha of G n p approximately (2 over p) times log(np). Write that down; it is the most-used formula of the afternoon. Notice, in passing, the meaning of the factor 2: if you build an independent set greedily in a random graph you get about (1 over p) times log(np), and the truth is exactly twice that. Greedy is off by a factor of 2. Hold on to that 2, the entire remaining gap in this problem is that factor of 2. (b) How many triangles does it have? Expected number = n choose 3 times p cubed approximately n cubed p cubed over 6. And the number of edges is approximately n squared p over 2. So
 
-Attempt 1 fails, obviously: G n p has triangles. But there's a classic repair, due to Erdős.
+Attempt 1 fails, but let's be precise about why, because the reason is not that there are many triangles. It's that there are any. Our witness has to be triangle-free, full stop; a single triangle disqualifies it. Now, the obvious response from the floor: "then just take p small enough that there are no triangles at all." Let me kill that right now, because it's exactly why this subject is hard.
 
-Alteration: take G n p, then delete one edge from every triangle. What's left is triangle-free. And deleting edges can only increase alpha, but if we delete only a small fraction of edges, alpha shouldn't change much. For this to work we need the triangles to be fewer than the edges: from the ratio above, we need np squared ≲ 1, i.e.
+Avoiding triangles honestly costs you everything. The graph you get is so thin that it's almost all independent set. So you have no choice: build denser than the triangle threshold, and repair the damage afterwards. And now the ratio we just computed earns its place, it isn't an obituary for Attempt 1, it's the repair bill: np squared is the number of triangles sitting on each edge. Here's the repair, due to Erdős.
+
+Alteration: take G n p, then delete one edge from every triangle. What's left is triangle-free. And deleting edges can only increase alpha, but if we delete only a small fraction of edges, alpha shouldn't change much. So the repair is affordable exactly when the bill is small, when there are fewer triangles than edges, so that deleting one edge per triangle doesn't consume the graph. From the ratio, that means np squared ≲ 1, i.e.
 
 That's the ceiling on the density of this method. Now plug into the independence formula: with p = n to the minus one half, np = root n, so
 

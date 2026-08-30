@@ -360,12 +360,23 @@ UPPER BOUND  = a theorem about all graphs
 <pre class="board"><code>(#triangles)/(#edges) ≈ n p²  = (average degree) × p
 </code></pre>
 <blockquote>
-<p><strong>Attempt 1 fails</strong>, obviously: G(n,p) has triangles. But there's a classic repair, due to Erdős.</p>
+<p><strong>Attempt 1 fails</strong> — but let's be precise about why, because the reason is not that there are <em>many</em> triangles. It's that there are <em>any</em>. Our witness has to be triangle‑free, full stop; a single triangle disqualifies it.</p>
+<p>Now, the obvious response from the floor: <em>"then just take p small enough that there are no triangles at all."</em> Let me kill that right now, because it's exactly why this subject is hard.</p>
+</blockquote>
+<p class="wb"><span class="wb-tag">Whiteboard</span><strong></strong></p>
+<pre class="board"><code>G(n,p) is honestly triangle-free only when   p = O(1/n)   (average degree O(1))
+  → the graph is mostly isolated vertices and little trees
+  → α is a CONSTANT FRACTION of n
+  → k ≈ cn, so n ≈ k/c, so this proves only  R(3,k) ≳ k     ✗ worthless
+</code></pre>
+<blockquote>
+<p>Avoiding triangles honestly costs you everything. The graph you get is so thin that it's almost all independent set.</p>
+<p>So you have no choice: <strong>build denser than the triangle threshold, and repair the damage afterwards.</strong> And now the ratio we just computed earns its place — it isn't an obituary for Attempt 1, it's the <strong>repair bill</strong>: np² is the number of triangles sitting on each edge. Here's the repair, due to Erdős.</p>
 </blockquote>
 <h2>The alteration trick, and the first real theorem</h2>
 <blockquote>
 <p><strong>Alteration</strong>: take G(n,p), then <strong>delete one edge from every triangle</strong>. What's left is triangle‑free. And deleting edges can only <em>increase</em> α, but if we delete only a small fraction of edges, α shouldn't change much.</p>
-<p>For this to work we need the triangles to be fewer than the edges: from the ratio above, we need <strong>np² ≲ 1</strong>, i.e.</p>
+<p>So the repair is affordable exactly when the bill is small — when there are fewer triangles than edges, so that deleting one edge per triangle doesn't consume the graph. From the ratio, that means <strong>np² ≲ 1</strong>, i.e.</p>
 </blockquote>
 <pre class="board"><code>p ≈ 1/√n
 </code></pre>
