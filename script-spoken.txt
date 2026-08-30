@@ -40,7 +40,11 @@ This is the first force in the problem: making the graph dense creates a big ind
 
 This is the second force: making the graph sparse leaves lots of room for an independent set. Now put them together. You are trying to make alpha small, and you have one dial to turn, the density.
 
-If you make the graph dense, (★) kills you. If you make it sparse, (★★) kills you. The best you can do is balance them: d = n d, i.e. d = root n, and then alpha at least root n. So every triangle-free graph on n vertices has alpha at least root n. Translate through our dictionary: if alpha < k then root n < k, so n < k squared. Hence
+If you make the graph dense, (★) kills you. If you make it sparse, (★★) kills you. The best you can do is balance them: d = n d, i.e. d = root n, and then alpha at least root n. So every triangle-free graph on n vertices has alpha at least root n. Now let's cash that in. I'm going to do this translation slowly, because we make exactly this move four more times this afternoon, and it's the only place where the Ramsey number talks to the graph theory.
+
+Look at the dictionary. It says R 3 k > n means: there exists a triangle-free graph on n vertices with alpha < k. Call such a graph a witness, it's a certificate that n vertices still aren't enough to force the pattern. And what we just proved is a statement about every triangle-free graph: alpha at least root n. Put the two together. If a witness exists, then root n at most alpha < k, and so n < k squared. Now read that backwards: once n reaches k squared, a witness cannot exist. No witness means R 3 k > n is false, which means R 3 k at most n. Take n = k squared :
+
+That's the shape of every upper bound in this subject: a theorem about all graphs kills the witnesses, and killing witnesses bounds R from above. Constructions build witnesses; theorems destroy them.
 
 And in the other direction? Can we build a triangle-free graph with alpha as small as root n ? If we could, we'd have R 3 k approximately k squared and we'd be done. This balance, dense enough that there's no room, sparse enough that no neighbourhood is huge, is the whole game. Everything from now on is putting logarithms in the right places on both sides of this. Now let's try to actually build the graph.
 

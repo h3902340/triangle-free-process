@@ -192,11 +192,29 @@ UPPER BOUND  = a theorem about all graphs
 
 > If you make the graph dense, (★) kills you. If you make it sparse, (★★) kills you. The best you can do is balance them: *d* = n/d, i.e. **d = √n**, and then α ≥ √n.
 >
-> So **every** triangle‑free graph on n vertices has α ≥ √n. Translate through our dictionary: if α < k then √n < k, so n < k². Hence
+> So **every** triangle‑free graph on n vertices has α ≥ √n.
+>
+> Now let's cash that in. I'm going to do this translation slowly, because we make exactly this move four more times this afternoon, and it's the only place where the Ramsey number talks to the graph theory.
+
+**[WB — point back at Board A]**
+
+> Look at the dictionary. It says R(3,k) > n means: **there exists** a triangle‑free graph on n vertices with α < k. Call such a graph a **witness** — it's a certificate that n vertices still aren't enough to force the pattern.
+>
+> And what we just proved is a statement about **every** triangle‑free graph: α ≥ √n.
+>
+> Put the two together. If a witness exists, then √n ≤ α < k, and so n < k². Now read that backwards: **once n reaches k², a witness cannot exist.** No witness means R(3,k) > n is false, which means R(3,k) ≤ n. Take n = k²:
 
 ```
-R(3,k) ≤ k² + 1        (two lines of work!)
+      every triangle-free G on n vertices has  α ≥ √n
+                          ⇓
+        no witness survives once  √n ≥ k
+                          ⇓
+              R(3,k) ≤ k² + 1        (two lines of work!)
 ```
+
+> That's the shape of every upper bound in this subject: **a theorem about all graphs kills the witnesses, and killing witnesses bounds R from above.** Constructions build witnesses; theorems destroy them.
+
+*(The +1 is slack, in case you're asked: α ≥ √n is a hair off — the exact balance gives α ≥ √(n+¼) − ½ — so the honest crude bound is k², and I keep the +1 to avoid a rounding digression. Don't put this on the board.)*
 
 > And in the other direction? Can we build a triangle‑free graph with α as small as √n? If we could, we'd have R(3,k) ≈ k² and we'd be done. **This balance — dense enough that there's no room, sparse enough that no neighbourhood is huge — is the whole game.** Everything from now on is putting logarithms in the right places on both sides of this.
 >

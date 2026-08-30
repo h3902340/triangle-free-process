@@ -13,5 +13,9 @@ Talk preparation for **Hefty, Horn, King, Pfender — *Improving R(3,k) in just 
   process, run to maximality; used to check the density constant quoted in the talk.
 * [`sim/RESULTS.md`](sim/RESULTS.md) — the measured numbers.
 
+`sim/render_audio.py` renders the spoken script to MP3 with Piper (neural TTS, runs locally):
+one utterance per sentence, ~190 ms between sentences and ~560 ms between paragraphs,
+`length_scale=1.2` for a ~160 wpm lecture pace.
+
 Build scripts live in `sim/`: `build.py` renders `TALK.md` to `talk.html`; `extract.py` pulls the spoken
 lines out of `TALK.md` and normalises the maths for speech; `mkpage.py` writes `listen.html`.
