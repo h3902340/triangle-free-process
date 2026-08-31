@@ -95,7 +95,15 @@ where $d(v)$ is the degree of $v$ and $d$ is the average degree.
 :::
 
 ::: proof
-Take a uniformly random ordering of the vertices and let $I$ be the set of vertices that come before all of their own neighbours. Then $I$ is independent: if $u$ and $v$ were adjacent and both in $I$, then $u$ would precede $v$ and $v$ would precede $u$.
+Take a uniformly random ordering of the vertices — think of them arriving one at a time — and let
+$$I \;=\; \{\,v : v \text{ arrives before \emph{every} neighbour of } v\,\}.$$
+
+**First, why is $I$ independent?** This needs an argument, because the definition of $I$ tests **one vertex at a time**: it never mentions pairs, so nothing in it obviously prevents two adjacent vertices from both passing their own test. Suppose they did — that $u$ and $v$ are adjacent and both lie in $I$. Then:
+
+- $u \in I$ says $u$ arrives before all of $u$'s neighbours, and $v$ is one of them, so $u$ arrives before $v$;
+- $v \in I$ says $v$ arrives before all of $v$'s neighbours, and $u$ is one of them, so $v$ arrives before $u$.
+
+Both cannot hold in one ordering, so no such pair exists and $I$ is independent. (In words: $I$ is everyone who arrives before all of their own friends. Two friends can never both qualify — one of them arrives first, and then the other has a friend who arrived earlier.)
 
 **Now the step that brings in $\alpha$.** By definition $\alpha(G)$ is the size of the *largest* independent set, so any independent set we can exhibit is a lower bound for it:
 $$\alpha(G) \;\ge\; |I| \qquad\text{for every ordering.}$$
