@@ -308,7 +308,7 @@ UPPER BOUND  = a theorem about all graphs
 </code></pre>
 <blockquote>
 <p>This is the second force: <strong>making the graph sparse leaves lots of room</strong> for an independent set.</p>
-<p>Now put them together. You are trying to make α small, and you have one dial to turn — the density.</p>
+<p>Now put them together. You are trying to make α small, and there is really only <strong>one number you get to choose</strong> — the density. Think of it as the single knob on the machine: turn it up, the graph gets denser; turn it down, it gets sparser. Everything else follows from where you set it.</p>
 </blockquote>
 <p class="wb"><span class="wb-tag">Whiteboard</span><strong></strong> Draw two crossing curves against <em>d</em> on the x-axis: the increasing line <code>d</code>, the decreasing curve <code>n/d</code>. Mark the crossing.</p>
 <blockquote>
@@ -476,14 +476,14 @@ UPPER BOUND  = a theorem about all graphs
 <header class="part" id="part-4"><span class="time">14:55</span><h1><span class="pnum">Part 4</span>The master picture</h1></header>
 <blockquote>
 <p>Everything from 1995 to 2025 fits on this one board. I'm going to build it now and then never erase it.</p>
-<p><strong>The one dial.</strong> Every construction we will discuss produces a graph that is <em>pseudorandom</em> — it looks locally like a random graph — of some density. Parametrise the density like this:</p>
+<p><strong>The one number you choose.</strong> Every construction we will discuss produces a graph that is <em>pseudorandom</em> — it looks locally like a random graph — of some density. So let me write the density in the units that matter:</p>
 </blockquote>
 <p class="wb"><span class="wb-tag">Whiteboard</span><strong>Board C, centre, big</strong></p>
-<pre class="board"><code>        p = c · √(log n / n)          ← c is THE DIAL
+<pre class="board"><code>        p = c · √(log n / n)     ← c is the knob:  the ONE number we choose
         d = pn = c·√(n log n)         ← average degree
 </code></pre>
 <blockquote>
-<p>Why this scaling? Because it's the scale at which the problem lives: recall the balance point was d ≈ √(n log n). The dial <em>c</em> is a pure number, and every result in this area is a statement about <strong>how large a c you can achieve</strong>. Erdős's construction, in these units, had p = 1/√n — that's c = 1/√(log n), which tends to 0. Everybody since has been pushing <em>c</em> up.</p>
+<p>Why this scaling? Because it's the scale at which the problem lives: recall the balance point was d ≈ √(n log n). So <em>c</em> is a pure number — how many times denser than that reference scale your graph is — and here is the claim I want you to hold on to: <strong>every result in this area, for sixty‑five years, is a statement about how large a c you can achieve.</strong> One knob, and everyone has been turning it. Erdős's construction, in these units, had p = 1/√n — that's c = 1/√(log n), which tends to 0. Everybody since has been pushing <em>c</em> up.</p>
 <p>Now, the two forces. Both give lower bounds on α, and I'll express both in units of √(n log n).</p>
 <p><strong>Force 1 — neighbourhoods (★).</strong> α ≥ d = c·√(n log n). So <strong>A ≥ c</strong>. <em>Denser is worse.</em></p>
 <p><strong>Force 2 — first moment.</strong> If the graph behaves like a random graph of the same density, its independent sets have size (2/p)·log(np). Let's evaluate: np = c√(n log n) = n^(1/2 + o(1)), so log(np) = (½ + o(1))·log n, and</p>
@@ -787,7 +787,7 @@ Parameters:   s = log²n,   m = n/s,   p = β·√(log n / n)  with β = ½,
 </blockquote>
 <h2>6.6 Cashing it in</h2>
 <blockquote>
-<p>Put it together. Density 2p = √(log n/n) — that's the dial at <strong>c = 1</strong>:</p>
+<p>Put it together. Density 2p = √(log n/n) — that's the knob at <strong>c = 1</strong>:</p>
 </blockquote>
 <p class="wb"><span class="wb-tag">Whiteboard</span><strong>Board C, complete the master picture</strong></p>
 <pre class="board"><code>   average degree        d ≈ 2pn = √(n log n)

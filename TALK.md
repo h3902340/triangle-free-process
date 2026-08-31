@@ -186,7 +186,7 @@ UPPER BOUND  = a theorem about all graphs
 
 > This is the second force: **making the graph sparse leaves lots of room** for an independent set.
 >
-> Now put them together. You are trying to make α small, and you have one dial to turn — the density.
+> Now put them together. You are trying to make α small, and there is really only **one number you get to choose** — the density. Think of it as the single knob on the machine: turn it up, the graph gets denser; turn it down, it gets sparser. Everything else follows from where you set it.
 
 **[WB]** Draw two crossing curves against *d* on the x-axis: the increasing line `d`, the decreasing curve `n/d`. Mark the crossing.
 
@@ -406,16 +406,16 @@ Kim 1995:   R(3,k) ≥ c·k²/log k     (with c ≈ 1/160, a small explicit cons
 
 > Everything from 1995 to 2025 fits on this one board. I'm going to build it now and then never erase it.
 >
-> **The one dial.** Every construction we will discuss produces a graph that is *pseudorandom* — it looks locally like a random graph — of some density. Parametrise the density like this:
+> **The one number you choose.** Every construction we will discuss produces a graph that is *pseudorandom* — it looks locally like a random graph — of some density. So let me write the density in the units that matter:
 
 **[WB — Board C, centre, big]**
 
 ```
-        p = c · √(log n / n)          ← c is THE DIAL
+        p = c · √(log n / n)     ← c is the knob:  the ONE number we choose
         d = pn = c·√(n log n)         ← average degree
 ```
 
-> Why this scaling? Because it's the scale at which the problem lives: recall the balance point was d ≈ √(n log n). The dial *c* is a pure number, and every result in this area is a statement about **how large a c you can achieve**. Erdős's construction, in these units, had p = 1/√n — that's c = 1/√(log n), which tends to 0. Everybody since has been pushing *c* up.
+> Why this scaling? Because it's the scale at which the problem lives: recall the balance point was d ≈ √(n log n). So *c* is a pure number — how many times denser than that reference scale your graph is — and here is the claim I want you to hold on to: **every result in this area, for sixty‑five years, is a statement about how large a c you can achieve.** One knob, and everyone has been turning it. Erdős's construction, in these units, had p = 1/√n — that's c = 1/√(log n), which tends to 0. Everybody since has been pushing *c* up.
 >
 > Now, the two forces. Both give lower bounds on α, and I'll express both in units of √(n log n).
 >
@@ -793,7 +793,7 @@ Parameters:   s = log²n,   m = n/s,   p = β·√(log n / n)  with β = ½,
 
 ## 6.6 Cashing it in
 
-> Put it together. Density 2p = √(log n/n) — that's the dial at **c = 1**:
+> Put it together. Density 2p = √(log n/n) — that's the knob at **c = 1**:
 
 **[WB — Board C, complete the master picture]**
 
