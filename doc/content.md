@@ -192,6 +192,61 @@ Running the greedy algorithm of Lemma 3.2 on $G(n,p)$ produces about $(1/p)\log(
 Remember this factor of $2$. At the very end of these notes it turns out to be the entire remaining gap in the problem.
 :::
 
+### 5.1 The two moment methods
+
+The word *moment* just means an average of a power: the **first moment** of a random variable $X$ is $\mathbb{E}X$, the **second moment** is $\mathbb{E}[X^2]$. They name the two standard tools, and the pair is worth holding in mind, because the whole subject alternates between them.
+
+- **First moment method.** Compute $\mathbb{E}X$. If $X$ counts objects, so $X \ge 0$ and integer-valued, Markov's inequality gives $\mathbb{P}(X\ge1)\le\mathbb{E}X$. So if $\mathbb{E}X \to 0$ then whp $X = 0$: **the objects do not exist.** That is Lemma 5.2.
+- **Second moment method.** Knowing $\mathbb{E}X$ is *large* does **not** show $X>0$ — a lottery ticket has a large expected payout and almost always pays nothing. You also need $X$ to be concentrated, and that is what the variance measures. Chebyshev's inequality gives
+$$\mathbb{P}(X=0) \;\le\; \frac{\mathrm{Var}(X)}{(\mathbb{E}X)^2} \;=\; \frac{\mathbb{E}[X^2]}{(\mathbb{E}X)^2}-1 .$$
+So if the ratio $\mathbb{E}[X^2]/(\mathbb{E}X)^2$ tends to $1$, then whp $X>0$: **the objects do exist.**
+
+### 5.2 The reverse bound, and what it would take
+
+So: can we prove that $\alpha(G(n,p))$ is also not much *smaller* than $\frac2p\log(np)$? Yes — and here is the machine, set up exactly.
+
+::: prop
+With $X$ the number of independent sets of size $a$, and $I$ the size of the intersection of two independently chosen uniform $a$-subsets of the $n$ vertices,
+$$\frac{\mathbb{E}[X^2]}{(\mathbb{E}X)^2} \;=\; \mathbb{E}\Big[(1-p)^{-\binom I2}\Big] \;=\; \sum_{i=0}^{a} \frac{\binom ai\binom{n-a}{a-i}}{\binom na}\,(1-p)^{-\binom i2}.$$
+:::
+
+::: proof
+Write $X = \sum_S \mathbb{1}_S$ over the $a$-subsets $S$, where $\mathbb{1}_S$ indicates that $S$ is independent. For two sets $S,T$, the event that both are independent says that every pair inside $S$ and every pair inside $T$ is a non-edge; the pairs lying inside $S\cap T$ are common to both lists and so are counted once, not twice. Hence
+$$\mathbb{E}[\mathbb{1}_S\mathbb{1}_T] \;=\; (1-p)^{\,2\binom a2 - \binom{|S\cap T|}{2}}.$$
+Summing over all ordered pairs $(S,T)$ and dividing by $(\mathbb{E}X)^2 = \binom na^2 (1-p)^{2\binom a2}$ leaves
+$$\frac{\mathbb{E}[X^2]}{(\mathbb{E}X)^2} \;=\; \frac{1}{\binom na^2}\sum_{S,T}(1-p)^{-\binom{|S\cap T|}{2}},$$
+which is the average of $(1-p)^{-\binom I2}$ over a uniformly random pair $(S,T)$. The intersection size $I$ of two independent uniform $a$-sets is hypergeometric, with the displayed probabilities.
+:::
+
+Now one can see both why it works and where the difficulty is. Two independent $a$-sets typically meet in about $\mu = a^2/n$ vertices, which at our density is about $\log n$; and
+$$(1-p)^{-\binom \mu2} \;\approx\; e^{\,p\mu^2/2} \;=\; \exp\Big(\tfrac12\sqrt{\tfrac{\log n}{n}}\,\log^2 n\Big) \;\longrightarrow\; 1 ,$$
+so the typical term contributes $1$, as it must. At the other extreme $i = a$ the two sets coincide, and that single term is $\binom na^{-1}(1-p)^{-\binom a2} = 1/\mathbb{E}X$, which tends to $0$ precisely because we are below the threshold. **The content of the proof is that every intermediate $i$ is also negligible**, and that is a genuinely delicate estimate — the terms first fall, then rise again — which is why we do not reproduce it here. It is classical (Bollobás and Erdős; see also Frieze for the sharp form, which pins $\alpha$ to within an additive $o(1/p)$).
+
+::: note The machine, run numerically
+Since the identity above is exact, we can simply evaluate it. Writing $a^*$ for the true threshold — the largest $a$ with $\mathbb{E}X \ge 1$ — and taking $a = 0.95\,a^*$, at $p = \sqrt{\log n/n}$:
+
+| $n$ | $a$ | $\log \mathbb{E}X$ | $\mathbb{E}[X^2]/(\mathbb{E}X)^2 - 1$ |
+|---|---|---|---|
+| $10^5$ | $980$ | $329$ | $0.75$ |
+| $10^6$ | $3384$ | $1308$ | $0.29$ |
+| $10^7$ | $11535$ | $5048$ | $0.12$ |
+
+The first moment blows up and the variance ratio falls towards $1$, so by Chebyshev $\mathbb{P}(X=0)$ is already at most $0.12$ at $n=10^7$ and shrinking. The second moment method really does deliver the matching bound.
+:::
+
+::: warn How slowly these asymptotics converge
+The same computation contains a warning worth heeding whenever you use these formulas at a finite $n$. The asymptotic threshold $\frac2p\log(np)$ *overshoots* the true $a^*$ badly:
+
+| $n$ | $a^*$ | $\frac2p\log(np)$ | ratio |
+|---|---|---|---|
+| $10^5$ | $1032$ | $1301$ | $0.79$ |
+| $10^6$ | $3563$ | $4423$ | $0.81$ |
+| $10^7$ | $12143$ | $14885$ | $0.82$ |
+| $10^8$ | $40995$ | $49708$ | $0.82$ |
+
+The ratio does tend to $1$ — the gap is the $\log\log(np)$ term we discarded in the proof of Lemma 5.2 — but even at $n = 10^8$ it is still $18\%$ out. This is the same phenomenon as Shearer's $f(d)$ approaching $\log d/d$ from below (Section 9), and as the slow drift in simulations of the triangle-free process. **These are statements about the limit, and the limit arrives late.**
+:::
+
 ## 6. The deletion method, and the barrier it creates
 
 A random graph is not triangle-free, and lowering $p$ until it is destroys everything: $G(n,p)$ has no triangles at all only when $p = O(1/n)$, where the graph is a scattering of isolated vertices and small trees, $\alpha$ is a constant fraction of $n$, and the dictionary yields only $R(3,k) \gtrsim k$.

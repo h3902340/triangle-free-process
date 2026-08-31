@@ -82,7 +82,8 @@ function render(md) {
     const L = lines[i];
     const m = L.match(/^:::\s*(\w+)\s*(.*)$/);
     if (m) {
-      const kind = m[1], title = m[2];
+      const kind = m[1];
+      const title = m[2] ? restore(inlineFmt(m[2])) : '';
       const body = [];
       i++;
       while (i < lines.length && !/^:::\s*$/.test(lines[i])) body.push(lines[i++]);
