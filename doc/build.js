@@ -133,6 +133,10 @@ function render(md) {
       html += '<blockquote>' + renderInner(q.join('\n'), restore) + '</blockquote>'; continue;
     }
     if (L.trim() === '') { i++; continue; }
+    if (/^:::\s*$/.test(L)) {            // stray close marker: a box was nested inside another
+      console.error('WARNING line ' + (i+1) + ': unmatched ":::" — boxes cannot nest. Skipping.');
+      i++; continue;
+    }
     const para = [];
     while (i < lines.length && lines[i].trim() !== '' &&
            !/^(#{1,4}\s|:::|---+$|\s*[-*]\s|\s*\d+\.\s|\s*\||>\s|\\pagebreak)/.test(lines[i])) para.push(lines[i++]);

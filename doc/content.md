@@ -282,11 +282,26 @@ Count with indicators, exactly as in the notation box: $|S \cap T| = \sum_{v \in
 $$\mathbb{E}|S\cap T| \;=\; \sum_{v\in S}\mathbb{P}(v\in T) \;=\; a\cdot\frac an \;=\; \frac{a^2}{n}.$$
 Note this holds for *every* $S$, so it is also the answer when $S$ is random.
 
-For the variance, $|S\cap T|$ is hypergeometric — drawing $a$ vertices without replacement from $n$, of which $a$ are "marked" — with
-$$\mathrm{Var} \;=\; a\cdot\frac an\Big(1-\frac an\Big)\frac{n-a}{n-1} \;\le\; \frac{a^2}{n} \;=\; \mu .$$
+For the variance we cannot just add up the variances of the $\mathbb{1}_{v\in T}$, because they are **not independent**: $T$ has a fixed size $a$, so a vertex being in $T$ makes it slightly harder for the next one to be. The correct identity for a sum is
+$$\mathrm{Var}\Big(\sum_{v\in S}\mathbb{1}_{v\in T}\Big) \;=\; \sum_{v\in S}\mathrm{Var}\big(\mathbb{1}_{v\in T}\big) \;+\; \sum_{u\ne v}\mathrm{Cov}\big(\mathbb{1}_{u\in T},\mathbb{1}_{v\in T}\big),$$
+where $\mathrm{Cov}(X,Y) = \mathbb{E}[XY]-\mathbb{E}X\,\mathbb{E}Y$ measures how two quantities move together. Write $q = a/n$. Each single term is an indicator, so $\mathrm{Var}(\mathbb{1}_{v\in T}) = q(1-q)$. For a pair $u \ne v$, the chance that *both* land in $T$ is $\frac{a}{n}\cdot\frac{a-1}{n-1}$ — after $u$ takes one of the $a$ places, $v$ competes for the remaining $a-1$ among $n-1$ vertices — so
+$$\mathrm{Cov} \;=\; \frac an\cdot\frac{a-1}{n-1} - q^2 \;=\; q\left[\frac{a-1}{n-1}-\frac an\right] \;=\; q\cdot\frac{n(a-1)-a(n-1)}{n(n-1)} \;=\; -\,\frac{q(n-a)}{n(n-1)} \;<\; 0 .$$
+The covariance is **negative**, which is the fixed size of $T$ making itself felt. Summing over the $a$ diagonal terms and the $a(a-1)$ ordered pairs, and using $1-q = (n-a)/n$,
+$$\mathrm{Var} \;=\; a\,q(1-q) \;-\; a(a-1)\frac{q(n-a)}{n(n-1)} \;=\; a\,q\,\frac{n-a}{n}\left[1-\frac{a-1}{n-1}\right] \;=\; a\cdot\frac an\Big(1-\frac an\Big)\frac{n-a}{n-1},$$
+which is at most $a^2/n = \mu$ because the last two factors are each at most $1$.
+
 Chebyshev's inequality (Lemma 5.5) then gives, for any fixed $\varepsilon>0$,
 $$\mathbb{P}\big(\,\big||S\cap T|-\mu\big| \ge \varepsilon\mu\,\big) \;\le\; \frac{\mathrm{Var}}{\varepsilon^2\mu^2} \;\le\; \frac{1}{\varepsilon^2\mu} \;\longrightarrow\; 0 .$$
 :::
+
+::: note What "hypergeometric" means, and why the extra factor
+The count $|S\cap T|$ is a textbook **hypergeometric** random variable: an urn holds $n$ balls of which $a$ are marked (the members of $S$), you draw $a$ of them **without replacement** (the set $T$), and you count the marked ones. Its distribution is the $f(i)$ of the Proposition — choose which $i$ of the $a$ marked balls and which $a-i$ of the $n-a$ unmarked ones, out of $\binom na$ equally likely draws.
+
+Had the draws been independent — each vertex tossed into $T$ with probability $q$, so that $|T|$ merely *averaged* $a$ — the count would be **binomial**, with variance $aq(1-q)$. Sampling without replacement instead multiplies this by
+$$\frac{n-a}{n-1} \;<\; 1,$$
+the *finite population correction*, and it is exactly the negative covariance computed above. Fixing the size of $T$ makes the sample **self-balancing**: an unusually full draw early leaves fewer places later. So sampling without replacement is always at least as concentrated as independent coin flips — which is why we may be generous and simply use $\mathrm{Var} \le \mu$.
+:::
+
 
 At our density $a \approx \sqrt{n\log n}$, so $\mu = a^2/n \approx \log n$, which does tend to infinity — the overlap is concentrated, and two random $a$-sets really do meet in about $\log n$ vertices. Now
 $$(1-p)^{-\binom \mu2} \;\approx\; e^{\,p\mu^2/2} \;=\; \exp\Big(\tfrac12\sqrt{\tfrac{\log n}{n}}\,\log^2 n\Big) \;\longrightarrow\; 1 ,$$
