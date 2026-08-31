@@ -157,11 +157,24 @@ then with high probability $\alpha(G(n,p)) < a$.
 Let $X$ be the number of independent sets of size $a$. A fixed set of $a$ vertices is independent exactly when all $\binom a2$ pairs inside it are non-edges, which has probability $(1-p)^{\binom a2}$, so
 $$\mathbb{E}X \;=\; \binom na (1-p)^{\binom a2} \;\le\; \left(\frac{en}{a}\right)^{a} e^{-p a(a-1)/2} \;=\; \exp\!\Big(a\Big[\log \tfrac{en}{a} - \tfrac{p(a-1)}{2}\Big]\Big),$$
 using $\binom na \le (en/a)^a$ and $1-p \le e^{-p}$. The bracket is negative as soon as
-$$\frac{p(a-1)}{2} \;>\; \log\frac{en}{a}, \qquad\text{i.e.}\qquad a \;>\; (1+o(1))\,\frac{2}{p}\log\frac{n}{a}.$$
-For $p$ in our range $a$ will be $n^{1/2+o(1)}$, so $\log(n/a) = (1+o(1))\log (np)$, and the displayed condition is the hypothesis. Then $\mathbb{E}X \to 0$, and since $X$ is a non-negative integer, Markov's inequality gives $\mathbb{P}(X \ge 1) \le \mathbb{E}X \to 0$. So with high probability $X = 0$: there is no independent set of size $a$ at all, which is to say $\alpha(G(n,p)) < a$.
+$$\log\frac{en}{a} \;<\; \frac{p(a-1)}{2}. \tag{$\dagger$}$$
+
+So take $a = (1+\varepsilon)\frac{2}{p}\log(np)$ for a fixed $\varepsilon>0$ and compare the two sides.
+
+*Right-hand side.* Immediately, $\dfrac{p(a-1)}{2} = (1+\varepsilon)\log(np) - \dfrac p2 = (1+\varepsilon+o(1))\log(np)$.
+
+*Left-hand side.* Substituting the same $a$,
+$$\frac na \;=\; \frac{np}{2(1+\varepsilon)\log(np)}, \qquad\text{so}\qquad \log\frac{en}{a} \;=\; \log(np) \;-\; \log\log(np) \;+\; O(1).$$
+Since $np \to \infty$ and $\log\log x = o(\log x)$, this is $(1+o(1))\log(np)$.
+
+The left side is therefore $(1+o(1))\log(np)$ and the right side is $(1+\varepsilon+o(1))\log(np)$, so $(\dagger)$ holds for all large $n$ — the fixed $\varepsilon$ is exactly the slack absorbed by the $(1+o(1))$ in the statement. Then $\mathbb{E}X \to 0$, and since $X$ is a non-negative integer, Markov's inequality gives $\mathbb{P}(X \ge 1) \le \mathbb{E}X \to 0$. So with high probability $X = 0$: there is no independent set of size $a$ at all, which is to say $\alpha(G(n,p)) < a$.
 :::
 
 The matching lower bound also holds — a random graph really does have independent sets of that size — so we may treat $\alpha(G(n,p)) \approx (2/p)\log(np)$ as an equality. This is the single formula we use most.
+
+It is worth seeing it once at the density that will matter. For $p = c\sqrt{\log n/n}$ we have $np = c\sqrt{n\log n}$, hence $\log(np) = (\tfrac12+o(1))\log n$, and so
+$$\alpha(G(n,p)) \;\approx\; \frac2p\cdot\frac{\log n}{2} \;=\; \frac{\log n}{p} \;=\; \frac1c\sqrt{n\log n}.$$
+The halving of $\log n$ into $\tfrac12\log n$ — because $np$ is roughly $\sqrt n$ rather than $n$ — is what makes the formula come out as $\log n / p$ rather than $2\log n / p$, and it is used again in Sections 8 and 14.
 
 ::: note Greedy versus optimal, and a factor of $2$
 Running the greedy algorithm of Lemma 3.2 on $G(n,p)$ produces about $(1/p)\log(np)$ vertices — exactly **half** of the truth. I verified this numerically: at $n = 80{,}000$ and average degree $d = np = 50$, greedy returns $6{,}282$ vertices and $n\log d/d$ predicts $6{,}259$.
