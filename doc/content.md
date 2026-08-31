@@ -246,24 +246,104 @@ Now the entire history of the problem is one number climbing towards $1$:
 | $1$ | $1$ | $1/2$ | **this paper**, October 2025 |
 :::
 
-## 9. The upper bound, and what is left open
+## 9. The other side: Shearer's theorem, with proof
 
-For completeness, the other side. The following is not proved here.
+Everything so far has been about building witnesses. Now the opposite activity, so that we know what we are aiming at — and because the gap that remains today is entirely on this side.
 
-::: theorem Ajtai–Komlós–Szemerédi 1980; Shearer 1983
-Every triangle-free graph on $n$ vertices with average degree $d$ satisfies
-$$\alpha(G) \;\ge\; (1+o(1))\,\frac{n\log d}{d}.$$
+### 9.1 The statement
+
+Shearer's function is defined by a recursion. Set
+$$f(0) = 1, \qquad f(d) \;=\; \frac{1 + (d^2-d)f(d-1)}{d^2+1} \quad (d \ge 1),$$
+so $f(1) = 1/2$, $f(2) = 3/7$, and so on. The continuous version of the same recursion is the differential equation
+$$(d+1)f(d) \;+\; (d^2-d)\,f'(d) \;=\; 1, \qquad f(0)=1,$$
+whose solution is available in closed form:
+$$f(d) \;=\; \frac{d\log d - d + 1}{(d-1)^2} \;=\; (1+o(1))\,\frac{\log d}{d}.$$
+
+::: note A remark on the two versions and their dates
+Shearer proved $\alpha(G) \ge n f(d)$ for the closed-form $f$ above, with $d$ the *average* degree, in 1983 (*Discrete Math.* 46, 83–87). In 1991 (*JCTB* 53, 300–307) he strengthened it to the per-vertex sum $\alpha(G) \ge \sum_i f(d_i)$ with the difference-equation $f$ — an improvement of exactly the kind by which Caro and Wei strengthened Turán's theorem, and which we already met in Lemma 3.2. The proof below is the 1991 one; it contains the 1983 statement, since $f$ is convex and Jensen's inequality gives $\sum_i f(d_i) \ge n f(d)$.
+
+The approach to $\log d/d$ is slow and from below: at $d = 1000$ the ratio $f(d)\big/(\log d/d)$ is still only $0.86$. That is where the $(1+o(1))$ lives.
 :::
 
-Compare this with the two values in Section 5: it is exactly what **greedy** achieves on a random graph of the same density, and half of what the *optimal* independent set achieves there. So Shearer's theorem says: *no triangle-free graph is worse, as far as greedy can see, than a random graph of the same density.*
+::: theorem Shearer 1983, 1991
+Let $G$ be triangle-free with degree sequence $d_1,\dots,d_n$. Then
+$$\alpha(G) \;\ge\; \sum_{i=1}^{n} f(d_i) \;\ge\; n\,f(d) \;=\; (1+o(1))\,\frac{n\log d}{d}.$$
+:::
 
-Combining it with $\alpha \ge d$ and minimising over $d$ — the crossing is at $d^2 = n\log d$, i.e. $d = \sqrt{n\log n/2}$ — gives $\alpha \ge (1/\sqrt2)\sqrt{n\log n}$ for every triangle-free graph, that is $A \ge 1/\sqrt2$, and hence, via the exchange rate,
+### 9.2 The proof
+
+We need one property of $f$, which is a calculation we take on trust: both $f(d)$ and the successive difference $f(d) - f(d+1)$ are decreasing in $d$. The second of these is the only structural fact used below, and it gives the inequality
+$$f(d-n)-f(d) \;\ge\; n\big[f(d-1)-f(d)\big] \qquad (0 \le n \le d), \tag{$\ast$}$$
+since the left side is a sum of $n$ successive differences, each at least the last one.
+
+::: proof
+By induction on $n$; the case $n=0$ is trivial. Write $S = \sum_i f(d_i)$.
+
+**Setting up.** Fix a vertex $i$. Let $S_i = N(i)$ be its neighbours and let $S_i'$ be the vertices at distance exactly $2$ from $i$. For $k \in S_i'$ put $n_k = |N(k)\cap S_i| \ge 1$. Let $H_i = G - N[i]$ be the graph obtained by deleting $i$ together with all of its neighbours.
+
+Which degrees change in $H_i$? A vertex at distance $\ge 3$ from $i$ loses nothing. A vertex $k \in S_i'$ loses exactly its $n_k$ neighbours in $S_i$. So the corresponding sum for $H_i$ is
+$$T_i \;=\; S \;-\; f(d_i) \;-\; \sum_{j\in S_i} f(d_j) \;+\; \sum_{k \in S_i'}\Big[f(d_k - n_k) - f(d_k)\Big].$$
+
+$H_i$ is again triangle-free, so by induction $\alpha(H_i) \ge T_i$. Moreover $\alpha(G) \ge 1 + \alpha(H_i)$: take a maximum independent set of $H_i$ and add $i$ to it, which is legal because $H_i$ contains no neighbour of $i$. So the theorem follows if we can find a single vertex $i$ with
+$$1 - f(d_i) - \sum_{j\in S_i} f(d_j) + \sum_{k\in S_i'}\big[f(d_k-n_k)-f(d_k)\big] \;\ge\; 0. \tag{$\dagger$}$$
+
+**It holds on average.** Let $A$ be the sum of the left-hand side of $(\dagger)$ over all $i$; we show $A \ge 0$, which forces some $i$ to satisfy $(\dagger)$.
+
+Interchange the order of summation in the two sums. Each vertex $j$ appears in $\sum_{j \in S_i} f(d_j)$ once for each of its $d_j$ neighbours $i$, contributing $d_j f(d_j)$ in total. And $k \in S_i'$ if and only if $i \in S_k'$, with the same count $n$ of common neighbours either way. Hence
+$$A \;=\; \sum_{i=1}^n \Big[\,1 - (d_i+1)f(d_i) + B_i\,\Big], \qquad\text{where}\qquad B_i \;=\; \sum_{k\in S_i'}\big[f(d_i - n_k) - f(d_i)\big].$$
+
+**Where triangle-freeness enters.** Apply $(\ast)$ to each term of $B_i$:
+$$B_i \;\ge\; \Big(\sum_{k \in S_i'} n_k\Big)\big[f(d_i-1)-f(d_i)\big].$$
+Now $\sum_{k\in S_i'} n_k$ counts the edges between $S_i$ and $S_i'$. Because $G$ is triangle-free, **$S_i$ spans no edges at all**, so every edge leaving a vertex $j \in S_i$, other than the edge $ji$ itself, must land in $S_i'$. Therefore the count is exactly $\sum_{j\in S_i}(d_j-1)$, with nothing double-counted, and
+$$B_i \;\ge\; \Big(\sum_{j \sim i}(d_j-1)\Big)\big[f(d_i-1)-f(d_i)\big].$$
+
+This is the only place the hypothesis is used, and it is the whole gain: in a graph with triangles, edges inside $S_i$ would be counted twice and the bound would be weaker.
+
+**Summing.** Write $\delta_i = f(d_i-1)-f(d_i)$, which by our property of $f$ is *decreasing* in $d_i$. Summing the last display over $i$ groups the terms by edges:
+$$\sum_i B_i \;\ge\; \sum_{ij \in E}\Big[(d_j-1)\delta_i + (d_i-1)\delta_j\Big] \;\ge\; \sum_{ij\in E}\Big[(d_i-1)\delta_i + (d_j-1)\delta_j\Big] \;=\; \sum_i (d_i^2-d_i)\,\delta_i .$$
+The middle inequality is a rearrangement: $\delta$ is decreasing in the degree, so $(d_i-d_j)(\delta_j-\delta_i) \ge 0$, which expands to exactly the swap performed. The final equality holds because each vertex $i$ lies in $d_i$ edges and contributes $(d_i-1)\delta_i$ to each.
+
+**The recursion does the rest.** Substituting,
+$$A \;\ge\; \sum_{i=1}^n \Big[\,1 - (d_i+1)f(d_i) + (d_i^2-d_i)\big(f(d_i-1)-f(d_i)\big)\Big],$$
+and every bracket is *zero*, because
+$$(d+1)f(d) = 1 + (d^2-d)\big(f(d-1)-f(d)\big) \iff (d^2+1)f(d) = 1 + (d^2-d)f(d-1),$$
+which is the definition of $f$. Hence $A \ge 0$, some $i$ satisfies $(\dagger)$, and the induction closes.
+:::
+
+::: idea What the proof is really doing
+Strip away the algebra and one move remains: **delete a vertex and its whole neighbourhood, and recurse.** Deleting $N[i]$ buys you one vertex of the independent set and costs you $1 + d_i$ vertices of the graph.
+
+Triangle-freeness is used exactly once, to say that $N(i)$ spans no edges — so removing it destroys *every* edge that touches it, with nothing counted twice. Each step is therefore maximally destructive: the graph that remains is sparser than it has any right to be, and $f$ is precisely the bookkeeping that converts that surplus, iterated, into the extra factor of $\log d$ over the greedy bound $n/(d+1)$.
+
+Shearer's Remark 1 makes the connection to Section 5 exact: the bound $\sum_i f(d_i)$ is achieved *on average* by the random greedy algorithm — pick a random vertex, take it, delete its neighbourhood, repeat. So his theorem says, in a precise sense: **no triangle-free graph is worse for greedy than a random graph of the same density.** That is the same statement we checked numerically in Section 5.
+:::
+
+### 9.3 The resulting upper bound, and the factor of $2$
+
+Combine Shearer with the neighbourhood bound $\alpha \ge d$ and minimise over $d$: the crossing is at $d^2 = n\log d$, and since $\log d = (\tfrac12+o(1))\log n$ there, $d = \sqrt{n\log n/2}$. Hence every triangle-free graph has
+$$\alpha(G) \;\ge\; \Big(\tfrac{1}{\sqrt2}+o(1)\Big)\sqrt{n\log n}, \qquad\text{i.e.}\qquad A \ge \tfrac{1}{\sqrt2},$$
+and the exchange rate of Section 7 turns this into
 $$R(3,k) \;\le\; (1+o(1))\,\frac{k^2}{\log k}.$$
+This has been the best known upper bound since 1983.
 
-::: idea Where the problem now stands
-The lower bound of this paper is $\tfrac12$ and the upper bound is $1$. The gap is a factor of $2$ — and it is precisely the greedy-versus-optimal factor of $2$ from Section 5. Shearer's theorem gives every triangle-free graph the *greedy* value; the conjecture (Campos–Jenssen–Michelen–Sahasrabudhe, Conjecture 1.1 of the paper) is that the *optimal* value holds for all of them, i.e. that
-$$R(3,k) = \left(\tfrac12+o(1)\right)\frac{k^2}{\log k}.$$
-A conjecture of Davies, Jenssen, Perkins and Roberts on the maximum versus average size of an independent set in a triangle-free graph would imply it. What this paper does is prove that if the conjecture is true, it is **sharp**: there is now a construction sitting exactly on it.
+So the lower bound of this paper is $\tfrac12$ and the upper bound is $1$: a factor of $2$. That factor is not mysterious. Shearer's theorem delivers the *greedy* value $n\log d/d$; a random graph of the same density actually contains an independent set of size $2n\log d/d$ (Section 5). The conjecture is that every triangle-free graph does as well as the random one.
+
+Davies, Jenssen, Perkins and Roberts made this precise, and their formulation is the cleanest way to state what is missing. For a graph $G$ let $\alpha_G(1)$ denote the **average** size of an independent set, averaged uniformly over all independent sets of $G$ (including the empty one).
+
+::: theorem Davies–Jenssen–Perkins–Roberts 2018
+Let $G$ be triangle-free on $n$ vertices with maximum degree $d$. Then
+$$\alpha_G(1) \;\ge\; (1+o_d(1))\,\frac{\log d}{d}\,n .$$
+:::
+
+That is Shearer's bound for the *average* independent set, which is strictly stronger than Shearer's bound for the largest one. What remains is to show that the largest is substantially bigger than the average.
+
+::: note The conjectures, and exactly what they would give
+- **Conjecture 1.** For every triangle-free $G$: $\ \alpha(G)/\alpha_G(1) \ge 4/3$. This implies $R(3,k) \le (3/4+o(1))k^2/\log k$.
+- **Conjecture 2.** For every triangle-free $G$ of minimum degree $d$: $\ \alpha(G)/\alpha_G(1) \ge 2 - o_d(1)$. This implies $R(3,k) \le (\tfrac12+o(1))k^2/\log k$ — and hence, with this paper, would settle the problem.
+
+For a random graph the ratio $\alpha/\alpha_G(1)$ is $2$, which is the factor we have been tracking all along. The smallest ratio the authors could find in any triangle-free graph is $1.43283\ldots$, attained by the cyclic graph witnessing $R(3,9) \ge 36$; they picked $4/3$ for Conjecture 1 as a round number below it, and note it is the ratio of maximum to average in a triangle.
+
+So the state of the problem is: **the construction side is finished, and the remaining factor of $2$ is the assertion that in a triangle-free graph the biggest independent set is at least twice the average one.**
 :::
 
 \pagebreak
@@ -474,7 +554,7 @@ That is the paper. The classical method failed because triangles were spread thi
 *Randomness gives triangle-free graphs that are too sparse; blow-ups give graphs that are dense but too structured; overlay two blow-ups and the structures cancel while the density survives — and the triangles you create pile up so neatly that they can be swept away almost for free.*
 :::
 
-**Why this is the end of the road.** At the optimum the construction's independence number equals its average degree, and both equal what a random graph of the same density would give. To beat the constant $\tfrac12$ you would need a triangle-free graph that is *sparser* and yet has independent sets *smaller than a random graph of that density* — an object nobody knows how to build for any problem of this type. The remaining gap to the known upper bound is a factor of $2$, and it is exactly the gap between what a greedy algorithm finds in a random graph and what is actually there.
+**Why this is the end of the road.** At the optimum the construction's independence number equals its average degree, and both equal what a random graph of the same density would give. To beat the constant $\tfrac12$ you would need a triangle-free graph that is *sparser* and yet has independent sets *smaller than a random graph of that density* — an object nobody knows how to build for any problem of this type. The remaining gap to the known upper bound is a factor of $2$, and it now has a precise name: by Davies–Jenssen–Perkins–Roberts it is the assertion that in a triangle-free graph the *largest* independent set is at least twice the *average* one, as it is in a random graph.
 
 **A footnote on style, which is part of the story.** The two previous constructions of this quality were a $125$-page AMS Memoir and a $52$-page paper, both analysing a random *process* through differential equations. This is a construction: five lines to write down, two estimates to check, fifteen pages. Joel Spencer wrote in 2011 that the constant "seems beyond our reach", and in the same chapter: *"My dream is a ten-page paper which gives $R(3,k) = \Theta(k^2/\log k)$."* The authors point out that a weakened version of their construction, combined with Shearer's one-page upper bound, would hand him exactly that.
 
@@ -487,7 +567,7 @@ The method has already left the building: within five months it had been used fo
 ::: note Provenance
 **Proved in full above,** from first principles: the dictionary (§2); $\alpha \ge \Delta$ and Caro–Wei (§3); $R(3,k)\le k^2$ (§4); the first-moment bound for $G(n,p)$ (§5); the conversion lemma and the barrier $A(c) = \max(c,1/c)$ (§7–8); that blow-ups beat the deletion threshold and that a single blow-up has independence number $s\,\alpha(H)$ (§10–11); the bunching lemma and the deletion cost (§13); the projection criterion and the exponent computation locating $\kappa = 1$ (§14); and Theorem 1.2 from Theorem 1.3 (§15).
 
-**Stated without proof:** Shearer's theorem (§9), which is a two-page paper of 1983 and is on the upper-bound side of the story; and the paper's Lemma 4.2 tail estimate quoted inside the proof in §14.
+**Stated without proof:** the monotonicity of $f$ and of its successive differences, used in §9.2 (a calculus exercise in Shearer's Lemma 1); the Davies–Jenssen–Perkins–Roberts theorem quoted in §9.3, which is proved by the occupancy method; and the paper's Lemma 4.2 tail estimate quoted inside the proof in §14.
 
 **Heuristic, not proof:** the independence computation of §14 is the paper's Section 4 with its correction terms dropped. It reproduces the sharp threshold $\kappa=1$ exactly, which is why it is worth seeing, but the corrections are what the paper's Section 3 exists to control; §14's caveat box says precisely what they are.
 
@@ -501,6 +581,6 @@ The method has already left the building: within five months it had been used fo
 - G. Fiz Pontiveros, S. Griffiths, R. Morris, *The triangle-free process and the Ramsey number $R(3,k)$*, Memoirs AMS 263 (2020).
 - T. Bohman, P. Keevash, *Dynamic concentration of the triangle-free process*, Random Structures & Algorithms (2021).
 - J. H. Kim, *The Ramsey number $R(3,t)$ has order of magnitude $t^2/\log t$* (1995).
-- J. B. Shearer, *A note on the independence number of triangle-free graphs*, Discrete Math. 46 (1983) 83–87.
+- J. B. Shearer, *A note on the independence number of triangle-free graphs*, Discrete Math. 46 (1983) 83–87; and *…, II*, J. Combin. Theory Ser. B 53 (1991) 300–307.
 - P. Erdős, *Graph theory and probability II*, Canad. J. Math. 13 (1961).
 - E. Davies, M. Jenssen, W. Perkins, B. Roberts, *On the average size of independent sets in triangle-free graphs*, Proc. AMS 146 (2018).

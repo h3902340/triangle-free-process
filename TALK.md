@@ -980,17 +980,21 @@ and f(d) ~ log d / d. (It approaches it slowly from below — at d = 1000 the ra
 
 **Why that number — the answer to give first.** It is exactly what plain greedy achieves on a random graph of the same average degree: process vertices in a random order, take one if no neighbour is taken already. That yields ≈ n·log d/d. So the theorem reads: *no triangle-free graph is worse than a random graph of that density, as far as greedy can see.* This is the honest, illuminating answer, and it is the one that connects to the rest of the talk.
 
-**The mechanism, if they push.** It is an induction on the number of vertices, and it is a single move, not a clever choice between moves:
+**The mechanism, if they push.** I have now read the paper, so this is his actual argument, not a reconstruction. It is an induction on the number of vertices, and it is a single move:
 
-1. Pick a vertex **v uniformly at random**. Put v in the independent set and delete its closed neighbourhood N[v] — that is 1 + d(v) vertices. Let G' be what's left.
-2. Then α(G) ≥ 1 + α(G'), and by induction α(G') ≥ |V(G')|·f(d(G')), where d(G') is the average degree of G'.
-3. Take the expectation over the random v. What has to be shown is E[1 + |V(G')|·f(d(G'))] ≥ n·f(d).
-4. **This is the only place triangle‑freeness is used, and it is the whole ballgame.** N(v) is an independent set — no edges inside it — so deleting N[v] destroys every edge touching N(v) with *nothing counted twice*. In a graph with triangles, edges inside N(v) get double‑counted and you destroy strictly fewer. So triangle‑freeness makes each step maximally destructive: the leftover graph is sparser than it has any right to be, and iterating that surplus is where the log d comes from.
-5. f is then chosen as the solution of the differential equation that falls out of step 3, which Shearer solves in closed form as the f above. Convexity plus Jensen handles the passage from the individual degrees to the single average degree.
+1. Pick a vertex *v*, take it into the independent set, and delete its whole closed neighbourhood N[v]. Recurse on what is left. So α(G) ≥ 1 + α(G − N[v]).
+2. Show that the resulting inequality holds **on average over v** — then some particular v must work, and the induction closes.
+3. **Triangle‑freeness is used in exactly one place.** In the averaging you must count the edges running from N(v) out to the rest of the graph. Because G is triangle‑free, N(v) spans no edges at all, so every edge leaving a neighbour *j* — other than the edge back to *v* — lands outside, and the count is exactly Σ(d(j) − 1) **with nothing counted twice**. In a graph with triangles you would double‑count and the bound would be weaker.
+4. f is then chosen so that the leftover terms cancel identically. It is the solution of
+   `(d+1)f(d) + (d² − d)·f′(d) = 1`, with f(0) = 1 — which is exactly the closed form above. (I verified this: the closed form satisfies that equation to ten decimal places.)
 
-**Where to stop.** That is the idea. If they want it line by line, say it is two pages (Shearer, *A note on the independence number of triangle-free graphs*, Discrete Math. 46 (1983) 83–87) and offer to send it. **Do not attempt the induction at the board** — the differential equation is not what your audience came for. There is also a modern proof, via the "occupancy method", by Davies, Jenssen, Perkins and Roberts — the same four people whose conjecture would close this problem.
+**The best thing to say, if you say only one thing.** Shearer's own Remark 1: the bound is achieved *on average* by the random greedy algorithm — pick a random vertex, take it, delete its neighbourhood, repeat. So the theorem says **no triangle‑free graph is worse for greedy than a random graph of the same density**.
 
-**The follow-up worth being ready for:** *"if greedy gets n·log d/d, and the true independence number of a random graph is twice that, why can't we prove the factor 2?"* That is precisely the open problem — Conjecture 1.1's upper half, and the Davies–Jenssen–Perkins–Roberts route. Say so; it is a good question and the honest answer is "nobody knows."
+**Where to stop.** Don't do the induction at the board; the weighting is fiddly. Two papers: Shearer, *Discrete Math.* 46 (1983) 83–87, and the strengthened per‑degree version *…, II*, JCTB 53 (1991) 300–307.
+
+**The follow-up worth being ready for:** *"if greedy gets n·log d/d, and the true independence number of a random graph is twice that, why can't we prove the factor 2?"* That is precisely the open problem, and it now has an exact form. Davies, Jenssen, Perkins and Roberts proved that in a triangle‑free graph even the **average** independent set (averaged over all independent sets) has size ≥ (1+o(1))·n log d/d — Shearer's bound, but for the average. Their **Conjecture 2** is that the *largest* independent set is at least **twice the average**, as it is in a random graph; that would give R(3,k) ≤ (1/2+o(1))k²/log k and, with this paper, close the problem. The smallest ratio of max to average anyone has found in a triangle‑free graph is 1.43283…, in the cyclic graph witnessing R(3,9) ≥ 36.
+
+So: **the remaining factor of 2 is the assertion that in a triangle‑free graph the biggest independent set is at least twice the average one.** That is a good sentence to end the talk on.
 
 # Appendix E — References to have on the last slide / board
 
