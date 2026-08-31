@@ -170,7 +170,17 @@ Since $np \to \infty$ and $\log\log x = o(\log x)$, this is $(1+o(1))\log(np)$.
 The left side is therefore $(1+o(1))\log(np)$ and the right side is $(1+\varepsilon+o(1))\log(np)$, so $(\dagger)$ holds for all large $n$ — the fixed $\varepsilon$ is exactly the slack absorbed by the $(1+o(1))$ in the statement. Then $\mathbb{E}X \to 0$, and since $X$ is a non-negative integer, Markov's inequality gives $\mathbb{P}(X \ge 1) \le \mathbb{E}X \to 0$. So with high probability $X = 0$: there is no independent set of size $a$ at all, which is to say $\alpha(G(n,p)) < a$.
 :::
 
-The matching lower bound also holds — a random graph really does have independent sets of that size — so we may treat $\alpha(G(n,p)) \approx (2/p)\log(np)$ as an equality. This is the single formula we use most.
+This is the single formula we use most. But notice exactly what was proved, because the reverse direction is a different statement.
+
+::: warn What the lemma does and does not give
+The first moment bounds $\alpha$ from **above**: with high probability there is *no* independent set of size $a$. It says nothing about whether $\alpha$ might be far *smaller* than $a$.
+
+That reverse bound is true — with high probability $\alpha(G(n,p)) \ge (1-\varepsilon)\frac2p\log(np)$ as well, so $\alpha$ is concentrated around $\frac2p\log(np)$ — but it is a genuinely different argument, the **second moment method**: for $a$ slightly below the threshold one shows $\mathbb{E}X \to \infty$ *and* $\mathrm{Var}(X) = o\big((\mathbb{E}X)^2\big)$, so Chebyshev's inequality forces $X > 0$. We do not prove it here.
+
+It is also worth saying that neither direction is a guarantee. $G(n,p)$ can come out empty, with $\alpha = n$; "with high probability" means the exceptional outcomes have probability tending to $0$, not that they are absent.
+
+**Where each direction is used.** Every *construction* in these notes needs only the upper bound — a witness must have $\alpha$ **small**, and that is all we ever verify (Section 6, and Section 14 for the paper itself). The lower bound is used in exactly one place, and not inside a proof: the second pressure of Section 8, where we claim that a pseudorandom graph *cannot* have independent sets smaller than a random graph of the same density. That is precisely why the barrier of Section 8 is a heuristic about pseudorandom graphs rather than a theorem about all triangle-free graphs.
+:::
 
 It is worth seeing it once at the density that will matter. For $p = c\sqrt{\log n/n}$ we have $np = c\sqrt{n\log n}$, hence $\log(np) = (\tfrac12+o(1))\log n$, and so
 $$\alpha(G(n,p)) \;\approx\; \frac2p\cdot\frac{\log n}{2} \;=\; \frac{\log n}{p} \;=\; \frac1c\sqrt{n\log n}.$$
@@ -244,7 +254,7 @@ Fix the density parameter $c$ and suppose the graph we build is *pseudorandom* �
 
 **Pressure 1 (neighbourhoods).** By Lemma 3.1, $\alpha \ge d = c\sqrt{n\log n}$, so $A \ge c$. *Denser is worse.*
 
-**Pressure 2 (the first moment).** By Lemma 5.2, since $np = c\sqrt{n\log n} = n^{1/2+o(1)}$ we have $\log(np) = (\tfrac12+o(1))\log n$, so
+**Pressure 2 (the first moment).** This is the direction that needs the *lower* bound on $\alpha(G(n,p))$ flagged in Section 5, so it is a heuristic, not a theorem: we assume the graph we build is random-like enough that its independent sets are no smaller than a random graph's. Since $np = c\sqrt{n\log n} = n^{1/2+o(1)}$ we have $\log(np) = (\tfrac12+o(1))\log n$, so
 $$\alpha \;\approx\; \frac{2}{p}\log(np) \;=\; \frac{\log n}{p} \;=\; \frac1c\sqrt{n\log n},$$
 so $A \ge 1/c$. *Sparser is worse.*
 
@@ -594,7 +604,7 @@ The method has already left the building: within five months it had been used fo
 ::: note Provenance
 **Proved in full above,** from first principles: the dictionary (§2); $\alpha \ge \Delta$ and Caro–Wei (§3); $R(3,k)\le k^2$ (§4); the first-moment bound for $G(n,p)$ (§5); the conversion lemma and the barrier $A(c) = \max(c,1/c)$ (§7–8); that blow-ups beat the deletion threshold and that a single blow-up has independence number $s\,\alpha(H)$ (§10–11); the bunching lemma and the deletion cost (§13); the projection criterion and the exponent computation locating $\kappa = 1$ (§14); and Theorem 1.2 from Theorem 1.3 (§15).
 
-**Stated without proof:** the monotonicity of $f$ and of its successive differences, used in §9.2 (a calculus exercise in Shearer's Lemma 1); the Davies–Jenssen–Perkins–Roberts theorem quoted in §9.3, which is proved by the occupancy method; and the paper's Lemma 4.2 tail estimate quoted inside the proof in §14.
+**Stated without proof:** the second-moment lower bound on $\alpha(G(n,p))$ discussed in §5 — used only for the heuristic barrier of §8, never inside a proof; the monotonicity of $f$ and of its successive differences, used in §9.2 (a calculus exercise in Shearer's Lemma 1); the Davies–Jenssen–Perkins–Roberts theorem quoted in §9.3, which is proved by the occupancy method; and the paper's Lemma 4.2 tail estimate quoted inside the proof in §14.
 
 **Heuristic, not proof:** the independence computation of §14 is the paper's Section 4 with its correction terms dropped. It reproduces the sharp threshold $\kappa=1$ exactly, which is why it is worth seeing, but the corrections are what the paper's Section 3 exists to control; §14's caveat box says precisely what they are.
 
