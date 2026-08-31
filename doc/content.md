@@ -147,6 +147,18 @@ The two pressures cross at $d \approx \sqrt{n}$, and that crossing gives $\alpha
 $G(n,p)$ is the random graph on $n$ vertices in which each of the $\binom n2$ pairs is an edge independently with probability $p$.
 :::
 
+::: note Notation: counting with indicators
+Both moment methods below rest on one device. For a fixed set $S$ of $a$ vertices, define a number that depends on how the random graph came out:
+$$\mathbb{1}_S \;=\; \begin{cases} 1 & \text{if } S \text{ happens to be independent},\\ 0 & \text{otherwise.}\end{cases}$$
+This is called an **indicator random variable**: it turns a yes/no question into a number one can add and average. Three facts are all we need.
+
+1. **Its average is a probability.** $\mathbb{E}[\mathbb{1}_S] = 1\cdot\mathbb{P}(S\text{ independent}) + 0\cdot\mathbb{P}(\text{not}) = \mathbb{P}(S \text{ independent})$.
+2. **Counting is adding indicators.** If $X$ is the number of independent $a$-sets, then $X = \sum_S \mathbb{1}_S$, summed over all $\binom na$ sets $S$ of size $a$: each set contributes $1$ if it qualifies and $0$ if not. Hence, by linearity of expectation, $\mathbb{E}X = \sum_S \mathbb{P}(S\text{ independent})$.
+3. **A product of indicators means "both".** Since $0\cdot0 = 0\cdot1 = 0$ and $1\cdot 1 = 1$, the product $\mathbb{1}_S\mathbb{1}_T$ is itself the indicator of the event that $S$ *and* $T$ are both independent, so $\mathbb{E}[\mathbb{1}_S\mathbb{1}_T] = \mathbb{P}(S \text{ and } T \text{ both independent})$. Squaring $X$ therefore gives $X^2 = \sum_{S,T}\mathbb{1}_S\mathbb{1}_T$, a sum over *pairs* of sets.
+
+Point 2 deserves emphasis, because it is why the first moment is always the easy one: **linearity of expectation needs no independence.** The events "$S$ is independent" for different $S$ overlap and influence one another badly, and it does not matter at all — the average of a sum is the sum of the averages regardless. The second moment is where that entanglement finally has to be faced, and it enters exactly through how much $S$ and $T$ overlap.
+:::
+
 ::: lemma Independence number of a random graph
 Let $p = p(n) \to 0$ with $np \to \infty$. If
 $$a \;\ge\; (1+o(1))\,\frac{2}{p}\log(np),$$
@@ -211,7 +223,7 @@ $$\frac{\mathbb{E}[X^2]}{(\mathbb{E}X)^2} \;=\; \mathbb{E}\Big[(1-p)^{-\binom I2
 :::
 
 ::: proof
-Write $X = \sum_S \mathbb{1}_S$ over the $a$-subsets $S$, where $\mathbb{1}_S$ indicates that $S$ is independent. For two sets $S,T$, the event that both are independent says that every pair inside $S$ and every pair inside $T$ is a non-edge; the pairs lying inside $S\cap T$ are common to both lists and so are counted once, not twice. Hence
+Write $X = \sum_S \mathbb{1}_S$ as in the notation box above, so that $X^2 = \sum_{S,T}\mathbb{1}_S\mathbb{1}_T$ and $\mathbb{E}[X^2] = \sum_{S,T}\mathbb{P}(S,T\text{ both independent})$. For two sets $S,T$, the event that both are independent says that every pair inside $S$ and every pair inside $T$ is a non-edge; the pairs lying inside $S\cap T$ are common to both lists and so are counted once, not twice. Hence
 $$\mathbb{E}[\mathbb{1}_S\mathbb{1}_T] \;=\; (1-p)^{\,2\binom a2 - \binom{|S\cap T|}{2}}.$$
 Summing over all ordered pairs $(S,T)$ and dividing by $(\mathbb{E}X)^2 = \binom na^2 (1-p)^{2\binom a2}$ leaves
 $$\frac{\mathbb{E}[X^2]}{(\mathbb{E}X)^2} \;=\; \frac{1}{\binom na^2}\sum_{S,T}(1-p)^{-\binom{|S\cap T|}{2}},$$
