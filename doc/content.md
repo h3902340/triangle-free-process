@@ -81,10 +81,12 @@ If $G$ is triangle-free, then $\alpha(G) \ge \Delta(G) \ge d$.
 :::
 
 ::: proof
-Let $v$ be a vertex of maximum degree and let $N(v)$ be its set of neighbours. If two vertices $u,w \in N(v)$ were adjacent, then $u,v,w$ would be a triangle. Since $G$ has none, $N(v)$ is an independent set, and it has $\Delta(G)$ elements. Finally $\Delta(G) \ge d$ because a maximum is at least an average.
+Let $v$ be a vertex of maximum degree and let $N(v)$ be its set of neighbours. If two vertices $u,w \in N(v)$ were adjacent, then $u,v,w$ would be a triangle. Since $G$ has none, $N(v)$ is an independent set, and it has $\Delta(G)$ elements. As $\alpha(G)$ is the size of the largest independent set and we have just exhibited one of size $\Delta(G)$, we get $\alpha(G) \ge \Delta(G)$. Finally $\Delta(G) \ge d$ because a maximum is at least an average.
 :::
 
 So making the graph dense hands the enemy a large independent set for free. The opposite pressure is just as simple.
+
+Both proofs share a shape worth naming, because every lower bound on $\alpha$ in these notes has it: **exhibit an independent set, then measure it.** Since $\alpha(G)$ is the size of the largest one, producing any independent set at all bounds $\alpha(G)$ from below — and if the set was produced at random, its *expected* size will do, because a fixed number that beats a random quantity always beats that quantity's average.
 
 ::: lemma Greedy, or Caro–Wei
 For every graph $G$,
@@ -95,9 +97,13 @@ where $d(v)$ is the degree of $v$ and $d$ is the average degree.
 ::: proof
 Take a uniformly random ordering of the vertices and let $I$ be the set of vertices that come before all of their own neighbours. Then $I$ is independent: if $u$ and $v$ were adjacent and both in $I$, then $u$ would precede $v$ and $v$ would precede $u$.
 
-A vertex $v$ lies in $I$ exactly when $v$ is first among the $d(v)+1$ vertices of $\{v\} \cup N(v)$, which happens with probability $1/(d(v)+1)$. Hence
-$$\mathbb{E}|I| = \sum_v \frac{1}{d(v)+1},$$
-and some ordering achieves at least the average, giving the first inequality. For the second, the function $x \mapsto 1/(x+1)$ is convex on $x \ge 0$, so by Jensen's inequality the sum is at least $n/(d+1)$.
+**Now the step that brings in $\alpha$.** By definition $\alpha(G)$ is the size of the *largest* independent set, so any independent set we can exhibit is a lower bound for it:
+$$\alpha(G) \;\ge\; |I| \qquad\text{for every ordering.}$$
+The left-hand side is a fixed number, the right-hand side is random; taking expectations of both sides therefore gives $\alpha(G) \ge \mathbb{E}|I|$. (Equivalently: some ordering must do at least as well as the average, and for that ordering $\alpha(G) \ge |I| \ge \mathbb{E}|I|$.)
+
+**It remains to compute $\mathbb{E}|I|$.** A vertex $v$ lies in $I$ exactly when $v$ comes first among the $d(v)+1$ vertices of $\{v\}\cup N(v)$, and in a uniformly random ordering each of those $d(v)+1$ vertices is equally likely to be first, so $\mathbb{P}(v \in I) = 1/(d(v)+1)$. By linearity of expectation,
+$$\mathbb{E}|I| \;=\; \sum_{v} \mathbb{P}(v\in I) \;=\; \sum_v \frac{1}{d(v)+1},$$
+which gives the first inequality. For the second, the function $x \mapsto 1/(x+1)$ is convex on $x \ge 0$, so by Jensen's inequality $\frac1n\sum_v \frac{1}{d(v)+1} \ge \frac{1}{d+1}$, where $d$ is the average of the $d(v)$.
 :::
 
 ## 4. The first real bound, and the shape of everything to come
@@ -144,7 +150,7 @@ Let $X$ be the number of independent sets of size $a$. A fixed set of $a$ vertic
 $$\mathbb{E}X \;=\; \binom na (1-p)^{\binom a2} \;\le\; \left(\frac{en}{a}\right)^{a} e^{-p a(a-1)/2} \;=\; \exp\!\Big(a\Big[\log \tfrac{en}{a} - \tfrac{p(a-1)}{2}\Big]\Big),$$
 using $\binom na \le (en/a)^a$ and $1-p \le e^{-p}$. The bracket is negative as soon as
 $$\frac{p(a-1)}{2} \;>\; \log\frac{en}{a}, \qquad\text{i.e.}\qquad a \;>\; (1+o(1))\,\frac{2}{p}\log\frac{n}{a}.$$
-For $p$ in our range $a$ will be $n^{1/2+o(1)}$, so $\log(n/a) = (1+o(1))\log (np)$, and the displayed condition is the hypothesis. Then $\mathbb{E}X \to 0$, and by Markov's inequality $\mathbb{P}(X \ge 1) \le \mathbb{E}X \to 0$.
+For $p$ in our range $a$ will be $n^{1/2+o(1)}$, so $\log(n/a) = (1+o(1))\log (np)$, and the displayed condition is the hypothesis. Then $\mathbb{E}X \to 0$, and since $X$ is a non-negative integer, Markov's inequality gives $\mathbb{P}(X \ge 1) \le \mathbb{E}X \to 0$. So with high probability $X = 0$: there is no independent set of size $a$ at all, which is to say $\alpha(G(n,p)) < a$.
 :::
 
 The matching lower bound also holds — a random graph really does have independent sets of that size — so we may treat $\alpha(G(n,p)) \approx (2/p)\log(np)$ as an equality. This is the single formula we use most.
