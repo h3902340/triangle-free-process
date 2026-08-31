@@ -1,6 +1,6 @@
 # The proofs, typeset
 
-`R3k-proofs.pdf` — a 25-page guided tour of the proofs behind
+`R3k-proofs.pdf` — a 26-page guided tour of the proofs behind
 *Improving R(3,k) in just two bites*, written for a non-specialist:
 everything from the definition of a graph up to the paper's Theorem 1.2,
 with the mathematics typeset properly.

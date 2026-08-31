@@ -213,6 +213,45 @@ The word *moment* just means an average of a power: the **first moment** of a ra
 $$\mathbb{P}(X=0) \;\le\; \frac{\mathrm{Var}(X)}{(\mathbb{E}X)^2} \;=\; \frac{\mathbb{E}[X^2]}{(\mathbb{E}X)^2}-1 .$$
 So if the ratio $\mathbb{E}[X^2]/(\mathbb{E}X)^2$ tends to $1$, then whp $X>0$: **the objects do exist.**
 
+Both inequalities invoked above are one-liners once indicators are available, so we prove them.
+
+::: lemma Markov's inequality
+If $X \ge 0$ and $t > 0$, then $\mathbb{P}(X \ge t) \le \dfrac{\mathbb{E}X}{t}$.
+:::
+
+::: proof
+Split $X$ according to whether the event $\{X \ge t\}$ occurs — that is, write $1 = \mathbb{1}_{X\ge t} + \mathbb{1}_{X<t}$ and multiply by $X$:
+$$\mathbb{E}X \;=\; \mathbb{E}\big[X\,\mathbb{1}_{X \ge t}\big] \;+\; \mathbb{E}\big[X\,\mathbb{1}_{X<t}\big] \;\ge\; \mathbb{E}\big[X\,\mathbb{1}_{X\ge t}\big],$$
+where the last step drops a term that is $\ge 0$ — and this is the *only* place the hypothesis $X\ge0$ is used. Now compare $X\,\mathbb{1}_{X\ge t}$ with $t\,\mathbb{1}_{X \ge t}$ outcome by outcome: when the indicator is $1$ we have $X \ge t$, and when it is $0$ both sides are $0$. So $X\,\mathbb{1}_{X\ge t} \ge t\,\mathbb{1}_{X\ge t}$ always, and taking expectations,
+$$\mathbb{E}X \;\ge\; t\,\mathbb{E}\big[\mathbb{1}_{X\ge t}\big] \;=\; t\,\mathbb{P}(X \ge t). \qquad$$
+:::
+
+Taking $t=1$ gives the form used in Lemma 5.2: for an integer-valued $X \ge 0$, $\mathbb{P}(X\ge1)\le\mathbb{E}X$.
+
+::: lemma Chebyshev's inequality
+For any $X$ with finite variance, writing $\mu = \mathbb{E}X$, and any $t>0$,
+$$\mathbb{P}\big(|X - \mu| \ge t\big) \;\le\; \frac{\mathrm{Var}(X)}{t^2}.$$
+:::
+
+::: proof
+The random variable $Y = (X-\mu)^2$ is non-negative, so Markov applies to it. The events $\{|X-\mu| \ge t\}$ and $\{Y \ge t^2\}$ are the *same* event — squaring is monotone on non-negative numbers — so
+$$\mathbb{P}\big(|X-\mu|\ge t\big) \;=\; \mathbb{P}\big(Y \ge t^2\big) \;\le\; \frac{\mathbb{E}Y}{t^2} \;=\; \frac{\mathrm{Var}(X)}{t^2},$$
+the last equality being the definition $\mathrm{Var}(X) = \mathbb{E}[(X-\mu)^2]$.
+:::
+
+::: cor The form we use
+If $\mathbb{E}X = \mu > 0$ then
+$$\mathbb{P}(X = 0) \;\le\; \frac{\mathrm{Var}(X)}{\mu^2} \;=\; \frac{\mathbb{E}[X^2]}{\mu^2} - 1 .$$
+:::
+
+::: proof
+If $X = 0$ then $|X - \mu| = \mu$, so the event $\{X=0\}$ is contained in the event $\{|X-\mu| \ge \mu\}$, and a smaller event has no larger probability. Chebyshev with $t = \mu$ gives $\mathbb{P}(X=0) \le \mathrm{Var}(X)/\mu^2$. For the second form, expand $\mathrm{Var}(X) = \mathbb{E}[X^2] - \mu^2$ and divide by $\mu^2$.
+:::
+
+::: idea Why the second moment is the harder one
+Markov needs nothing but $X\ge0$; Chebyshev needs nothing but a variance. The difficulty is never in the inequalities — it is in *computing* the two sides. $\mathbb{E}X$ comes free from linearity, whatever the dependencies. $\mathbb{E}[X^2]$ is a sum over **pairs**, and pairs of overlapping sets are exactly where the dependence between "$S$ is independent" and "$T$ is independent" lives. That is the whole asymmetry between the two methods.
+:::
+
 ### 5.2 The reverse bound, and what it would take
 
 So: can we prove that $\alpha(G(n,p))$ is also not much *smaller* than $\frac2p\log(np)$? Yes — and here is the machine, set up exactly.
