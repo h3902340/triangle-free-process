@@ -269,7 +269,26 @@ $$\frac{\mathbb{E}[X^2]}{(\mathbb{E}X)^2} \;=\; \frac{1}{\binom na^2}\sum_{S,T}(
 which is the average of $(1-p)^{-\binom I2}$ over a uniformly random pair $(S,T)$. The intersection size $I$ of two independent uniform $a$-sets is hypergeometric, with the displayed probabilities.
 :::
 
-Now one can see both why it works and where the difficulty is. Two independent $a$-sets typically meet in about $\mu = a^2/n$ vertices, which at our density is about $\log n$; and
+Now one can see both why it works and where the difficulty is. First, how big is the overlap?
+
+::: lemma The typical overlap
+Let $S$ be any fixed $a$-set and $T$ a uniformly random $a$-set. Then
+$$\mathbb{E}\,|S\cap T| \;=\; \frac{a^2}{n} \;=:\; \mu,$$
+and $\mathrm{Var}(|S\cap T|) \le \mu$, so if $\mu \to \infty$ then $|S\cap T| = (1+o(1))\mu$ with high probability.
+:::
+
+::: proof
+Count with indicators, exactly as in the notation box: $|S \cap T| = \sum_{v \in S}\mathbb{1}_{v\in T}$. By symmetry, $T$ is equally likely to be any of the $\binom na$ sets of size $a$, so a fixed vertex $v$ lies in $T$ with probability $a/n$ — that is the fraction of vertices $T$ occupies. Linearity of expectation over the $a$ vertices of $S$ then gives
+$$\mathbb{E}|S\cap T| \;=\; \sum_{v\in S}\mathbb{P}(v\in T) \;=\; a\cdot\frac an \;=\; \frac{a^2}{n}.$$
+Note this holds for *every* $S$, so it is also the answer when $S$ is random.
+
+For the variance, $|S\cap T|$ is hypergeometric — drawing $a$ vertices without replacement from $n$, of which $a$ are "marked" — with
+$$\mathrm{Var} \;=\; a\cdot\frac an\Big(1-\frac an\Big)\frac{n-a}{n-1} \;\le\; \frac{a^2}{n} \;=\; \mu .$$
+Chebyshev's inequality (Lemma 5.5) then gives, for any fixed $\varepsilon>0$,
+$$\mathbb{P}\big(\,\big||S\cap T|-\mu\big| \ge \varepsilon\mu\,\big) \;\le\; \frac{\mathrm{Var}}{\varepsilon^2\mu^2} \;\le\; \frac{1}{\varepsilon^2\mu} \;\longrightarrow\; 0 .$$
+:::
+
+At our density $a \approx \sqrt{n\log n}$, so $\mu = a^2/n \approx \log n$, which does tend to infinity — the overlap is concentrated, and two random $a$-sets really do meet in about $\log n$ vertices. Now
 $$(1-p)^{-\binom \mu2} \;\approx\; e^{\,p\mu^2/2} \;=\; \exp\Big(\tfrac12\sqrt{\tfrac{\log n}{n}}\,\log^2 n\Big) \;\longrightarrow\; 1 ,$$
 so the typical term contributes $1$, as it must. At the other extreme $i = a$ the two sets coincide, and that single term is $\binom na^{-1}(1-p)^{-\binom a2} = 1/\mathbb{E}X$, which tends to $0$ precisely because we are below the threshold. **The content of the proof is that every intermediate $i$ is also negligible**, and that is a genuinely delicate estimate — the terms first fall, then rise again — which is why we do not reproduce it here. It is classical (Bollobás and Erdős; see also Frieze for the sharp form, which pins $\alpha$ to within an additive $o(1/p)$).
 
