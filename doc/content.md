@@ -352,9 +352,17 @@ A random graph is not triangle-free, and lowering $p$ until it is destroys every
 
 So one builds *above* the triangle threshold and repairs afterwards. Count the repair bill: the expected number of triangles is $\binom n3 p^3 \approx n^3p^3/6$ and the expected number of edges is $\binom n2 p \approx n^2 p/2$, so
 $$\frac{\#\text{triangles}}{\#\text{edges}} \;\approx\; \frac{n^3p^3/6}{n^2p/2} \;=\; \frac{np^2}{3}.$$
-Deleting one edge from every triangle is affordable exactly when this ratio is small, that is when $np^2 = O(1)$, that is when
+This ratio is the **fraction of the edge set you might have to throw away**. The naive repair — delete one edge from every triangle — costs at most one edge per triangle. If every triangle used a different edge, that would remove a $\frac{np^2}{3}$ fraction of the edges.
+
+**"Affordable" means the leftover graph still has most of its edges.** You are not protecting any particular edge. You are protecting the *density* $p$, because that is what keeps $\alpha$ small. If the ratio is $o(1)$, you delete a vanishing fraction of the edges and keep density $(1-o(1))p$. That happens when $np^2 = O(1)$, that is when
 $$p \;\lesssim\; \frac{1}{\sqrt n}.$$
 This value is called the **edge deletion threshold** for triangles, written $p_{K_3} = n^{-1/2}$. It is Erdős's ceiling, and it is the number the rest of this story is about.
+
+::: note What "affordable" is not, and what happens if the ratio is large
+It is not that some edges are too expensive to touch. If the ratio is large — say $\Theta(\log n)$, or anything $\gg 1$ — the same accounting says you would delete *more edges than the graph has*. The bound becomes vacuous: it no longer proves that a single edge remains. After the repair the graph is too sparse (or empty), $\alpha$ jumps up towards the size of a matching or an empty graph, and the Ramsey lower bound you were buying is gone. That is the only sense in which you "cannot afford" the deletion.
+
+A concrete number: at the density this paper wants, $p \sim \sqrt{\log n\,/\,n}$, the ratio is $\Theta(\log n)$. The naive one-edge-per-triangle budget would charge $\log n$ deletions against every edge and wipe the graph. Triangles *do* overlap, so one deletion can in fact kill many triangles — that is the later "bunching" idea of Section 13 — but the naive budget does not give you that credit. Until you control the overlap, the method stops here.
+:::
 
 ::: theorem Erdős, 1961
 $R(3,k) \;=\; \Omega\!\left(\dfrac{k^2}{(\log k)^2}\right).$
