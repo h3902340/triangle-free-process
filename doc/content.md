@@ -294,6 +294,20 @@ Chebyshev's inequality (Lemma 5.5) then gives, for any fixed $\varepsilon>0$,
 $$\mathbb{P}\big(\,\big||S\cap T|-\mu\big| \ge \varepsilon\mu\,\big) \;\le\; \frac{\mathrm{Var}}{\varepsilon^2\mu^2} \;\le\; \frac{1}{\varepsilon^2\mu} \;\longrightarrow\; 0 .$$
 :::
 
+::: note What a covariance is, and why this one is negative
+**The definition.** $\mathrm{Cov}(X,Y) = \mathbb{E}\big[(X-\mathbb{E}X)(Y-\mathbb{E}Y)\big] = \mathbb{E}[XY]-\mathbb{E}X\,\mathbb{E}Y$: the average product of the two deviations. It asks *when $X$ is above its mean, is $Y$ too?* — positive if they tend to move together, negative if one being high pushes the other low, and zero if they are unrelated. Independent variables have covariance $0$ (the converse is false).
+
+**Why it appears in a variance.** Purely from squaring a sum, exactly as $(x+y)^2 = x^2+y^2+2xy$. Writing $\bar X_i = X_i - \mathbb{E}X_i$,
+$$\mathrm{Var}\Big(\sum_i X_i\Big) = \mathbb{E}\Big[\Big(\sum_i \bar X_i\Big)^{2}\Big] = \sum_i\sum_j \mathbb{E}\big[\bar X_i \bar X_j\big] ,$$
+and the diagonal terms $i=j$ are the variances while every off-diagonal term is a covariance. For *independent* variables the off-diagonal terms vanish and variances simply add — the rule one is used to. Here they do not vanish.
+
+**For indicators it reads plainly.** $\mathrm{Cov}(\mathbb{1}_A,\mathbb{1}_B) = \mathbb{P}(A\cap B) - \mathbb{P}(A)\mathbb{P}(B)$: *do these two events co-occur more, or less, often than they would by chance?* Above we compared $\frac an\cdot\frac{a-1}{n-1}$ with $\big(\frac an\big)^2$, and $\frac{a-1}{n-1} < \frac an$ whenever $a<n$ — less often than chance, hence negative.
+
+**The reason is seats.** $T$ has exactly $a$ places. If $u$ takes one, only $a-1$ remain for $v$ among $n-1$ candidates: the two vertices are *competing*. With independent coin flips, where $|T|$ is free to vary, there is no competition and the covariance is zero.
+
+**Two checks.** At $a=n$ the formula gives $\mathrm{Var}=0$ — right, since then $T$ is everything and $|S\cap T| = a$ with certainty. At $a=1$ the correction factor is exactly $1$ and we recover the binomial value — right, since with a single draw there is nobody to compete with.
+:::
+
 ::: note What "hypergeometric" means, and why the extra factor
 The count $|S\cap T|$ is a textbook **hypergeometric** random variable: an urn holds $n$ balls of which $a$ are marked (the members of $S$), you draw $a$ of them **without replacement** (the set $T$), and you count the marked ones. Its distribution is the $f(i)$ of the Proposition — choose which $i$ of the $a$ marked balls and which $a-i$ of the $n-a$ unmarked ones, out of $\binom na$ equally likely draws.
 
