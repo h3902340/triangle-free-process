@@ -483,7 +483,11 @@ By induction on $n$; the case $n=0$ is trivial. Write $S = \sum_i f(d_i)$.
 Which degrees change in $H_i$? A vertex at distance $\ge 3$ from $i$ loses nothing. A vertex $k \in S_i'$ loses exactly its $n_k$ neighbours in $S_i$. So the corresponding sum for $H_i$ is
 $$T_i \;=\; S \;-\; f(d_i) \;-\; \sum_{j\in S_i} f(d_j) \;+\; \sum_{k \in S_i'}\Big[f(d_k - n_k) - f(d_k)\Big].$$
 
-$H_i$ is again triangle-free, so by induction $\alpha(H_i) \ge T_i$. Moreover $\alpha(G) \ge 1 + \alpha(H_i)$: take a maximum independent set of $H_i$ and add $i$ to it, which is legal because $H_i$ contains no neighbour of $i$. So the theorem follows if we can find a single vertex $i$ with
+$H_i$ is again triangle-free, so by induction $\alpha(H_i) \ge T_i$. The other inequality is the greedy move that buys the "$+1$":
+$$\alpha(G) \;\ge\; 1 + \alpha(H_i).$$
+Let $I$ be a maximum independent set of $H_i$, so $|I| = \alpha(H_i)$. Then $I \cup \{i\}$ is independent in $G$: $I$ is already independent, and $i$ has no neighbour in $I$ because every neighbour of $i$ was deleted when we formed $H_i = G - N[i]$. Hence $G$ has an independent set of size $1+\alpha(H_i)$. Deleting the whole closed neighbourhood, not just $i$ itself, is what makes the extra vertex legal — if we had only removed $i$, an independent set of $G-i$ might already contain a neighbour of $i$, and we could not add $i$ back.
+
+This is only $\ge$, not equality. $G$ might have a larger independent set that *uses* some neighbour of $i$ and omits $i$. For a lower bound we do not care. Combining the two inequalities, $\alpha(G) \ge 1 + T_i$, so the theorem follows if we can find a single vertex $i$ with
 $$1 - f(d_i) - \sum_{j\in S_i} f(d_j) + \sum_{k\in S_i'}\big[f(d_k-n_k)-f(d_k)\big] \;\ge\; 0. \tag{$\dagger$}$$
 
 **It holds on average.** Let $A$ be the sum of the left-hand side of $(\dagger)$ over all $i$; we show $A \ge 0$, which forces some $i$ to satisfy $(\dagger)$.
