@@ -137,6 +137,16 @@ Computations (not a proof):
 
 No triangle-free example below \(4/3\) was found. The Kalbfleisch graph remains the smallest ratio in the literature. That is not a proof that every triangle-free graph sits above \(1+\delta\).
 
+A complete enumeration of labelled triangle-free graphs on \(n\le 7\) (script `research/ratio_n7.py`) confirms the ratio is always at least \(C_5\)'s \(1.4667\). Finite, not asymptotic.
+
+### 3.8 Occupancy at large fugacity, variance, and maximality
+
+The factor \(2\) in Shearer vs a random graph is a **large-deviation** of the hard-core model, not a typical-set phenomenon. Under \(\mu_{G,1}\) the mass sits at size \(\sim n\log d/d\); sets of size \(\sim 2n\log d/d\) have expected count \(\Theta(1)\) and do not move the average. So \(\lambda=O_d(1)\) occupancy, even with a variance lower bound, stays at the Shearer constant: Davies–Jenssen–Perkins–Roberts already match the random regular graph there.
+
+To see the extra factor you need \(\lambda=\lambda(d)\to\infty\). The DJPR formula gets *worse* as \(\lambda\) grows (the relaxation that \(Z\) may be constant is too pessimistic). Davies–Sandhu–Tan (arXiv:2505.13396, v2 Sep 2025) prove a degree-sequence occupancy bound only for \(\lambda\le c/\Delta^4\), and say explicitly that relaxing this to \(1/\log d\) would prove the Buys–van den Heuvel–Kang occupancy conjecture — they do not. Their variance bounds are likewise for \(\lambda=O(1/n)\). The April 2026 follow-up (arXiv:2604.01717) settles a variance comparison with \(K_n\), not \(R(3,k)\).
+
+Maximal triangle-free graphs are the Ramsey-worst case (adding edges can only shrink \(\alpha\)). Regular maximal triangle-free graphs satisfy \(d^2\gtrsim n\). At the critical density \(d\sim\sqrt{n\log n}\) this is already true, and a typical non-edge has \(\sim\log n\) common neighbours — the same as \(G(n,p)\). Maximality does not add a first-order constraint at the Shearer point.
+
 ---
 
 ## 4. What a real proof would have to do
