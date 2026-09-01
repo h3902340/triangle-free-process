@@ -628,9 +628,15 @@ The words *red* and *blue* here have nothing to do with the red/blue colouring o
 :::
 
 ::: idea The picture
-A vertex is a **cell of an $m\times m$ grid**: its row is its red coordinate, its column its blue coordinate. The $n$ vertices are $n$ cells chosen at random, and the grid is very sparsely occupied ($m^2 \approx n^2/\log^4 n$ cells for $n$ vertices). Two vertices are adjacent if their **rows** are adjacent in the red graph, **or** their **columns** are adjacent in the blue graph.
+Nothing new has been added. A vertex is still just an element $v\in V(G)$, and it still just *has* a pair of coordinates $\pi(v)=(\pi_R(v),\pi_B(v))$ from step 2 of the definition. The $m\times m$ grid is a drawing of the product $V_R\times V_B$:
 
-All vertices sharing a row form a red **fibre** — a red-independent set of size about $s$ — and likewise for columns. So the two blow-ups of Section 10 are both present: rows are the red clusters, columns the blue clusters. And because $\pi$ is random, *the rows are unrelated to the columns*. That independence is the entire source of the pseudorandomness.
+- the **rows** are labelled by the red vertices $V_R$,
+- the **columns** are labelled by the blue vertices $V_B$,
+- the pair $(\pi_R(v),\pi_B(v))$ is the **cell** at that row and column.
+
+Because $\pi$ is injective, the $n$ vertices occupy $n$ distinct cells of a grid with $m^2\approx n^2/\log^4 n$ cells, so almost every cell is empty. Two vertices are adjacent if their **rows** are adjacent in $G_R$, **or** their **columns** are adjacent in $G_B$ — not because their cells sit next to each other on the page.
+
+All vertices sharing a row (the same red coordinate) form a red **fibre** — a red-independent set of size about $s$ — and likewise for columns. So the two blow-ups of Section 10 are both present: rows are the red clusters, columns the blue clusters. And because $\pi$ is random, *the rows are unrelated to the columns*. That independence is the entire source of the pseudorandomness.
 :::
 
 The density of the union is $(2+o(1))p = \sqrt{\log n/n}$, so in the language of Section 7 this construction sits at $c = 1$ — exactly the bottom of the barrier of Theorem 8.1. Two things must now be checked: that the triangles can be removed cheaply, and that the independent sets really are as small as a random graph of this density.
