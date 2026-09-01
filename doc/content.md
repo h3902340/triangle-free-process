@@ -352,8 +352,20 @@ A random graph is not triangle-free, and lowering $p$ until it is destroys every
 
 So one builds *above* the triangle threshold and repairs afterwards. Count the repair bill: the expected number of triangles is $\binom n3 p^3 \approx n^3p^3/6$ and the expected number of edges is $\binom n2 p \approx n^2 p/2$, so
 $$\frac{\#\text{triangles}}{\#\text{edges}} \;\approx\; \frac{n^3p^3/6}{n^2p/2} \;=\; \frac{np^2}{3}.$$
-Deleting one edge from every triangle is affordable exactly when this ratio is small, that is when $np^2 = O(1)$, that is when
+Deleting one edge from every triangle is *affordable* exactly when this ratio is small, that is when $np^2 = O(1)$, that is when
 $$p \;\lesssim\; \frac{1}{\sqrt n}.$$
+
+::: idea What "affordable" means
+It is not about permission — one may always delete an edge from every triangle. It is about what **survives**. The graph has to be a witness, meaning triangle-free *and* $\alpha < k$; deletion secures the first property automatically, and the danger is entirely to the second.
+
+Deleting edges can only make $\alpha$ **larger**, since fewer edges means more sets with no edge inside them. And the bound $\alpha \approx \frac2p\log(np)$ of Section 5 was computed for $G(n,p)$ with all of its edges present. The repaired graph inherits that bound only if the repair leaves it essentially intact.
+
+So count. One deletion per triangle removes at most $\#\text{triangles}$ edges. If $\#\text{triangles} \le \delta\cdot\#\text{edges}$ with $\delta$ small, then at least a $(1-\delta)$ fraction of the edges survive: the graph is still as dense and as random-looking as before, and the same first-moment count still governs its independent sets. That is affordable — **the repair bill is a negligible fraction of what you own.**
+
+If instead the ratio is large, the deletions may consume the graph. At $np^2 \approx 3$ there are as many triangles as edges, and one deletion per triangle could in principle remove every edge; at $p = \tfrac12$ each edge lies in about $n/4$ triangles. What is left might be nearly empty, and an empty graph has $\alpha = n$ — worthless as a witness. You have paid for triangle-freeness with the very density that made the graph valuable.
+
+This is what makes the threshold so decisive, and it is also the precise sense in which the paper's central trick (Section 13) is a breakthrough: by stacking triangles onto shared edges so that one deletion pays for $s$ of them, it lowers the **bill** without lowering the density.
+:::
 This value is called the **edge deletion threshold** for triangles, written $p_{K_3} = n^{-1/2}$. It is Erdős's ceiling, and it is the number the rest of this story is about.
 
 ::: theorem Erdős, 1961
