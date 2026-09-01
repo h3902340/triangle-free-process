@@ -636,7 +636,12 @@ Nothing new has been added. A vertex is still just an element $v\in V(G)$, and i
 
 Because $\pi$ is injective, the $n$ vertices occupy $n$ distinct cells of a grid with $m^2\approx n^2/\log^4 n$ cells, so almost every cell is empty. Two vertices are adjacent if their **rows** are adjacent in $G_R$, **or** their **columns** are adjacent in $G_B$ — not because their cells sit next to each other on the page.
 
-All vertices sharing a row (the same red coordinate) form a red **fibre** — a red-independent set of size about $s$ — and likewise for columns. So the two blow-ups of Section 10 are both present: rows are the red clusters, columns the blue clusters. And because $\pi$ is random, *the rows are unrelated to the columns*. That independence is the entire source of the pseudorandomness.
+All vertices sharing a row (the same red coordinate) form a red **fibre**. That set is red-independent, and a typical fibre has size about $s$, for two separate reasons.
+
+- *No red edges inside a row.* A red edge exists between $v$ and $w$ only when $\pi_R(v)\pi_R(w)\in E(G_R)$. If $v$ and $w$ share a row then $\pi_R(v)=\pi_R(w)$, and $G_R$ has no loops, so that pair is not an edge of $G_R$. Hence there is no red edge among those vertices. (They may still have *blue* edges, if their columns happen to be adjacent in $G_B$. A fibre is independent in one colour, not in $G$.)
+- *Size about $s$.* There are $n$ occupied cells and $m=n/s$ rows, so a typical row holds $n/m=s$ vertices. Because $\pi$ is a uniform injection, this is a hypergeometric count: the paper's Lemma 3.1 says every fibre has size $(1+o(1))s$ with high probability.
+
+The same two facts hold for columns, with colours swapped. So the two blow-ups of Section 10 are both present: rows are the red clusters, columns the blue clusters. And because $\pi$ is random, *the rows are unrelated to the columns*. That independence is the entire source of the pseudorandomness.
 :::
 
 The density of the union is $(2+o(1))p = \sqrt{\log n/n}$, so in the language of Section 7 this construction sits at $c = 1$ — exactly the bottom of the barrier of Theorem 8.1. Two things must now be checked: that the triangles can be removed cheaply, and that the independent sets really are as small as a random graph of this density.
