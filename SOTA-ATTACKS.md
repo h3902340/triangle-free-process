@@ -2,7 +2,7 @@
 
 **Status: no unconditional breakthrough.** This note records the attacks that were tried and why they do not move either leading constant. It is not a theorem.
 
-Round 2 (1 Sep 2026) attacked the only published route to a leading-constant upper bound: a uniform gap \(\alpha/\alpha_G(1)>1\). That is still open. Scripts: `research/ratio_scan.py`, `research/circulant_mitm.py`.
+Round 2 attacked DJPR’s \(4/3\) ratio. Round 3 checked large-fugacity occupancy, DST variance bounds, maximality, and enumerated all triangle-free graphs on \(n\le 7\). Still no leading-constant movement. Scripts: `research/ratio_scan.py`, `research/circulant_mitm.py`, `research/ratio_n7.py`.
 
 As of 1 September 2026 the best proved bounds remain
 
