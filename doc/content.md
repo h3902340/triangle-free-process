@@ -716,6 +716,10 @@ So the probability exponent is $-\frac{\kappa}{4}(x_R^2+x_B^2)$ in units of $k\l
 
 *The optimisation.* $\partial g/\partial x_R = \tfrac12 - \tfrac{\kappa}{2}x_R = 0$ gives $x_R = 1/\kappa$, and likewise $x_B = 1/\kappa$; the function is concave, so this is the maximum. Its value is
 $$g\!\left(\tfrac1\kappa,\tfrac1\kappa\right) = \frac{2/\kappa - 1}{2} - \frac{\kappa}{4}\cdot\frac{2}{\kappa^2} = \frac1\kappa - \frac12 - \frac{1}{2\kappa} = \frac{1-\kappa}{2\kappa}.$$
+
+*Closing the first moment.* The theorem so far only computes an exponent. The expected number of independent $k$-sets of a given projection type is $\exp\big(g(x_R,x_B)\,k\log n\cdot(1+o(1))\big)$, and $g$ is at most $(1-\kappa)/(2\kappa)$ for every type. For $\kappa = 1+\varepsilon$ that ceiling is $-\varepsilon/(2(1+\varepsilon)) < 0$. There are only $O(k^2)$ discrete pairs $(x_R,x_B)$. Summing over them, if $X$ is the total number of independent $k$-sets,
+$$\mathbb{E}X \;\le\; n^{O(1)}\cdot\exp\!\left(-\frac{\varepsilon}{2(1+\varepsilon)}\,k\log n\cdot(1+o(1))\right) \;\to\; 0.$$
+$X$ is a non-negative integer, so Markov gives $\mathbb{P}(X\ge 1)\le\mathbb{E}X\to 0$: with high probability $X=0$. That is the same closing as in Section 5, and **it is the only place this section concludes that no $k$-set is independent.**
 :::
 
 Two features of this computation deserve to be pointed out. First, the optimum sits at $x_R = x_B \approx 1$: the dangerous sets are the *generic* ones, whose projections are essentially injective. Second, sets with $x_R + x_B < 1$ need no argument at all — the counting exponent is already negative, so **no $k$-sets with projections that small exist**.
@@ -736,7 +740,7 @@ For every $\varepsilon>0$ there is $n_0$ such that for all $n \ge n_0$ there exi
 $$\alpha(G) \;<\; (1+\varepsilon)\sqrt{n\log n}.$$
 :::
 
-The construction of Section 12 is such a graph: Section 13 makes it triangle-free at a cost of a $o(1)$ fraction of its edges, and Section 14 shows that no $k$-set with $k = (1+\varepsilon)\sqrt{n\log n}$ is independent.
+The construction of Section 12 is such a graph. Section 13 makes it triangle-free at a cost of a $o(1)$ fraction of its edges. Section 14 does **not** exhibit a missing independent set by hand: it runs a first-moment count. The expected number of independent $k$-sets, $k=(1+\varepsilon)\sqrt{n\log n}$, has exponent $g\le (1-\kappa)/(2\kappa)=-\varepsilon/(2(1+\varepsilon))<0$, so $\mathbb{E}X\to 0$ and Markov gives that with high probability none exist. That computation is the skeleton: it ignores deleted edges. The paper's Sections 3 and 4 check that those deletions do not create a new independent $k$-set; once they are filled, the same negative exponent still wins, and the theorem follows.
 
 ::: theorem Theorem 1.2 of the paper
 $$R(3,k) \;\ge\; \left(\frac12 + o(1)\right)\frac{k^2}{\log k}.$$
