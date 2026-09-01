@@ -2,6 +2,8 @@
 
 **Status: no unconditional breakthrough.** This note records the attacks that were tried and why they do not move either leading constant. It is not a theorem.
 
+Round 2 (1 Sep 2026) attacked the only published route to a leading-constant upper bound: a uniform gap \(\alpha/\alpha_G(1)>1\). That is still open. Scripts: `research/ratio_scan.py`, `research/circulant_mitm.py`.
+
 As of 1 September 2026 the best proved bounds remain
 
 \[
@@ -111,6 +113,29 @@ This would give \(R(3,k)\le(1/(1+\delta)+o(1))k^2/\log k\). DJPR found no triang
 ### 3.6 Second-order terms
 
 Shearer’s closed form is already \(f(d)=(\log d/d)(1-1/\log d+o(1/\log d))\), approaching from below. Feeding this into the exchange rate improves only the \(o(1)\) in \((1+o(1))k^2/\log k\), not the leading \(1\).
+
+### 3.7 Induction on DJPR Conjecture 1 (ratio \(\ge 4/3\))
+
+Write \(z=i(G)\) and \(a=\sum |I|\), so the average is \(a/z\) and the claim is \(\alpha z\ge(4/3)a\). For any vertex \(v\),
+\[
+z=z(G-v)+z(H),\qquad a=a(G-v)+a(H)+z(H),\qquad H=G-N[v],
+\]
+and \(\alpha(G)\ge\alpha(G-v)\), \(\alpha(G)\ge 1+\alpha(H)\). The independence polynomial of a disjoint union of triangles saturates \(4/3\), but those graphs *have* triangles; that is why the conjecture is plausible. The induction still does not close. In the case \(\alpha(G)=\alpha(G-v)=1+\alpha(H)\) one needs the slack
+\[
+\alpha\,z(G-v)-\tfrac43 a(G-v)\;\ge\;\tfrac13\,z(H).
+\]
+A single edge (the matching \(K_2\)) meets this with **equality** when you delete either vertex. There is no surplus to feed a stricter inductive loading. Stronger claims such as \(\alpha z-(4/3)a\ge cz\) fail already on \(K_2\).
+
+Computations (not a proof):
+
+| graph | \(n\) | \(\alpha\) | ratio \(\alpha/\mathrm{avg}\) |
+|---|---|---|---|
+| \(K_2\) | 2 | 1 | \(1.5\) |
+| \(C_5\) | 5 | 2 | \(1.4667\) |
+| Petersen | 10 | 4 | \(1.6889\) |
+| Kalbfleisch circulant \(C_{35}(\pm1,\pm7,\pm11,\pm16)\) | 35 | 8 | \(1.43283\ldots\) (matches DJPR) |
+
+No triangle-free example below \(4/3\) was found. The Kalbfleisch graph remains the smallest ratio in the literature. That is not a proof that every triangle-free graph sits above \(1+\delta\).
 
 ---
 
