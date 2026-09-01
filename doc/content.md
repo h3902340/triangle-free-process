@@ -641,6 +641,8 @@ All vertices sharing a row (the same red coordinate) form a red **fibre**. That 
 - *No red edges inside a row.* A red edge exists between $v$ and $w$ only when $\pi_R(v)\pi_R(w)\in E(G_R)$. If $v$ and $w$ share a row then $\pi_R(v)=\pi_R(w)$, and $G_R$ has no loops, so that pair is not an edge of $G_R$. Hence there is no red edge among those vertices. (They may still have *blue* edges, if their columns happen to be adjacent in $G_B$. A fibre is independent in one colour, not in $G$.)
 - *Size about $s$.* There are $n$ occupied cells and $m=n/s$ rows, so a typical row holds $n/m=s$ vertices. Because $\pi$ is a uniform injection, this is a hypergeometric count: the paper's Lemma 3.1 says every fibre has size $(1+o(1))s$ with high probability.
 
+The word **red** does not mean "the fibre is made of red edges." There are no red edges *inside* a red fibre — that is the point of the first bullet. "Red fibre over $r$" just means the fibre of the red projection: $\{v : \pi_R(v)=r\}$, the row labelled $r$. The red edges of $G$ run *between* different red fibres. If $rr'\in E(G_R)$, then every vertex in the fibre over $r$ is red-adjacent to every vertex in the fibre over $r'$. That is exactly the blow-up of $G_R$: the red fibres are the clusters, and $G_R$ decides which pairs of clusters are completely joined.
+
 The same two facts hold for columns, with colours swapped. So the two blow-ups of Section 10 are both present: rows are the red clusters, columns the blue clusters. And because $\pi$ is random, *the rows are unrelated to the columns*. That independence is the entire source of the pseudorandomness.
 :::
 
