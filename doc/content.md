@@ -352,9 +352,17 @@ A random graph is not triangle-free, and lowering $p$ until it is destroys every
 
 So one builds *above* the triangle threshold and repairs afterwards. Count the repair bill: the expected number of triangles is $\binom n3 p^3 \approx n^3p^3/6$ and the expected number of edges is $\binom n2 p \approx n^2 p/2$, so
 $$\frac{\#\text{triangles}}{\#\text{edges}} \;\approx\; \frac{n^3p^3/6}{n^2p/2} \;=\; \frac{np^2}{3}.$$
-Deleting one edge from every triangle is affordable exactly when this ratio is small, that is when $np^2 = O(1)$, that is when
+This ratio is the **fraction of the edge set you might have to throw away**. The naive repair — delete one edge from every triangle — costs at most one edge per triangle. If every triangle used a different edge, that would remove a $\frac{np^2}{3}$ fraction of the edges.
+
+**"Affordable" means the leftover graph still has most of its edges.** You are not protecting any particular edge. You are protecting the *density* $p$, because that is what keeps $\alpha$ small. If the ratio is $o(1)$, you delete a vanishing fraction of the edges and keep density $(1-o(1))p$. That happens when $np^2 = O(1)$, that is when
 $$p \;\lesssim\; \frac{1}{\sqrt n}.$$
 This value is called the **edge deletion threshold** for triangles, written $p_{K_3} = n^{-1/2}$. It is Erdős's ceiling, and it is the number the rest of this story is about.
+
+::: note What "affordable" is not, and what happens if the ratio is large
+It is not that some edges are too expensive to touch. If the ratio is large — say $\Theta(\log n)$, or anything $\gg 1$ — the same accounting says you would delete *more edges than the graph has*. The bound becomes vacuous: it no longer proves that a single edge remains. After the repair the graph is too sparse (or empty), $\alpha$ jumps up towards the size of a matching or an empty graph, and the Ramsey lower bound you were buying is gone. That is the only sense in which you "cannot afford" the deletion.
+
+A concrete number: at the density this paper wants, $p \sim \sqrt{\log n\,/\,n}$, the ratio is $\Theta(\log n)$. The naive one-edge-per-triangle budget would charge $\log n$ deletions against every edge and wipe the graph. Triangles *do* overlap, so one deletion can in fact kill many triangles — that is the later "bunching" idea of Section 13 — but the naive budget does not give you that credit. Until you control the overlap, the method stops here.
+:::
 
 ::: theorem Erdős, 1961
 $R(3,k) \;=\; \Omega\!\left(\dfrac{k^2}{(\log k)^2}\right).$
@@ -475,7 +483,11 @@ By induction on $n$; the case $n=0$ is trivial. Write $S = \sum_i f(d_i)$.
 Which degrees change in $H_i$? A vertex at distance $\ge 3$ from $i$ loses nothing. A vertex $k \in S_i'$ loses exactly its $n_k$ neighbours in $S_i$. So the corresponding sum for $H_i$ is
 $$T_i \;=\; S \;-\; f(d_i) \;-\; \sum_{j\in S_i} f(d_j) \;+\; \sum_{k \in S_i'}\Big[f(d_k - n_k) - f(d_k)\Big].$$
 
-$H_i$ is again triangle-free, so by induction $\alpha(H_i) \ge T_i$. Moreover $\alpha(G) \ge 1 + \alpha(H_i)$: take a maximum independent set of $H_i$ and add $i$ to it, which is legal because $H_i$ contains no neighbour of $i$. So the theorem follows if we can find a single vertex $i$ with
+$H_i$ is again triangle-free, so by induction $\alpha(H_i) \ge T_i$. The other inequality is the greedy move that buys the "$+1$":
+$$\alpha(G) \;\ge\; 1 + \alpha(H_i).$$
+Let $I$ be a maximum independent set of $H_i$, so $|I| = \alpha(H_i)$. Then $I \cup \{i\}$ is independent in $G$: $I$ is already independent, and $i$ has no neighbour in $I$ because every neighbour of $i$ was deleted when we formed $H_i = G - N[i]$. Hence $G$ has an independent set of size $1+\alpha(H_i)$. Deleting the whole closed neighbourhood, not just $i$ itself, is what makes the extra vertex legal — if we had only removed $i$, an independent set of $G-i$ might already contain a neighbour of $i$, and we could not add $i$ back.
+
+This is only $\ge$, not equality. $G$ might have a larger independent set that *uses* some neighbour of $i$ and omits $i$. For a lower bound we do not care. Combining the two inequalities, $\alpha(G) \ge 1 + T_i$, so the theorem follows if we can find a single vertex $i$ with
 $$1 - f(d_i) - \sum_{j\in S_i} f(d_j) + \sum_{k\in S_i'}\big[f(d_k-n_k)-f(d_k)\big] \;\ge\; 0. \tag{$\dagger$}$$
 
 **It holds on average.** Let $A$ be the sum of the left-hand side of $(\dagger)$ over all $i$; we show $A \ge 0$, which forces some $i$ to satisfy $(\dagger)$.
@@ -524,6 +536,12 @@ Davies, Jenssen, Perkins and Roberts made this precise, and their formulation is
 ::: theorem Davies–Jenssen–Perkins–Roberts 2018
 Let $G$ be triangle-free on $n$ vertices with maximum degree $d$. Then
 $$\alpha_G(1) \;\ge\; (1+o_d(1))\,\frac{\log d}{d}\,n .$$
+:::
+
+::: note What $o_d(1)$ means
+The subscript names the variable that is going to infinity. So $o_d(1)$ is a quantity that tends to $0$ as the maximum degree $d\to\infty$, uniformly in $n$ and in the particular triangle-free graph. It is *not* a statement about $n\to\infty$: hold $d$ fixed and let the graph grow, and the error term stays put.
+
+This is the same kind of error already hiding in Shearer's $f(d)=(1+o(1))\log d/d$, except Shearer omitted the subscript because $d$ was the only parameter in sight. Concretely, the relative error is on the order of $\log\log d/\log d$, which vanishes as $d\to\infty$ and is independent of how large $n$ is. The same subscript appears in Conjecture 2 below: $2-o_d(1)$ means "arbitrarily close to $2$, once $d$ is large enough."
 :::
 
 That is Shearer's bound for the *average* independent set, which is strictly stronger than Shearer's bound for the largest one. What remains is to show that the largest is substantially bigger than the average.
@@ -610,9 +628,22 @@ The words *red* and *blue* here have nothing to do with the red/blue colouring o
 :::
 
 ::: idea The picture
-A vertex is a **cell of an $m\times m$ grid**: its row is its red coordinate, its column its blue coordinate. The $n$ vertices are $n$ cells chosen at random, and the grid is very sparsely occupied ($m^2 \approx n^2/\log^4 n$ cells for $n$ vertices). Two vertices are adjacent if their **rows** are adjacent in the red graph, **or** their **columns** are adjacent in the blue graph.
+Nothing new has been added. A vertex is still just an element $v\in V(G)$, and it still just *has* a pair of coordinates $\pi(v)=(\pi_R(v),\pi_B(v))$ from step 2 of the definition. The $m\times m$ grid is a drawing of the product $V_R\times V_B$:
 
-All vertices sharing a row form a red **fibre** — a red-independent set of size about $s$ — and likewise for columns. So the two blow-ups of Section 10 are both present: rows are the red clusters, columns the blue clusters. And because $\pi$ is random, *the rows are unrelated to the columns*. That independence is the entire source of the pseudorandomness.
+- the **rows** are labelled by the red vertices $V_R$,
+- the **columns** are labelled by the blue vertices $V_B$,
+- the pair $(\pi_R(v),\pi_B(v))$ is the **cell** at that row and column.
+
+Because $\pi$ is injective, the $n$ vertices occupy $n$ distinct cells of a grid with $m^2\approx n^2/\log^4 n$ cells, so almost every cell is empty. Two vertices are adjacent if their **rows** are adjacent in $G_R$, **or** their **columns** are adjacent in $G_B$ — not because their cells sit next to each other on the page.
+
+All vertices sharing a row (the same red coordinate) form a red **fibre**. That set is red-independent, and a typical fibre has size about $s$, for two separate reasons.
+
+- *No red edges inside a row.* A red edge exists between $v$ and $w$ only when $\pi_R(v)\pi_R(w)\in E(G_R)$. If $v$ and $w$ share a row then $\pi_R(v)=\pi_R(w)$, and $G_R$ has no loops, so that pair is not an edge of $G_R$. Hence there is no red edge among those vertices. (They may still have *blue* edges, if their columns happen to be adjacent in $G_B$. A fibre is independent in one colour, not in $G$.)
+- *Size about $s$.* There are $n$ occupied cells and $m=n/s$ rows, so a typical row holds $n/m=s$ vertices. Because $\pi$ is a uniform injection, this is a hypergeometric count: the paper's Lemma 3.1 says every fibre has size $(1+o(1))s$ with high probability.
+
+The word **red** does not mean "the fibre is made of red edges." There are no red edges *inside* a red fibre — that is the point of the first bullet. "Red fibre over $r$" just means the fibre of the red projection: $\{v : \pi_R(v)=r\}$, the row labelled $r$. The red edges of $G$ run *between* different red fibres. If $rr'\in E(G_R)$, then every vertex in the fibre over $r$ is red-adjacent to every vertex in the fibre over $r'$. That is exactly the blow-up of $G_R$: the red fibres are the clusters, and $G_R$ decides which pairs of clusters are completely joined.
+
+The same two facts hold for columns, with colours swapped. So the two blow-ups of Section 10 are both present: rows are the red clusters, columns the blue clusters. And because $\pi$ is random, *the rows are unrelated to the columns*. That independence is the entire source of the pseudorandomness.
 :::
 
 The density of the union is $(2+o(1))p = \sqrt{\log n/n}$, so in the language of Section 7 this construction sits at $c = 1$ — exactly the bottom of the barrier of Theorem 8.1. Two things must now be checked: that the triangles can be removed cheaply, and that the independent sets really are as small as a random graph of this density.
@@ -685,6 +716,10 @@ So the probability exponent is $-\frac{\kappa}{4}(x_R^2+x_B^2)$ in units of $k\l
 
 *The optimisation.* $\partial g/\partial x_R = \tfrac12 - \tfrac{\kappa}{2}x_R = 0$ gives $x_R = 1/\kappa$, and likewise $x_B = 1/\kappa$; the function is concave, so this is the maximum. Its value is
 $$g\!\left(\tfrac1\kappa,\tfrac1\kappa\right) = \frac{2/\kappa - 1}{2} - \frac{\kappa}{4}\cdot\frac{2}{\kappa^2} = \frac1\kappa - \frac12 - \frac{1}{2\kappa} = \frac{1-\kappa}{2\kappa}.$$
+
+*Closing the first moment.* The theorem so far only computes an exponent. The expected number of independent $k$-sets of a given projection type is $\exp\big(g(x_R,x_B)\,k\log n\cdot(1+o(1))\big)$, and $g$ is at most $(1-\kappa)/(2\kappa)$ for every type. For $\kappa = 1+\varepsilon$ that ceiling is $-\varepsilon/(2(1+\varepsilon)) < 0$. There are only $O(k^2)$ discrete pairs $(x_R,x_B)$. Summing over them, if $X$ is the total number of independent $k$-sets,
+$$\mathbb{E}X \;\le\; n^{O(1)}\cdot\exp\!\left(-\frac{\varepsilon}{2(1+\varepsilon)}\,k\log n\cdot(1+o(1))\right) \;\to\; 0.$$
+$X$ is a non-negative integer, so Markov gives $\mathbb{P}(X\ge 1)\le\mathbb{E}X\to 0$: with high probability $X=0$. That is the same closing as in Section 5, and **it is the only place this section concludes that no $k$-set is independent.**
 :::
 
 Two features of this computation deserve to be pointed out. First, the optimum sits at $x_R = x_B \approx 1$: the dangerous sets are the *generic* ones, whose projections are essentially injective. Second, sets with $x_R + x_B < 1$ need no argument at all — the counting exponent is already negative, so **no $k$-sets with projections that small exist**.
@@ -705,7 +740,7 @@ For every $\varepsilon>0$ there is $n_0$ such that for all $n \ge n_0$ there exi
 $$\alpha(G) \;<\; (1+\varepsilon)\sqrt{n\log n}.$$
 :::
 
-The construction of Section 12 is such a graph: Section 13 makes it triangle-free at a cost of a $o(1)$ fraction of its edges, and Section 14 shows that no $k$-set with $k = (1+\varepsilon)\sqrt{n\log n}$ is independent.
+The construction of Section 12 is such a graph. Section 13 makes it triangle-free at a cost of a $o(1)$ fraction of its edges. Section 14 does **not** exhibit a missing independent set by hand: it runs a first-moment count. The expected number of independent $k$-sets, $k=(1+\varepsilon)\sqrt{n\log n}$, has exponent $g\le (1-\kappa)/(2\kappa)=-\varepsilon/(2(1+\varepsilon))<0$, so $\mathbb{E}X\to 0$ and Markov gives that with high probability none exist. That computation is the skeleton: it ignores deleted edges. The paper's Sections 3 and 4 check that those deletions do not create a new independent $k$-set; once they are filled, the same negative exponent still wins, and the theorem follows.
 
 ::: theorem Theorem 1.2 of the paper
 $$R(3,k) \;\ge\; \left(\frac12 + o(1)\right)\frac{k^2}{\log k}.$$

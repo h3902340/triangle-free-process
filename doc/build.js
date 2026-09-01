@@ -202,7 +202,14 @@ const page = '<!doctype html><html><head><meta charset="utf-8"><style>' + css + 
 
 fs.writeFileSync('doc.html', page);
 (async () => {
-  const b = await chromium.launch({ executablePath: '/opt/pw-browsers/chromium-1194/chrome-linux/chrome', args: ['--no-sandbox'] });
+  const chromeCandidates = [
+    process.env.CHROME_PATH,
+    '/opt/pw-browsers/chromium-1194/chrome-linux/chrome',
+    '/usr/local/bin/google-chrome',
+    '/usr/bin/google-chrome',
+  ].filter(Boolean);
+  const executablePath = chromeCandidates.find(p => fs.existsSync(p));
+  const b = await chromium.launch({ executablePath, args: ['--no-sandbox'] });
   const p = await b.newPage();
   await p.goto('file://' + path.resolve('doc.html'), { waitUntil: 'load' });
   await p.pdf({ path: 'R3k-proofs.pdf', format: 'A4', printBackground: true,
