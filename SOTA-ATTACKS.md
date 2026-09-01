@@ -2,7 +2,7 @@
 
 **Status: no unconditional breakthrough.** This note records the attacks that were tried and why they do not move either leading constant. It is not a theorem.
 
-Round 2 attacked DJPR’s \(4/3\) ratio. Round 3 checked large-fugacity occupancy, DST variance bounds, maximality, and enumerated all triangle-free graphs on \(n\le 7\). Still no leading-constant movement. Scripts: `research/ratio_scan.py`, `research/circulant_mitm.py`, `research/ratio_n7.py`.
+Round 2 attacked DJPR’s \(4/3\) ratio. Round 3 checked large-fugacity occupancy, DST variance bounds, maximality, and enumerated all triangle-free graphs on \(n\le 7\). Round 5 tested leftover-graph augmentation of a uniform independent set (the max-versus-average gap). Still no leading-constant movement. Scripts: `research/ratio_scan.py`, `research/circulant_mitm.py`, `research/ratio_n7.py`, `research/leftover_stats.py`, `research/leftover_mcmc.py`.
 
 As of 1 September 2026 the best proved bounds remain
 
@@ -146,6 +146,42 @@ The factor \(2\) in Shearer vs a random graph is a **large-deviation** of the ha
 To see the extra factor you need \(\lambda=\lambda(d)\to\infty\). The DJPR formula gets *worse* as \(\lambda\) grows (the relaxation that \(Z\) may be constant is too pessimistic). Davies–Sandhu–Tan (arXiv:2505.13396, v2 Sep 2025) prove a degree-sequence occupancy bound only for \(\lambda\le c/\Delta^4\), and say explicitly that relaxing this to \(1/\log d\) would prove the Buys–van den Heuvel–Kang occupancy conjecture — they do not. Their variance bounds are likewise for \(\lambda=O(1/n)\). The April 2026 follow-up (arXiv:2604.01717) settles a variance comparison with \(K_n\), not \(R(3,k)\).
 
 Maximal triangle-free graphs are the Ramsey-worst case (adding edges can only shrink \(\alpha\)). Regular maximal triangle-free graphs satisfy \(d^2\gtrsim n\). At the critical density \(d\sim\sqrt{n\log n}\) this is already true, and a typical non-edge has \(\sim\log n\) common neighbours — the same as \(G(n,p)\). Maximality does not add a first-order constraint at the Shearer point.
+
+### 3.9 Leftover graph of a uniform independent set
+
+This is the natural attack on the max-versus-average gap. Let \(I\) be uniform in \(\mathcal{I}(G)\) and let \(F=\{v:I\cap N[v]=\emptyset\}\) be the addable vertices. At fugacity \(1\), \(\mathbb{P}(v\text{ addable})=\mathbb{P}(v\in I)\), so \(\mathbb{E}|F|=\mathbb{E}|I|=\alpha_G(1)\). Pathwise \(\alpha(G)\ge|I|+\alpha(G[F])\). Caro–Wei on the leftover graph gives
+
+\[
+\alpha(G)\;\ge\;\mathbb{E}|I|+\mathbb{E}\sum_{v\in F}\frac1{1+d_{G[F]}(v)}.
+\]
+
+If leftover degrees were \(O(1)\), the second term would be a positive fraction of \(\alpha_G(1)\) and Shearer’s constant would move. Exact enumeration (Kalbfleisch \(C_{35}\), McGee, Petersen, Clebsch) and Glauber sampling (Hoffman–Singleton, cages, triangle-free process up to \(n=800\)) show that this does **not** happen.
+
+On the Kalbfleisch graph (the worst known \(\alpha/\alpha_G(1)\) example, \(d=8\)) leftover mean degree is \(1.91\) and \(\mathbb{E}\alpha(G[F])/\mathbb{E}|I|=0.430\). That recovers \(\alpha\) almost exactly: \(\mathbb{E}|I|+\mathbb{E}\alpha(G[F])\approx 7.98\) against \(\alpha=8\). So leftover augmentation is tautological once \(\alpha(G[F])\) is computed exactly; the content has to come from a uniform lower bound on \(\alpha(G[F])\).
+
+On triangle-free-process graphs the leftover mean degree grows, and the Caro–Wei surplus shrinks like \(1/\log d\):
+
+| \(n\) | \(d\) | leftover mean deg | Caro–Wei / \(\mathbb{E}|I|\) | \(\approx 1.5/\log d\) |
+|---|---|---|---|---|
+| 30 | 8.7 | 1.12 | 0.641 | 0.69 |
+| 120 | 20.4 | 1.75 | 0.496 | 0.50 |
+| 200 | 28.2 | 1.97 | 0.460 | 0.45 |
+| 400 | 41.7 | 2.35 | 0.403 | 0.40 |
+| 800 | 62.0 | 2.70 | 0.357 | 0.36 |
+
+The product \((\text{Caro–Wei}/\mathbb{E}|I|)\cdot\log d\) sits at \(1.4\)–\(1.5\). Relative extra \(\Theta(1/\log d)\) is not a leading constant. Recursing leftover (fill \(F\), then the leftover of that independent set, …) produces a geometric series with ratio \(1/\log d\), still \(1+o(1)\). Shearer on a leftover of degree \(\Theta(\log d)\) yields only an extra \(\mu\cdot(\log\log d)/\log d\).
+
+High-girth cages are not a loophole for the Ramsey upper bound: a \(d\)-regular graph of girth \(\ge 6\) has \(n=\Omega(d^2)\), and Shearer already gives \(\alpha=\Omega(d\log d)\), far above \(k\sim d\). The only graphs that could threaten \(R(3,k)\le(1-\varepsilon)k^2/\log k\) already have the random number of \(C_4\)s. Those are exactly the graphs in the table.
+
+McGee exact leftover (script-checked against Glauber): mean leftover degree \(1.420\), Caro–Wei ratio \(0.482\), matching the MCMC to three digits. Mixing is not the issue.
+
+### 3.10 Occupancy slack versus pseudorandomness (no proof)
+
+DJPR minimise occupancy over *all* random variables \(Z=\) (number of uncovered neighbours of a random vertex), not only those realised by a graph. The minimiser is concentrated \(Z\), and random regular graphs approximately achieve it, so occupancy at \(\lambda=O_d(1)\) cannot be improved in the leading constant. A case-split “either \(Z\) is concentrated, hence the graph is random-like and first-moment gives \(\alpha\sim 2\mu\), or occupancy has slack \(\ge(1+\delta)\mu\)” is the right *shape* of a proof of \(R(3,k)\le(\tfrac12+o(1))k^2/\log k\), but “concentrated uncovered-neighbour count \(\Rightarrow\) quasirandom enough for a first-moment at size \((1+\delta)\mu\)” is not shown. Random regular graphs *do* have both concentrated \(Z\) and \(\alpha\sim 2\mu\); making that implication uniform over all triangle-free graphs is DJPR Conjecture 2 in different clothes.
+
+Triangle-free-only induction for a ratio \(c>4/3\) still fails in the branch \(\alpha(G)=\alpha(G-v)\): crude replacement of averages by maxima needs \(c\le 1\). The \(4/3\) slack identity is tight on \(K_2\) even among triangle-free graphs. Local Shearer (Martinsson–Steiner, arXiv:2501.00567) and the induced bipartite subgraph of min-degree \(\Omega(\log d)\) recover the same leading constant: two independent samples \(I,J\) give \(|I\cup J|\sim 2\mu\) with larger part \(\sim\mu\).
+
+Literature through September 2026 (Morris survey arXiv:2601.05221; Buys–van den Heuvel–Kang arXiv:2503.10002; Davies–Sandhu–Tan occupancy) still quotes Shearer vs HHKP.
 
 ---
 
