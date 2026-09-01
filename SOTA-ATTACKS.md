@@ -2,7 +2,7 @@
 
 **Status: no unconditional breakthrough.** This note records the attacks that were tried and why they do not move either leading constant. It is not a theorem.
 
-Round 2 attacked DJPR’s \(4/3\) ratio. Round 3 checked large-fugacity occupancy, DST variance bounds, maximality, and enumerated all triangle-free graphs on \(n\le 7\). Round 5 tested leftover-graph augmentation of a uniform independent set (the max-versus-average gap). Still no leading-constant movement. Scripts: `research/ratio_scan.py`, `research/circulant_mitm.py`, `research/ratio_n7.py`, `research/leftover_stats.py`, `research/leftover_mcmc.py`.
+Round 2 attacked DJPR’s \(4/3\) ratio. Round 3 checked large-fugacity occupancy, DST variance bounds, maximality, and enumerated all triangle-free graphs on \(n\le 7\). Round 5 tested leftover-graph augmentation of a uniform independent set (the max-versus-average gap). Round 6 scanned leftover as a function of fugacity and every triangle-free inverse-closed circulant on \(n\le 29\). Still no leading-constant movement. Scripts: `research/ratio_scan.py`, `research/circulant_mitm.py`, `research/ratio_n7.py`, `research/leftover_stats.py`, `research/leftover_mcmc.py`, `research/lambda_leftover_and_circulants.py`.
 
 As of 1 September 2026 the best proved bounds remain
 
@@ -182,6 +182,29 @@ DJPR minimise occupancy over *all* random variables \(Z=\) (number of uncovered 
 Triangle-free-only induction for a ratio \(c>4/3\) still fails in the branch \(\alpha(G)=\alpha(G-v)\): crude replacement of averages by maxima needs \(c\le 1\). The \(4/3\) slack identity is tight on \(K_2\) even among triangle-free graphs. Local Shearer (Martinsson–Steiner, arXiv:2501.00567) and the induced bipartite subgraph of min-degree \(\Omega(\log d)\) recover the same leading constant: two independent samples \(I,J\) give \(|I\cup J|\sim 2\mu\) with larger part \(\sim\mu\).
 
 Literature through September 2026 (Morris survey arXiv:2601.05221; Buys–van den Heuvel–Kang arXiv:2503.10002; Davies–Sandhu–Tan occupancy) still quotes Shearer vs HHKP.
+
+### 3.11 Fugacity tilt and circulant ratio census
+
+The leftover collapse rate is the reason round 5 cannot give a leading constant. Writing \(L(k)\) for the average leftover size among independent \(k\)-sets, one has \((k+1)i_{k+1}=\sum |F(I)|\) so \(i_{k+1}/i_k=L(k)/(k+1)\). Adding a vertex to \(I\) removes \(1+d_F(v)\) leftover vertices. On triangle-free-process graphs \(d_F=\Theta(\log d)\) at the typical size \(k\sim\mu\), hence \(L\) drops at slope \(\Theta(\log d)\) and hits zero by \(k=\mu(1+O(1/\log d))\). A linear leftover model \(L(k)=2\mu-k\) would give \(\alpha=2\mu\) (DJPR Conjecture 2); the measured slope is too steep for a factor \(1+\delta\).
+
+Tilting the hard-core measure to \(\lambda\neq 1\) does not repair this. Glauber on a triangle-free-process graph with \(n=200\), mean degree \(28.2\) (Shearer scale \(n\log d/d\approx 23.7\)):
+
+| \(\lambda\) | \(\mathbb{E}|I|\) | leftover mean deg | \(\mathbb{E}|I|+\mathrm{CaroWei}(F)\) |
+|---|---|---|---|
+| 0.25 | 10.7 | 5.45 | 19.3 |
+| 1 | 18.1 | 1.96 | 26.5 |
+| 4 | 27.7 | 0.58 | 32.9 |
+| 16 | 34.2 | 0.23 | 36.2 |
+
+As \(\lambda\) grows, leftover becomes sparse but tiny; as \(\lambda\) shrinks, leftover is large but as dense as \(G\) itself. There is no \(\lambda\) at which leftover is both linear-sized and bounded-degree. The rise of \(\mathbb{E}|I|\) with \(\lambda\) on *this* graph is the expected large-deviation tilt toward \(\alpha\sim 2\mu\); DJPR’s Lambert-\(W\) occupancy lower bound at the same \(\lambda\) is far smaller, and they prove it is tight for some \(\lambda=O_d(1)\) graphs. A uniform occupancy improvement at \(\lambda=\Theta(1)\) is therefore unavailable.
+
+Every inverse-closed triangle-free circulant on \(n\le 29\) was enumerated (connection sets of size \(\le 6\)). The smallest \(\alpha/\alpha_G(1)\) in that range is the \(4\)-regular \(C_{13}(\pm1,\pm5)\), the unique cyclic \(R(3,5)\)-witness:
+
+\[
+\alpha=4,\quad z=183,\quad \alpha/\mathrm{avg}=1.443787\ldots
+\]
+
+Three rotations of the same connection set, and three \(2\)-lifts on \(n=26\), repeat the ratio. Next is \(C_5\) at \(22/15=1.4667\). Nothing in the census undercuts Kalbfleisch’s \(1.43283\ldots\) on \(n=35\). Ratios do not drift toward \(1\) as \(n\) grows through this range. That is still only a census of circulants, not a proof that \(\inf\alpha/\alpha_G(1)>1\).
 
 ---
 
