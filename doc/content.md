@@ -609,7 +609,9 @@ Look at what the nibble is being paid to do: multiply the density by two. The qu
 
 ## 12. The construction
 
-The answer is: do the blow-up again. Here is the construction, exactly as in Section 2 of the paper.
+The answer is: do the blow-up again. That is the whole title. A *nibble* is a long sequence of tiny random edge additions — many small bites. Campos–Jenssen–Michelen–Sahasrabudhe used one blow-up as a seed and then a nibble to double the density. This paper throws the nibble away and takes a second blow-up instead. **The two bites are the two blow-ups:** the red graph $G_R$ (rows) and the blue graph $G_B$ (columns). One blow-up is structurally broken; two already break each other's structure. Extra bites would not help the first moment, which only sees the total density. Two is the first number bigger than one.
+
+Here is the construction, exactly as in Section 2 of the paper.
 
 ::: def The construction
 Fix $\varepsilon > 0$ and set
@@ -624,7 +626,7 @@ uniformly at random. Write $\pi(v) = (\pi_R(v), \pi_B(v))$; these are the **red*
 :::
 
 ::: warn A notational trap
-The words *red* and *blue* here have nothing to do with the red/blue colouring of Section 1. That colouring is long gone: we are building a single graph $G$. Red and blue simply name the two halves of the construction.
+The words *red* and *blue* here have nothing to do with the red/blue colouring of Section 1. That colouring is long gone: we are building a single graph $G$. Red and blue simply name the two bites.
 :::
 
 ::: idea The picture
