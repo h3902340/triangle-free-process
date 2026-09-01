@@ -538,6 +538,12 @@ Let $G$ be triangle-free on $n$ vertices with maximum degree $d$. Then
 $$\alpha_G(1) \;\ge\; (1+o_d(1))\,\frac{\log d}{d}\,n .$$
 :::
 
+::: note What $o_d(1)$ means
+The subscript names the variable that is going to infinity. So $o_d(1)$ is a quantity that tends to $0$ as the maximum degree $d\to\infty$, uniformly in $n$ and in the particular triangle-free graph. It is *not* a statement about $n\to\infty$: hold $d$ fixed and let the graph grow, and the error term stays put.
+
+This is the same kind of error already hiding in Shearer's $f(d)=(1+o(1))\log d/d$, except Shearer omitted the subscript because $d$ was the only parameter in sight. Concretely, the relative error is on the order of $\log\log d/\log d$, which vanishes as $d\to\infty$ and is independent of how large $n$ is. The same subscript appears in Conjecture 2 below: $2-o_d(1)$ means "arbitrarily close to $2$, once $d$ is large enough."
+:::
+
 That is Shearer's bound for the *average* independent set, which is strictly stronger than Shearer's bound for the largest one. What remains is to show that the largest is substantially bigger than the average.
 
 ::: note The conjectures, and exactly what they would give
